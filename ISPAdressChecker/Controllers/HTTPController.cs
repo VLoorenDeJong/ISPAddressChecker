@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace CheckISPAdress.Controllers
 {
+
     [Route("[controller]")]
     [ApiController]
     public class HTTPController : ControllerBase
@@ -18,12 +19,12 @@ namespace CheckISPAdress.Controllers
             _logger = logger;
         }
 
-        [HttpGet("GetIp", Name = "GetIp")]
+        [HttpGet("MyISPAdress", Name = "MyISPAdress")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<string> GetIpAddress()
         {
-            _logger.LogInformation("ISP address has been rewuested");
+            _logger.LogInformation("ISP address has been requested");
             _counterService.AddISPEndpointRequests();
 
             HttpContext context = HttpContext;

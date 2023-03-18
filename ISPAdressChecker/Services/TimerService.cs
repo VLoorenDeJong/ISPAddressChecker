@@ -3,11 +3,11 @@ using CheckISPAdress.Interfaces;
 using CheckISPAdress.Helpers;
 using CheckISPAdress.Options;
 using CheckISPAdress.Models;
+using System.Diagnostics;
 
 namespace CheckISPAdress.Services
 {
     public class TimerService : ITimerService
-
     {
         private readonly ApplicationSettingsOptions _applicationSettingsOptions;
         private readonly ICheckISPAddressService _ISPAdressService;
@@ -17,6 +17,8 @@ namespace CheckISPAdress.Services
         private Timer? controlISPAdressCheckTimer;
         private Timer? ISPAdressCheckTimer;
         private Timer? HeartbeatemailTimer;
+
+        private Stopwatch UpTime = new Stopwatch();
 
         private double ISPAdressCHeckInterval;
 
@@ -35,6 +37,7 @@ namespace CheckISPAdress.Services
             ISPAdressCheckTimer = new Timer(async (state) => await _ISPAdressService.GetISPAddressAsync(), null, TimeSpan.Zero, TimeSpan.FromMinutes(ISPAdressCHeckInterval));
             controlISPAdressCheckTimer = new Timer(state => { _counterService.AddServiceCheckCounter(); }, null, TimeSpan.FromMinutes(ISPAdressCHeckInterval), TimeSpan.FromMinutes(ISPAdressCHeckInterval));
             SetupHeartbeatTimer();
+            UpTime.Start();
         }
 
         private void SetupHeartbeatTimer()
@@ -51,14 +54,18 @@ namespace CheckISPAdress.Services
 
             HeartbeatemailTimer = new Timer(async (state) =>
             {
-                // Do something here when the timer elapses, such as calling an async method
                 await _ISPAdressService.HeartBeatCheck();
             }, null, (int)(nextOccurrence - now).TotalMilliseconds, (int)heartBeatInterval.TotalMilliseconds);
         }
 
+        public TimeSpan GetUptime()
+        {
+            return UpTime.Elapsed;
+        }
+
         public void Dispose()
         {
-            if(ISPAdressCheckTimer is not null) ISPAdressCheckTimer!.Dispose();
+            if (ISPAdressCheckTimer is not null) ISPAdressCheckTimer!.Dispose();
             if (controlISPAdressCheckTimer is not null) controlISPAdressCheckTimer!.Dispose();
             if (HeartbeatemailTimer is not null) HeartbeatemailTimer!.Dispose();
         }

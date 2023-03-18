@@ -25,7 +25,7 @@ public class CheckISPAddressService : ICheckISPAddressService
 
     public async Task HeartBeatCheck()
     {
-        await GetISPAddressFromBackupAPIs(true);
+        await GetISPAddressFromBackupAPIs();
         _emailService.SendHeartBeatEmail(_counterService, _ISPAdressService.GetOldISPAddress(), _ISPAdressService.GetCurrentISPAddress(), _ISPAdressService.GetNewISPAddress(), ISPAdressChecks);
         ISPAdressChecks.Clear();
     }
@@ -61,7 +61,7 @@ public class CheckISPAddressService : ICheckISPAddressService
                 if (ex.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
                 {
                     _counterService.AddFailedISPRequestCounter();
-                    await GetISPAddressFromBackupAPIs(false);
+                    await GetISPAddressFromBackupAPIs();
                 }
                 else
                 {
@@ -69,7 +69,7 @@ public class CheckISPAddressService : ICheckISPAddressService
 
                     _logger.LogError("API Call error. Exceptiontype: {type} Message:{message}", exceptionType, ex.Message);
                     _emailService.SendISPAPIHTTPExceptionEmail(exceptionType.Name, ex.Message);
-                    await GetISPAddressFromBackupAPIs(false);
+                    await GetISPAddressFromBackupAPIs();
                 }
                 return;
             }
@@ -98,11 +98,13 @@ public class CheckISPAddressService : ICheckISPAddressService
             {
                 _emailService.SendConnectionReestablishedEmail(_ISPAdressService.GetNewISPAddress(), _ISPAdressService.GetOldISPAddress(), _counterService, _applicationSettingsOptions!.TimeIntervalInMinutes);
                 _counterService.ResetFailedISPRequestCounter();
+                _ISPAdressService.ClearExternalISPAddress();
+                _ISPAdressService.ClearNewISPAddress();
             }
         }
     }
 
-    public async Task GetISPAddressFromBackupAPIs(bool heartBeatCheck)
+    public async Task GetISPAddressFromBackupAPIs()
     {
         if (ISPAdressChecks is null) ISPAdressChecks = new();
         ISPAdressChecks.Clear();
@@ -163,7 +165,7 @@ public class CheckISPAddressService : ICheckISPAddressService
             }
         }
 
-        if (ISPAdressChecks.Count > 0 && !heartBeatCheck)
+        if (ISPAdressChecks.Count > 0)
         {
             // Get the uniwue ISP adresses from the dictionary
             List<string>? uniqueAdresses = ISPAdressChecks?.Values?.Distinct()?.ToList()!;
@@ -177,14 +179,22 @@ public class CheckISPAddressService : ICheckISPAddressService
                 _ISPAdressService.SetOldISPAddress(_ISPAdressService.GetCurrentISPAddress());
                 _ISPAdressService.ClearCurrentISPAddress();
 
-                _emailService.SendISPAdressChangedEmail(_ISPAdressService.GetExternalISPAddress(), _ISPAdressService.GetOldISPAddress(), _counterService, _applicationSettingsOptions!.TimeIntervalInMinutes);
+                if (_counterService.GetServiceRequestCounter() != 1 && _counterService.GetFailedISPRequestCounter() != 0)
+                {
+                    _emailService.SendISPAdressChangedEmail(_ISPAdressService.GetExternalISPAddress(), _ISPAdressService.GetOldISPAddress(), _counterService, _applicationSettingsOptions!.TimeIntervalInMinutes);
+                }
+                else
+                {
+                    _ISPAdressService.SetCurrentISPAddress(_ISPAdressService.GetExternalISPAddress());
+                    _ISPAdressService.SetNewISPAddress(_ISPAdressService.GetExternalISPAddress());
+                }
             }
             else
             {
                 _emailService.SendDifferendISPAdressValuesEmail(ISPAdressChecks!, _ISPAdressService.GetOldISPAddress(), _counterService, _applicationSettingsOptions!.TimeIntervalInMinutes);
             }
         }
-        else if (!heartBeatCheck)
+        else if (ISPAdressChecks.Count == 0)
         {
             _emailService.SendNoISPAdressReturnedEmail(_ISPAdressService.GetOldISPAddress(), _counterService, _applicationSettingsOptions!.TimeIntervalInMinutes);
         }

@@ -9,7 +9,7 @@
         void AddServiceRequestCounter();
         int GetExternalServiceCheckCounter();
         int GetFailedISPRequestCounter();
-        int GetInternalAPICallsCounter();
+        int GetISPEndpointRequestsCounter();
         int GetServiceCheckCounter();
         int GetServiceRequestCounter();
         void ResetFailedISPRequestCounter();
