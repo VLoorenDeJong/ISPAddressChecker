@@ -5,13 +5,7 @@ using static CheckISPAdress.Options.ApplicationSettingsOptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ToDo CHange night-hawk settings away from test email account
-// ToDo Create new project calles ISPAddressChecker
-// ToDo cleam up all the messes
-
-
 // Add services to the container.
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
