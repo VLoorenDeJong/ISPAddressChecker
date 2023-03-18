@@ -1,0 +1,49 @@
+using CheckISPAdress.Interfaces;
+using CheckISPAdress.Options;
+using CheckISPAdress.Services;
+using static CheckISPAdress.Options.ApplicationSettingsOptions;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// ToDo CHange night-hawk settings away from test email account
+// ToDo Create new project calles ISPAddressChecker
+// ToDo cleam up all the messes
+
+
+// Add services to the container.
+
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// Add HttpClient and CheckISPAddressService
+builder.Services.AddHttpClient();
+
+builder.Services.AddSingleton<IISPAddressService, ISPAddressService>();
+builder.Services.AddSingleton<ITimerService, TimerService>();
+builder.Services.AddSingleton<IISPAdressCounterService, ISPAdressCounterService>();
+builder.Services.AddSingleton<IApplicationService, ApplicationService>();
+
+builder.Services.AddTransient<ICheckISPAddressService, CheckISPAddressService>();
+builder.Services.AddTransient<IEmailService, EmailService>();
+
+builder.Services.Configure<ApplicationSettingsOptions>(builder.Configuration.GetSection(AppsettingsSections.ApplicationSettings));
+
+var app = builder.Build();
+
+//Start the application
+app.Services.GetService<IApplicationService>()!.StartAsync(default).GetAwaiter().GetResult();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+app.UseHttpsRedirection();
+
+app.UseAuthorization();
+
+app.MapControllers();
+app.Run();
