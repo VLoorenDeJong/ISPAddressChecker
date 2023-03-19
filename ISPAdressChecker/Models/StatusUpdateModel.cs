@@ -10,13 +10,11 @@ namespace ISPAdressChecker.Models
         }
         public StatusUpdateModel(IISPAdressCounterService ISPAdressCounterService, IStatusCounterService statusCounterService, ITimerService timerService)
         {
-
             ISPEndpointRequests = ISPAdressCounterService.GetISPEndpointRequestsCounter();
             ServiceRequestCounter = ISPAdressCounterService.GetServiceRequestCounter();
             ServiceCheckCounter = ISPAdressCounterService.GetServiceCheckCounter();
             ExternalServiceCheckCounter = ISPAdressCounterService.GetExternalServiceCheckCounter();
             FailedISPRequestCounter = ISPAdressCounterService.GetFailedISPRequestCounter();
-
 
             StatusUpdateRequested = statusCounterService.GetStatusUpdateRequested();
 
