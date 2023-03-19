@@ -1,6 +1,6 @@
-﻿using CheckISPAdress.Interfaces;
-using CheckISPAdress.Options;
-using CheckISPAdress.Services;
+﻿using ISPAdressChecker.Interfaces;
+using ISPAdressChecker.Options;
+using ISPAdressChecker.Services;
 using Microsoft.Extensions.Options;
 using System.Text.RegularExpressions;
 

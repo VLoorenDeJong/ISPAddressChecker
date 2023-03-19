@@ -1,4 +1,4 @@
-﻿namespace CheckISPAdress.Models
+﻿namespace ISPAdressChecker.Models
 {
     public class ConfigErrorReportModel
     {

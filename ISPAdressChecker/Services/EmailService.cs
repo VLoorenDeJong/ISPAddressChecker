@@ -1,13 +1,13 @@
-﻿using CheckISPAdress.Helpers;
-using CheckISPAdress.Interfaces;
-using CheckISPAdress.Models;
-using CheckISPAdress.Options;
+﻿using ISPAdressChecker.Helpers;
+using ISPAdressChecker.Interfaces;
+using ISPAdressChecker.Models;
+using ISPAdressChecker.Options;
 using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Mail;
-using static CheckISPAdress.Options.ApplicationSettingsOptions;
+using static ISPAdressChecker.Options.ApplicationSettingsOptions;
 
-namespace CheckISPAdress.Services
+namespace ISPAdressChecker.Services
 {
     public class EmailService : IEmailService
 

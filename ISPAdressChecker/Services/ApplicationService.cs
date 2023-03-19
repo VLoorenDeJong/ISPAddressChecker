@@ -1,11 +1,11 @@
-﻿using CheckISPAdress.Interfaces;
-using CheckISPAdress.Options;
+﻿using ISPAdressChecker.Interfaces;
+using ISPAdressChecker.Options;
 using Microsoft.Extensions.Options;
-using CheckISPAdress.Helpers;
-using CheckISPAdress.Models;
+using ISPAdressChecker.Helpers;
+using ISPAdressChecker.Models;
 using System.Runtime.CompilerServices;
 
-namespace CheckISPAdress.Services
+namespace ISPAdressChecker.Services
 {
     public class ApplicationService : IApplicationService, IHostedService
     {

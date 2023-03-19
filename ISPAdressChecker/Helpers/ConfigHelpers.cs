@@ -1,12 +1,12 @@
-﻿using CheckISPAdress.Models;
-using CheckISPAdress.Options;
+﻿using ISPAdressChecker.Models;
+using ISPAdressChecker.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Text.RegularExpressions;
 using System.Threading.Channels;
-using static CheckISPAdress.Options.ApplicationSettingsOptions;
+using static ISPAdressChecker.Options.ApplicationSettingsOptions;
 
-namespace CheckISPAdress.Helpers
+namespace ISPAdressChecker.Helpers
 {
     public static class ConfigHelpers
     {

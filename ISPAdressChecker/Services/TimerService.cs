@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.Options;
-using CheckISPAdress.Interfaces;
-using CheckISPAdress.Helpers;
-using CheckISPAdress.Options;
-using CheckISPAdress.Models;
+using ISPAdressChecker.Interfaces;
+using ISPAdressChecker.Helpers;
+using ISPAdressChecker.Options;
+using ISPAdressChecker.Models;
 using System.Diagnostics;
 
-namespace CheckISPAdress.Services
+namespace ISPAdressChecker.Services
 {
     public class TimerService : ITimerService
     {

@@ -1,8 +1,8 @@
-﻿using CheckISPAdress.Interfaces;
+﻿using ISPAdressChecker.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.Metrics;
 
-namespace CheckISPAdress.Services
+namespace ISPAdressChecker.Services
 {
     public class ISPAdressCounterService : IISPAdressCounterService
     {

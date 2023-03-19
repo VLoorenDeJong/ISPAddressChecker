@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography.X509Certificates;
 
-namespace CheckISPAdress.Options
+namespace ISPAdressChecker.Options
 {
     public class ApplicationSettingsOptions
     {

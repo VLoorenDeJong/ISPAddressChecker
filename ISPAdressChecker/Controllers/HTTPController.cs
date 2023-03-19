@@ -1,9 +1,9 @@
-﻿using CheckISPAdress.Interfaces;
-using CheckISPAdress.Services;
+﻿using ISPAdressChecker.Interfaces;
+using ISPAdressChecker.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace CheckISPAdress.Controllers
+namespace ISPAdressChecker.Controllers
 {
 
     [Route("[controller]")]
