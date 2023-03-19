@@ -1,4 +1,5 @@
-﻿using ISPAdressChecker.Interfaces;
+﻿using ISPAdressChecker.Helpers;
+using ISPAdressChecker.Interfaces;
 using ISPAdressChecker.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -6,8 +7,8 @@ using Microsoft.Extensions.Logging;
 namespace ISPAdressChecker.Controllers
 {
 
-    [Route("[controller]")]
     [ApiController]
+    [Route("[controller]")]
     public class HTTPController : ControllerBase
     {
         private readonly IISPAdressCounterService _counterService;
@@ -57,9 +58,7 @@ namespace ISPAdressChecker.Controllers
                 string logInfo = string.Empty;
                 if (!string.IsNullOrWhiteSpace(outputString))
                 {
-                    int secondToLastDotIndex = outputString.LastIndexOf(".");
-                    logInfo = outputString.Substring(0, secondToLastDotIndex);
-                    logInfo = $"{logInfo}....";
+                    logInfo = StringHelpers.MakeISPAddressLogReady(outputString);
                 }
                 else
                 {

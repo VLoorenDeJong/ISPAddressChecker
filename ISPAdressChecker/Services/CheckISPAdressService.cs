@@ -1,7 +1,10 @@
-﻿using ISPAdressChecker.Interfaces;
+﻿using ISPAdressChecker.Helpers;
+using ISPAdressChecker.Interfaces;
 using ISPAdressChecker.Options;
 using ISPAdressChecker.Services;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Net;
 using System.Text.RegularExpressions;
 
 public class CheckISPAddressService : ICheckISPAddressService
@@ -25,6 +28,7 @@ public class CheckISPAddressService : ICheckISPAddressService
 
     public async Task HeartBeatCheck()
     {
+        _logger.LogInformation("CheckISPAddressService -> HeartBeatCheck -> start");
         await GetISPAddressFromBackupAPIs();
         _emailService.SendHeartBeatEmail(_counterService, _ISPAdressService.GetOldISPAddress(), _ISPAdressService.GetCurrentISPAddress(), _ISPAdressService.GetNewISPAddress(), ISPAdressChecks);
         ISPAdressChecks.Clear();
@@ -36,6 +40,7 @@ public class CheckISPAddressService : ICheckISPAddressService
         {
             try
             {
+                _logger.LogInformation("CheckISPAddressService -> GetISPAddressAsync: Requesting ISP adress from endpoint");
                 //Testing code:
                 //throw new HttpRequestException();
                 //throw new Exception();
@@ -47,13 +52,24 @@ public class CheckISPAddressService : ICheckISPAddressService
                 HttpResponseMessage response = await client.GetAsync(_applicationSettingsOptions?.APIEndpointURL);
                 response.EnsureSuccessStatusCode();
 
+
+                _logger.LogInformation("CheckISPAddressService -> GetISPAddressAsync -> NewISPAddress before clear:{ispAdress}", StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetNewISPAddress()));
+
                 _ISPAdressService.ClearNewISPAddress();
-                _ISPAdressService.SetNewISPAddress(await response?.Content?.ReadAsStringAsync()!);
+
+
+                string fecthedISPAddress = await response?.Content?.ReadAsStringAsync()!;
+                _ISPAdressService.SetNewISPAddress(fecthedISPAddress);
+
+                _logger.LogInformation("CheckISPAddressService -> GetISPAddressAsync: Respons:{ispAdress}", StringHelpers.MakeISPAddressLogReady(fecthedISPAddress));
+                _logger.LogInformation("CheckISPAddressService -> GetISPAddressAsync -> New NewISPAddress:{ispAdress}", StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetNewISPAddress()));
+
 
                 // Checking if the counters are still in sync 
                 if (_counterService.GetServiceRequestCounter() != _counterService.GetServiceCheckCounter())
                 {
                     _emailService.SendCounterDifferenceEmail(_counterService);
+                    _logger.LogInformation("CheckISPAddressService -> GetISPAddressAsync -> Counter difference ServiceRequestCounter:{counter1}, ServiceCheckCounter: {counter2}", _counterService.GetServiceRequestCounter(), _counterService.GetServiceCheckCounter());
                 }
             }
             catch (HttpRequestException ex)
@@ -61,14 +77,17 @@ public class CheckISPAddressService : ICheckISPAddressService
                 if (ex.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
                 {
                     _counterService.AddFailedISPRequestCounter();
+                    _logger.LogInformation("CheckISPAddressService -> GetISPAddressAsync -> HttpStatusCode.ServiceUnavailable, starting external calls");
                     await GetISPAddressFromBackupAPIs();
                 }
                 else
                 {
                     Type exceptionType = ex.GetType();
 
-                    _logger.LogError("API Call error. Exceptiontype: {type} Message:{message}", exceptionType, ex.Message);
+                    _logger.LogError("CheckISPAddressService -> GetISPAddressAsync -> API Call HTTP exception. Exceptiontype: {type} Message:{message}", exceptionType, ex.Message);
                     _emailService.SendISPAPIHTTPExceptionEmail(exceptionType.Name, ex.Message);
+
+                    _logger.LogInformation("CheckISPAddressService -> GetISPAddressAsync -> API endpoint not found, starting external calls");
                     await GetISPAddressFromBackupAPIs();
                 }
                 return;
@@ -77,35 +96,50 @@ public class CheckISPAddressService : ICheckISPAddressService
             {
                 Type exceptionType = ex.GetType();
 
-                _logger.LogError("API Call error. Exceptiontype: {type} Message:{message}", exceptionType, ex.Message);
+                _logger.LogError("CheckISPAddressService -> GetISPAddressAsync -> API Call general Exception. Exceptiontype: {type} Message:{message}", exceptionType, ex.Message);
                 _emailService.SendISPAPIExceptionEmail(exceptionType.Name, ex.Message);
                 return;
             }
         }
 
+        _logger.LogInformation("CheckISPAddressService -> GetISPAddressAsync -> if(NewISPAddress && CurrentISPAddress same) Connection reestablished -> {isp1}->{isp2}", _ISPAdressService.GetNewISPAddress(), _ISPAdressService.GetCurrentISPAddress());
         if (!string.Equals(_ISPAdressService.GetNewISPAddress(), _ISPAdressService.GetCurrentISPAddress(), StringComparison.CurrentCultureIgnoreCase))
         {
+            _logger.LogInformation("CheckISPAddressService -> GetISPAddressAsync -> Connection reestablished");
             // Copy the old ISP adress to that variable
+
+            _logger.LogInformation("CheckISPAddressService -> GetISPAddressAsync -> Old BEFORE change:{oldISP}", StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetOldISPAddress()));
             _ISPAdressService.SetOldISPAddress(_ISPAdressService.GetCurrentISPAddress());
+            _logger.LogInformation("CheckISPAddressService -> GetISPAddressAsync -> Old AFTER change:{oldISP}", StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetOldISPAddress()));
+
             // Make the new ISP address the current address
+            _logger.LogInformation("CheckISPAddressService -> GetISPAddressAsync -> GetNewISPAddress BEFORE change:{newISP}", StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetNewISPAddress()));
+
             _ISPAdressService.SetCurrentISPAddress(_ISPAdressService.GetNewISPAddress());
 
-            if (_counterService.GetServiceRequestCounter() == 1 && _counterService.GetFailedISPRequestCounter() == 0)
-            {
-                await HeartBeatCheck();
-            }
-            else
-            {
-                _emailService.SendConnectionReestablishedEmail(_ISPAdressService.GetNewISPAddress(), _ISPAdressService.GetOldISPAddress(), _counterService, _applicationSettingsOptions!.TimeIntervalInMinutes);
-                _counterService.ResetFailedISPRequestCounter();
-                _ISPAdressService.ClearExternalISPAddress();
-                _ISPAdressService.ClearNewISPAddress();
-            }
+            _logger.LogInformation("CheckISPAddressService -> GetISPAddressAsync -> GetNewISPAddress AFTER change:{newISP}", StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetNewISPAddress()));
+
+            _logger.LogInformation("CheckISPAddressService -> GetISPAddressAsync -> SendConnectionReestablishedEmail, NewISP: {newISP}, Old ISP: {oldISP}", StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetNewISPAddress()), StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetOldISPAddress()));
+            _emailService.SendConnectionReestablishedEmail(_ISPAdressService.GetNewISPAddress(), _ISPAdressService.GetOldISPAddress(), _counterService, _applicationSettingsOptions!.TimeIntervalInMinutes);
+
+            _logger.LogInformation("CheckISPAddressService -> GetISPAddressAsync -> SendConnectionReestablishedEmail -> Before reset FailedCOunter{counter1}, ExternalISPAddress: {exIISP}, NewISP: {newISp}", _counterService.GetFailedISPRequestCounter(), StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetExternalISPAddress()), StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetNewISPAddress()));
+
+            _counterService.ResetFailedISPRequestCounter();
+            _ISPAdressService.ClearExternalISPAddress();
+            _ISPAdressService.ClearNewISPAddress();
+
+            _logger.LogInformation("CheckISPAddressService -> GetISPAddressAsync -> SendConnectionReestablishedEmail -> After reset FailedCOunter{counter1}, ExternalISPAddress: {exIISP}, NewISP: {newISp}", _counterService.GetFailedISPRequestCounter(), StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetExternalISPAddress()), StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetNewISPAddress()));
+        }
+        else
+        {
+            _logger.LogInformation("CheckISPAddressService -> GetISPAddressAsync -> ISP adress not changed -> ISPAddress:{isp}", StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetCurrentISPAddress()));
         }
     }
 
     public async Task GetISPAddressFromBackupAPIs()
     {
+        _logger.LogInformation("CheckISPAddressService -> GetISPAddressFromBackupAPIs -> External call started, external call counter:{count}", _counterService.GetExternalServiceCheckCounter());
+
         if (ISPAdressChecks is null) ISPAdressChecks = new();
         ISPAdressChecks.Clear();
 
@@ -113,6 +147,7 @@ public class CheckISPAddressService : ICheckISPAddressService
 
         foreach (string? APIUrl in _applicationSettingsOptions?.BackupAPIS!)
         {
+            _logger.LogInformation("CheckISPAddressService -> GetISPAddressFromBackupAPIs -> Fecthing URL:{APIUrl}", APIUrl);
             // Testing code
             //int APICallCounter = 1;
             using (var client = new HttpClient())
@@ -137,6 +172,7 @@ public class CheckISPAddressService : ICheckISPAddressService
                         ISPAddress = match.Value; // Output: ISP adress
                     }
 
+                    _logger.LogInformation("CheckISPAddressService -> GetISPAddressFromBackupAPIs -> URL:{APIUrl} Respons:{ispAdress}", APIUrl, StringHelpers.MakeISPAddressLogReady(ISPAddress));
                     ISPAdressChecks.Add(APIUrl!, ISPAddress);
 
                     // Testing code            
@@ -149,7 +185,9 @@ public class CheckISPAddressService : ICheckISPAddressService
                 catch (HttpRequestException ex)
                 {
                     Type exceptionType = ex.GetType();
-                    _logger.LogError("API Call error. Exceptiontype: {type} Message:{message}", exceptionType, ex.Message);
+
+                    _logger.LogError("CheckISPAddressService -> GetISPAddressFromBackupAPIs -> API Call HttpRequestException -> URL:{APIUrl}. Exceptiontype: {type} Message:{message}", APIUrl, exceptionType, ex.Message);
+
                     _emailService.SendExternalAPIHTTPExceptionEmail(APIUrl!, exceptionType.Name, ex.Message);
 
                 }
@@ -158,44 +196,79 @@ public class CheckISPAddressService : ICheckISPAddressService
 
                     Type exceptionType = ex.GetType();
 
-                    _logger.LogError("API Call error. Exceptiontype: {type} Message:{message}", exceptionType, ex.Message);
+                    _logger.LogError("CheckISPAddressService -> GetISPAddressFromBackupAPIs -> API Call Exception -> URL:{APIUrl}. Exceptiontype: {type} Message:{message}", APIUrl, exceptionType, ex.Message);
 
                     _emailService.SendExternalAPIExceptionEmail(APIUrl!, exceptionType.Name, ex.Message);
                 }
             }
         }
-
+        _logger.LogInformation("CheckISPAddressService -> GetISPAddressFromBackupAPIs -> ExternalResponseCount:{count}", ISPAdressChecks.Count);
         if (ISPAdressChecks.Count > 0)
         {
+            _logger.LogInformation("CheckISPAddressService -> GetISPAddressFromBackupAPIs -> More then one result:{count}", ISPAdressChecks.Count);
             // Get the uniwue ISP adresses from the dictionary
             List<string>? uniqueAdresses = ISPAdressChecks?.Values?.Distinct()?.ToList()!;
 
 
-            if (uniqueAdresses.Count == 1)
+            if (uniqueAdresses!.Count == 1)
             {
+                _logger.LogInformation("CheckISPAddressService -> GetISPAddressFromBackupAPIs -> {count}x Same ISPAddress response:{ISPA}", ISPAdressChecks!.Count, StringHelpers.MakeISPAddressLogReady(uniqueAdresses[0]!));
                 // Update new ISP adress
-                _ISPAdressService.SetExternalISPAddress(uniqueAdresses[0]!);
-                // Copy the old ISP adress to that variable
-                _ISPAdressService.SetOldISPAddress(_ISPAdressService.GetCurrentISPAddress());
-                _ISPAdressService.ClearCurrentISPAddress();
 
+                _logger.LogInformation("CheckISPAddressService -> GetISPAddressFromBackupAPIs -> External ISPAddress BEFORE set:{ISPA}", StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetExternalISPAddress()));
+
+                _ISPAdressService.SetExternalISPAddress(uniqueAdresses[0]!);
+
+                _logger.LogInformation("CheckISPAddressService -> GetISPAddressFromBackupAPIs -> External ISPAddress AFTER set:{ISPA}", StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetExternalISPAddress()));
+
+                // Copy the old ISP adress to that variable
+                _logger.LogInformation("CheckISPAddressService -> GetISPAddressFromBackupAPIs -> CurrentISPAddress:{ISPA}", StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetCurrentISPAddress()));
+                _logger.LogInformation("CheckISPAddressService -> GetISPAddressFromBackupAPIs -> OldISPAddress BEFORE set:{ISPA}", StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetOldISPAddress()));
+
+                _ISPAdressService.SetOldISPAddress(_ISPAdressService.GetCurrentISPAddress());
+
+                _logger.LogInformation("CheckISPAddressService -> GetISPAddressFromBackupAPIs -> OldISPAddress AFTER set:{ISPA}", StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetOldISPAddress()));
+
+
+
+                _logger.LogInformation("CheckISPAddressService -> GetISPAddressFromBackupAPIs -> CurrentISPAddress BEFORE ClearCurrentISPAddress:{ISPA}", StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetCurrentISPAddress()));
+                _ISPAdressService.ClearCurrentISPAddress();
+                _logger.LogInformation("CheckISPAddressService -> GetISPAddressFromBackupAPIs -> CurrentISPAddress AFTER ClearCurrentISPAddress:{ISPA}", StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetCurrentISPAddress()));
+
+
+                _logger.LogInformation("CheckISPAddressService -> GetISPAddressFromBackupAPIs -> GetServiceRequestCounter: {count1}, GetFailedISPRequestCounter: {count2} if(1 & 0 SendISPAdressChangedEmail)", _counterService.GetServiceRequestCounter(), _counterService.GetFailedISPRequestCounter());
                 if (_counterService.GetServiceRequestCounter() != 1 && _counterService.GetFailedISPRequestCounter() != 0)
                 {
                     _emailService.SendISPAdressChangedEmail(_ISPAdressService.GetExternalISPAddress(), _ISPAdressService.GetOldISPAddress(), _counterService, _applicationSettingsOptions!.TimeIntervalInMinutes);
+                    _logger.LogInformation("CheckISPAddressService -> GetISPAddressFromBackupAPIs -> GetServiceRequestCounter not if(1): {count1}, GetFailedISPRequestCounter not if(0):{count2}", _counterService.GetServiceRequestCounter(), _counterService.GetFailedISPRequestCounter());
                 }
                 else
                 {
+                    _logger.LogInformation("CheckISPAddressService -> GetISPAddressFromBackupAPIs -> First setup");
+
+                    _logger.LogInformation("CheckISPAddressService -> GetISPAddressFromBackupAPIs -> CurrentISPAddress BEFORE set:{ISPA}", StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetCurrentISPAddress()));
                     _ISPAdressService.SetCurrentISPAddress(_ISPAdressService.GetExternalISPAddress());
+                    _logger.LogInformation("CheckISPAddressService -> GetISPAddressFromBackupAPIs -> CurrentISPAddress AFTER set:{ISP1} expected: {ISP2}", StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetCurrentISPAddress()), StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetExternalISPAddress()));
+
+                    _logger.LogInformation("CheckISPAddressService -> GetISPAddressFromBackupAPIs -> NewISPAddress BEFORE set:{ISPA}", StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetNewISPAddress()));
                     _ISPAdressService.SetNewISPAddress(_ISPAdressService.GetExternalISPAddress());
+                    _logger.LogInformation("CheckISPAddressService -> GetISPAddressFromBackupAPIs -> NewISPAddress AFTER set:{ISP1} expected: {ISP2}", StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetNewISPAddress()), StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetExternalISPAddress()));
+
                 }
             }
             else
             {
+                _logger.LogInformation("CheckISPAddressService -> GetISPAddressFromBackupAPIs -> Different ISPAdresses returned");
+                foreach (KeyValuePair<string, string> item in ISPAdressChecks!)
+                {
+                    _logger.LogInformation("CheckISPAddressService -> GetISPAddressFromBackupAPIs -> Different ISPAdresses returned -> URL: {Url} -> {ISP}", item.Key, StringHelpers.MakeISPAddressLogReady(item.Value));
+                }
                 _emailService.SendDifferendISPAdressValuesEmail(ISPAdressChecks!, _ISPAdressService.GetOldISPAddress(), _counterService, _applicationSettingsOptions!.TimeIntervalInMinutes);
             }
         }
         else if (ISPAdressChecks.Count == 0)
         {
+            _logger.LogInformation("CheckISPAddressService -> GetISPAddressFromBackupAPIs -> No external results");
             _emailService.SendNoISPAdressReturnedEmail(_ISPAdressService.GetOldISPAddress(), _counterService, _applicationSettingsOptions!.TimeIntervalInMinutes);
         }
     }

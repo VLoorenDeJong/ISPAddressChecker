@@ -73,6 +73,7 @@ namespace ISPAdressChecker.Services
                     {
                         // Send the email message
                         client.Send(message);
+                        _logger.LogInformation("Sending: {subj}", subject);
                     }
                     catch (System.Net.Mail.SmtpException ex)
                     {
@@ -112,6 +113,8 @@ namespace ISPAdressChecker.Services
 
             string emailBody = CreateEmail(message);
 
+            _logger.LogInformation("Sending: SendHeartBeatEmail");
+
             SendEmail(emailBody, "ISP address checker update");
         }
 
@@ -123,12 +126,17 @@ namespace ISPAdressChecker.Services
 
             string emailBody = CreateEmail(message);
 
+            _logger.LogInformation("Sending: SendCounterDifferenceEmail");
+
             SendEmail(emailBody, "CheckISPAddress: counter difference");
         }
 
         public void SendConfigErrorMail(string errorMessage)
         {
             string emailBody = CreateEmail(errorMessage);
+
+
+            _logger.LogInformation("Sending: SendConfigErrorMail");
 
             SendEmail(emailBody, "CheckISPAddress: configuration error");
         }
@@ -176,6 +184,8 @@ namespace ISPAdressChecker.Services
 
             string emailBody = CreateEmail(message);
 
+            _logger.LogInformation("Sending: SendConfigSuccessMail");
+
             SendEmail(emailBody, "ISPAdressChecker: Congratulations configuration succes!!");
         }
 
@@ -200,6 +210,8 @@ namespace ISPAdressChecker.Services
 
             string emailBody = CreateEmail(message);
 
+            _logger.LogInformation("Sending: SendConnectionReestablishedEmail");
+
             SendEmail(emailBody, "ISPAdressChecker:I found my self");
         }
 
@@ -213,6 +225,8 @@ namespace ISPAdressChecker.Services
                            + $"<p><strong>{exceptionMessage}<strong></p>";
 
             string emailBody = CreateEmail(message);
+
+            _logger.LogInformation("Sending: SendISPAPIHTTPExceptionEmail");
 
             SendEmail(emailBody, "CheckISPAddress: API endpoint HTTP exception");
         }
@@ -230,6 +244,8 @@ namespace ISPAdressChecker.Services
 
             string emailBody = CreateEmail(message);
 
+            _logger.LogInformation("Sending: SendISPAPIExceptionEmail");
+
             SendEmail(emailBody, "CheckISPAddress: API Call error");
         }
 
@@ -245,6 +261,8 @@ namespace ISPAdressChecker.Services
 
             string emailBody = CreateEmail(message);
 
+            _logger.LogInformation("Sending: SendExternalAPIHTTPExceptionEmail");
+
             SendEmail(emailBody, "CheckISPAddress: Backup API HTTP exception");
         }
 
@@ -258,6 +276,8 @@ namespace ISPAdressChecker.Services
                            + $"<p><strong>{exceptionMessage}<strong></p>";
 
             string emailBody = CreateEmail(message);
+
+            _logger.LogInformation("Sending: SendExternalAPIExceptionEmail");
 
             SendEmail(emailBody, "CheckISPAddress: API Call error");
         }
@@ -284,6 +304,8 @@ namespace ISPAdressChecker.Services
                               ;
 
             string emailBody = CreateEmail(message);
+
+            _logger.LogInformation("Sending: SendISPAdressChangedEmail");
 
             SendEmail(emailBody, _applicationSettingsOptions?.EmailSubject!);
         }
@@ -314,6 +336,8 @@ namespace ISPAdressChecker.Services
 
             string emailBody = CreateEmail(message);
 
+            _logger.LogInformation("Sending: SendDifferendISPAdressValuesEmail");
+
             SendEmail(emailBody, "ISPAdressChecker: multiple ISP adresses were returned");
         }
 
@@ -335,6 +359,8 @@ namespace ISPAdressChecker.Services
                             ;
 
             string emailBody = CreateEmail(message);
+
+            _logger.LogInformation("Sending: SendNoISPAdressReturnedEmail");
 
             SendEmail(emailBody, "ISPAdressChecker: No ISP adresses were returned");
         }

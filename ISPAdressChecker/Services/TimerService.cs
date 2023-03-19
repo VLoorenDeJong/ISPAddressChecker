@@ -32,25 +32,40 @@ namespace ISPAdressChecker.Services
 
         public void StartISPCheckTimers()
         {
+            _logger.LogInformation("TimerService -> StartISPCheckTimers -> start");
             ISPAdressCHeckInterval = (_applicationSettingsOptions.TimeIntervalInMinutes == 0) ? 60 : _applicationSettingsOptions.TimeIntervalInMinutes;
 
+            _logger.LogInformation("ISPAdressCHeckInterval: {inter}(minutes), configured:{confInter}(minutes)", ISPAdressCHeckInterval, _applicationSettingsOptions.TimeIntervalInMinutes);
+
+
             ISPAdressCheckTimer = new Timer(async (state) => await _ISPAdressService.GetISPAddressAsync(), null, TimeSpan.Zero, TimeSpan.FromMinutes(ISPAdressCHeckInterval));
+            _logger.LogInformation("ISPAdressCheckTimer interval: {inter}(minutes), configured:{confInter}(minutes)", ISPAdressCHeckInterval, _applicationSettingsOptions.TimeIntervalInMinutes);
+
             controlISPAdressCheckTimer = new Timer(state => { _counterService.AddServiceCheckCounter(); }, null, TimeSpan.FromMinutes(ISPAdressCHeckInterval), TimeSpan.FromMinutes(ISPAdressCHeckInterval));
+            _logger.LogInformation("controlISPAdressCheckTimer interval: {inter}(minutes), configured:{confInter}(minutes)", ISPAdressCHeckInterval, _applicationSettingsOptions.TimeIntervalInMinutes);
             SetupHeartbeatTimer();
             UpTime.Start();
+
         }
 
         private void SetupHeartbeatTimer()
         {
+            _logger.LogInformation("TimerService -> SetupHeartbeatTimer -> start");
             DateTime now = DateTime.Now;
+
+            _logger.LogInformation("TimerService -> SetupHeartbeatTimer: {time}", DateTime.UtcNow);
             DateTime nextOccurrence = now.AddDays(((int)_applicationSettingsOptions.HeatbeatEmailDayOfWeek - (int)now.DayOfWeek + 7) % 7).Date.Add(_applicationSettingsOptions.HeatbeatEmailTimeOfDay);
 
+            _logger.LogInformation("TimerService -> SetupHeartbeatTimer: nextOccurrence:{date}", nextOccurrence);
             if (nextOccurrence < now)
             {
                 nextOccurrence = nextOccurrence.AddDays(_applicationSettingsOptions.HeatbeatEmailIntervalDays);
+                _logger.LogInformation("TimerService -> SetupHeartbeatTimer: nextOccurrence + days:{date}", nextOccurrence);
             }
 
             TimeSpan heartBeatInterval = TimeSpan.FromDays(_applicationSettingsOptions.HeatbeatEmailIntervalDays);
+
+            _logger.LogInformation("TimerService -> heartBeatInterval: {heartBeatInterval}(Days)", heartBeatInterval);
 
             HeartbeatemailTimer = new Timer(async (state) =>
             {
@@ -60,11 +75,13 @@ namespace ISPAdressChecker.Services
 
         public TimeSpan GetUptime()
         {
+            _logger.LogInformation("TimerService -> GetUptime: {Elapsed}", UpTime.Elapsed);
             return UpTime.Elapsed;
         }
 
         public void Dispose()
         {
+            _logger.LogInformation("TimerService -> Dispose: {time} ", DateTime.UtcNow);
             if (ISPAdressCheckTimer is not null) ISPAdressCheckTimer!.Dispose();
             if (controlISPAdressCheckTimer is not null) controlISPAdressCheckTimer!.Dispose();
             if (HeartbeatemailTimer is not null) HeartbeatemailTimer!.Dispose();

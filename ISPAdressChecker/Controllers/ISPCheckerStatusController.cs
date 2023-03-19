@@ -1,51 +1,51 @@
-﻿using ISPAdressChecker.Controllers;
-using ISPAdressChecker.Interfaces;
+﻿using ISPAdressChecker.Interfaces;
 using ISPAdressChecker.Models;
 using ISPAdressChecker.Options;
+using ISPAdressChecker.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace ISPAdressChecker.Controllers
 {
-    public class ISPCheckerStatusController : ControllerBase
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ISPAddressCheckerStatusController : ControllerBase
     {
         private readonly ITimerService _timerService;
-        private readonly IISPAdressCounterService _ISPAdressCounterService;
+        private readonly IISPAdressCounterService _ISPAddressCounterService;
         private readonly IStatusCounterService _statusCounterService;
-        private readonly ILogger<HTTPController> _logger;
+        private readonly ILogger<ISPAddressCheckerStatusController> _logger;
         private readonly ApplicationSettingsOptions _applicationSettingsOptions;
 
-        public ISPCheckerStatusController(ITimerService timerService, IISPAdressCounterService ISPAdressCounterService, IStatusCounterService statusCounterService, IOptions<ApplicationSettingsOptions> applicationSettingsOptions, ILogger<HTTPController> logger)
-        {
+        public ISPAddressCheckerStatusController(ITimerService timerService, IISPAdressCounterService ISPAddressCounterService, IStatusCounterService statusCounterService, IOptions<ApplicationSettingsOptions> applicationSettingsOptions, ILogger<ISPAddressCheckerStatusController> logger)
+        {                                                                             
             _timerService = timerService;
             _statusCounterService = statusCounterService;
-            _ISPAdressCounterService = ISPAdressCounterService;
-            _applicationSettingsOptions = applicationSettingsOptions!.Value;
+            _ISPAddressCounterService = ISPAddressCounterService;
+            _applicationSettingsOptions = applicationSettingsOptions?.Value ?? throw new ArgumentNullException(nameof(applicationSettingsOptions));
             _logger = logger;
         }
 
-        [HttpGet("APIStatusUpdate", Name = "APIStatusUpdate")]
+        [HttpGet("status", Name = "GetStatusUpdate")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(StatusUpdateModel), 200)]
+        [ProducesResponseType(typeof(StatusUpdateModel), StatusCodes.Status200OK)]
         public ActionResult<StatusUpdateModel> GetStatusUpdate()
         {
             _statusCounterService.AddStatusUpdateRequested();
-            _logger.LogInformation("StatusUpdate has been requested");
+            _logger.LogInformation("Status update has been requested");
 
-
-            StatusUpdateModel output = new StatusUpdateModel(_ISPAdressCounterService, _statusCounterService, _timerService);
-
-            if (_applicationSettingsOptions.EnableStatusAccess) 
-            {
-                return Ok(output);
-            }
-            else
+            if (!_applicationSettingsOptions.EnableStatusAccess)
             {
                 return Forbid();
             }
+
+            var output = new StatusUpdateModel(_ISPAddressCounterService, _statusCounterService, _timerService);
+
+            return Ok(output);
         }
     }
 }
