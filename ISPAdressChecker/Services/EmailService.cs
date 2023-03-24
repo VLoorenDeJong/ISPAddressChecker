@@ -57,12 +57,11 @@ namespace ISPAdressChecker.Services
                 // Create a new SmtpClient object within a using block
                 using (SmtpClient client = new SmtpClient())
                 {
-                    // Configure the SMTP client with your email provider's SMTP server address and credentials
-                    client.Host = _applicationSettingsOptions.MailServer!; ; // Replace with your SMTP server address
-                    client.Port = _applicationSettingsOptions.SMTPPort; // Replace with your SMTP server port number
-                    client.UseDefaultCredentials = _applicationSettingsOptions.UseDefaultCredentials; // If your SMTP server requires authentication, set this to false
-                    client.Credentials = new NetworkCredential(_applicationSettingsOptions?.UserName, _applicationSettingsOptions?.Password); // Replace with your SMTP server username and password
-                    client.EnableSsl = _applicationSettingsOptions!.EnableSsl; // Set this to true if your SMTP server requires SSL/TLS encryption               
+                    client.Host = _applicationSettingsOptions.MailServer!; ; 
+                    client.Port = _applicationSettingsOptions.SMTPPort;
+                    client.UseDefaultCredentials = _applicationSettingsOptions.UseDefaultCredentials; 
+                    client.Credentials = new NetworkCredential(_applicationSettingsOptions?.UserName, _applicationSettingsOptions?.Password); 
+                    client.EnableSsl = _applicationSettingsOptions!.EnableSsl;             
 
 
                     message.Subject = subject;
