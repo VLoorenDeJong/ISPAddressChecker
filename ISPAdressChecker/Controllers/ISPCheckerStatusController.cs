@@ -1,25 +1,25 @@
-﻿using ISPAddressChecker.Interfaces;
-using ISPAddressChecker.Models;
-using ISPAddressChecker.Options;
-using ISPAddressChecker.Services;
+﻿using ISPAdressChecker.Interfaces;
+using ISPAdressChecker.Models;
+using ISPAdressChecker.Options;
+using ISPAdressChecker.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace ISPAddressChecker.Controllers
+namespace ISPAdressChecker.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class ISPAddressCheckerStatusController : ControllerBase
     {
         private readonly ITimerService _timerService;
-        private readonly IISPAddressCounterService _ISPAddressCounterService;
+        private readonly IISPAdressCounterService _ISPAddressCounterService;
         private readonly IStatusCounterService _statusCounterService;
         private readonly ILogger<ISPAddressCheckerStatusController> _logger;
         private readonly ApplicationSettingsOptions _applicationSettingsOptions;
 
-        public ISPAddressCheckerStatusController(ITimerService timerService, IISPAddressCounterService ISPAddressCounterService, IStatusCounterService statusCounterService, IOptions<ApplicationSettingsOptions> applicationSettingsOptions, ILogger<ISPAddressCheckerStatusController> logger)
+        public ISPAddressCheckerStatusController(ITimerService timerService, IISPAdressCounterService ISPAddressCounterService, IStatusCounterService statusCounterService, IOptions<ApplicationSettingsOptions> applicationSettingsOptions, ILogger<ISPAddressCheckerStatusController> logger)
         {                                                                             
             _timerService = timerService;
             _statusCounterService = statusCounterService;

@@ -1,18 +1,18 @@
-﻿namespace ISPAddressChecker.Interfaces
+﻿namespace ISPAdressChecker.Interfaces
 {
     public interface IEmailService
     {
         void SendConfigErrorMail(string errorMessage);
-        void SendConfigSuccessMail(IISPAddressCounterService counterService);
-        void SendConnectionReestablishedEmail(string newISPAddress, string oldISPAddress, IISPAddressCounterService counterService, double interval);
-        void SendCounterDifferenceEmail(IISPAddressCounterService counterService);
-        void SendDifferendISPAddressValuesEmail(Dictionary<string, string> externalISPAddressChecks, string oldISPAddress, IISPAddressCounterService counterService, double interval);
+        void SendConfigSuccessMail(IISPAdressCounterService counterService);
+        void SendConnectionReestablishedEmail(string newISPAddress, string oldISPAddress, IISPAdressCounterService counterService, double interval);
+        void SendCounterDifferenceEmail(IISPAdressCounterService counterService);
+        void SendDifferendISPAdressValuesEmail(Dictionary<string, string> externalISPAdressChecks, string oldISPAddress, IISPAdressCounterService counterService, double interval);
         void SendExternalAPIExceptionEmail(string APIUrl, string exceptionType, string exceptionMessage);
         void SendExternalAPIHTTPExceptionEmail(string APIUrl, string exceptionType, string exceptionMessage);
-        void SendHeartBeatEmail(IISPAddressCounterService counterService, string oldISPAddress, string currentISPAddress, string newISPAddress, Dictionary<string, string> externalISPCheckResults);
-        void SendISPAddressChangedEmail(string externalISPAddress, string oldISPAddress, IISPAddressCounterService counterService, double interval);
+        void SendHeartBeatEmail(IISPAdressCounterService counterService, string oldISPAddress, string currentISPAddress, string newISPAddress, Dictionary<string, string> externalISPCheckResults);
+        void SendISPAdressChangedEmail(string externalISPAddress, string oldISPAddress, IISPAdressCounterService counterService, double interval);
         void SendISPAPIExceptionEmail(string exceptionType, string exceptionMessage);
         void SendISPAPIHTTPExceptionEmail(string exceptionType, string exceptionMessage);
-        void SendNoISPAddressReturnedEmail(string oldISPAddress, IISPAddressCounterService counterService, double interval);
+        void SendNoISPAdressReturnedEmail(string oldISPAddress, IISPAdressCounterService counterService, double interval);
     }
 }

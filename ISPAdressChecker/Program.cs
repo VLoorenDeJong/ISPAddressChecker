@@ -1,7 +1,7 @@
-using ISPAddressChecker.Interfaces;
-using ISPAddressChecker.Options;
-using ISPAddressChecker.Services;
-using static ISPAddressChecker.Options.ApplicationSettingsOptions;
+using ISPAdressChecker.Interfaces;
+using ISPAdressChecker.Options;
+using ISPAdressChecker.Services;
+using static ISPAdressChecker.Options.ApplicationSettingsOptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +16,7 @@ builder.Services.AddHttpClient();
 
 builder.Services.AddSingleton<IISPAddressService, ISPAddressService>();
 builder.Services.AddSingleton<ITimerService, TimerService>();
-builder.Services.AddSingleton<IISPAddressCounterService, ISPAddressCounterService>();
+builder.Services.AddSingleton<IISPAdressCounterService, ISPAdressCounterService>();
 builder.Services.AddSingleton<IStatusCounterService, StatusCounterService>();
 builder.Services.AddSingleton<IApplicationService, ApplicationService>();
 

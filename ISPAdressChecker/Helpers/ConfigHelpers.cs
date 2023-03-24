@@ -1,12 +1,12 @@
-﻿using ISPAddressChecker.Models;
-using ISPAddressChecker.Options;
+﻿using ISPAdressChecker.Models;
+using ISPAdressChecker.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Text.RegularExpressions;
 using System.Threading.Channels;
-using static ISPAddressChecker.Options.ApplicationSettingsOptions;
+using static ISPAdressChecker.Options.ApplicationSettingsOptions;
 
-namespace ISPAddressChecker.Helpers
+namespace ISPAdressChecker.Helpers
 {
     public static class ConfigHelpers
     {
@@ -17,7 +17,7 @@ namespace ISPAddressChecker.Helpers
             if (string.Equals(_applicationSettingsOptions?.MailServer, StandardAppsettingsValues.MailServer, StringComparison.CurrentCultureIgnoreCase))
             {
                 MandatoryConfigurationPassed = false;
-                string errorMessage = "appsettings: MailServer in appsettings not configured, this is for the mail you will recieve when the ISP address is changed.";
+                string errorMessage = "appsettings: MailServer in appsettings not configured, this is for the mail you will recieve when the ISP adress is changed.";
 
                 ThrowEmailConfigError(errorMessage, logger);
             }
@@ -26,7 +26,7 @@ namespace ISPAddressChecker.Helpers
             if (string.Equals(_applicationSettingsOptions?.UserName, StandardAppsettingsValues.UserName, StringComparison.CurrentCultureIgnoreCase))
             {
                 MandatoryConfigurationPassed = false;
-                string errorMessage = "appsettings: UserName in appsettings not configured, this is for the mail you will recieve when the ISP address is changed.";
+                string errorMessage = "appsettings: UserName in appsettings not configured, this is for the mail you will recieve when the ISP adress is changed.";
 
 
                 ThrowEmailConfigError(errorMessage, logger);
@@ -36,25 +36,25 @@ namespace ISPAddressChecker.Helpers
             if (!_applicationSettingsOptions!.UseDefaultCredentials && string.Equals(_applicationSettingsOptions?.Password, StandardAppsettingsValues.Password, StringComparison.CurrentCultureIgnoreCase))
             {
                 MandatoryConfigurationPassed = false;
-                string errorMessage = "appsettings: Password in appsettings not configured, this is for the mail you will recieve when the ISP address is changed.";
+                string errorMessage = "appsettings: Password in appsettings not configured, this is for the mail you will recieve when the ISP adress is changed.";
 
                 ThrowEmailConfigError(errorMessage, logger);
             }
 
 
-            if (string.Equals(_applicationSettingsOptions?.EmailToAddress, StandardAppsettingsValues.EmailToAddress, StringComparison.CurrentCultureIgnoreCase) || !EmailAddressIsValid(_applicationSettingsOptions?.EmailToAddress))
+            if (string.Equals(_applicationSettingsOptions?.EmailToAdress, StandardAppsettingsValues.EmailToAdress, StringComparison.CurrentCultureIgnoreCase) || !EmailAddressIsValid(_applicationSettingsOptions?.EmailToAdress))
             {
                 MandatoryConfigurationPassed = false;
-                string errorMessage = $"appsettings: EmailToAddress: {_applicationSettingsOptions?.EmailToAddress} in appsettings not confugured correctly";
+                string errorMessage = $"appsettings: EmailToAdress: {_applicationSettingsOptions?.EmailToAdress} in appsettings not confugured correctly";
 
                 ThrowEmailConfigError(errorMessage, logger);
             }
 
 
-            if (string.Equals(_applicationSettingsOptions?.EmailFromAddress, StandardAppsettingsValues.EmailFromAddress, StringComparison.CurrentCultureIgnoreCase) || !EmailAddressIsValid(_applicationSettingsOptions?.EmailFromAddress))
+            if (string.Equals(_applicationSettingsOptions?.EmailFromAdress, StandardAppsettingsValues.EmailFromAdress, StringComparison.CurrentCultureIgnoreCase) || !EmailAddressIsValid(_applicationSettingsOptions?.EmailFromAdress))
             {
                 MandatoryConfigurationPassed = false;
-                string errorMessage = $"appsettings: EmailFromAddress: {_applicationSettingsOptions?.EmailFromAddress} in appsettings not confugured correctly";
+                string errorMessage = $"appsettings: EmailFromAdress: {_applicationSettingsOptions?.EmailFromAdress} in appsettings not confugured correctly";
 
                 ThrowEmailConfigError(errorMessage, logger);
             }
@@ -63,7 +63,7 @@ namespace ISPAddressChecker.Helpers
             {
 
                 MandatoryConfigurationPassed = false;
-                string errorMessage = "appsettings: BackupAPIs in appsettings not confugured, this is for checking for you ISP address when the ISP address is changed.";
+                string errorMessage = "appsettings: BackupAPIs in appsettings not confugured, this is for checking for you ISP adress when the ISP adress is changed.";
 
                 ThrowEmailConfigError(errorMessage, logger);
             }
@@ -71,13 +71,13 @@ namespace ISPAddressChecker.Helpers
             return MandatoryConfigurationPassed;
         }
 
-        private static bool EmailAddressIsValid(string? emailAddressToValidate)
+        private static bool EmailAddressIsValid(string? emailAdressToValidate)
         {
             bool isVallid = false;
 
-            if (!string.IsNullOrWhiteSpace(emailAddressToValidate))
+            if (!string.IsNullOrWhiteSpace(emailAdressToValidate))
             {
-                isVallid = Regex.IsMatch(emailAddressToValidate!, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+                isVallid = Regex.IsMatch(emailAdressToValidate!, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
             }
 
             return isVallid;
@@ -140,7 +140,7 @@ namespace ISPAddressChecker.Helpers
 
                 string errorMessage = $"<p><h5><strong>appsettings:</strong></h5></p>"
                                     + $"<p>The <strong> EmailSubject </strong> in appsettings is not changed</p>"
-                                    + "<p>this is for the mail you will recieve when the ISP address is changed.</p>";
+                                    + "<p>this is for the mail you will recieve when the ISP adress is changed.</p>";
 
                 ReportConfigError(errorMessage, logger);
                 report.ErrorMessage = report.ErrorMessage + errorMessage;

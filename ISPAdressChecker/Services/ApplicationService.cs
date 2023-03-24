@@ -1,24 +1,24 @@
-﻿using ISPAddressChecker.Interfaces;
-using ISPAddressChecker.Options;
+﻿using ISPAdressChecker.Interfaces;
+using ISPAdressChecker.Options;
 using Microsoft.Extensions.Options;
-using ISPAddressChecker.Helpers;
-using ISPAddressChecker.Models;
+using ISPAdressChecker.Helpers;
+using ISPAdressChecker.Models;
 using System.Runtime.CompilerServices;
 
-namespace ISPAddressChecker.Services
+namespace ISPAdressChecker.Services
 {
     public class ApplicationService : IApplicationService, IHostedService
     {
         private readonly ApplicationSettingsOptions _applicationSettingsOptions;
         private readonly ITimerService _timerService;
         private readonly IEmailService _emailService;
-        private readonly IISPAddressCounterService _counterService;
+        private readonly IISPAdressCounterService _counterService;
         private readonly ICheckISPAddressService _checkISPAddressService;
         private readonly ILogger _logger;
 
         private bool configSuccess = false;
 
-        public ApplicationService(ILogger<CheckISPAddressService> logger, IOptions<ApplicationSettingsOptions> applicationSettingsOptions, ITimerService timerService, IEmailService emailService, IISPAddressCounterService counterService, ICheckISPAddressService checkISPAddressService)
+        public ApplicationService(ILogger<CheckISPAddressService> logger, IOptions<ApplicationSettingsOptions> applicationSettingsOptions, ITimerService timerService, IEmailService emailService, IISPAdressCounterService counterService, ICheckISPAddressService checkISPAddressService)
         {
             _logger = logger;
             _applicationSettingsOptions = applicationSettingsOptions?.Value!;

@@ -1,12 +1,12 @@
-﻿using ISPAddressChecker.Interfaces;
+﻿using ISPAdressChecker.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.Metrics;
 
-namespace ISPAddressChecker.Services
+namespace ISPAdressChecker.Services
 {
-    public class ISPAddressCounterService : IISPAddressCounterService
+    public class ISPAdressCounterService : IISPAdressCounterService
     {
-        public ISPAddressCounterService()
+        public ISPAdressCounterService()
         {
             ISPEndpointRequests = 0;
             ServiceRequestCounter = 0;

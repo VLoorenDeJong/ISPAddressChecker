@@ -1,6 +1,6 @@
-﻿using ISPAddressChecker.Interfaces;
+﻿using ISPAdressChecker.Interfaces;
 
-namespace ISPAddressChecker.Models
+namespace ISPAdressChecker.Models
 {
     public class StatusUpdateModel
     {
@@ -8,13 +8,13 @@ namespace ISPAddressChecker.Models
         {
 
         }
-        public StatusUpdateModel(IISPAddressCounterService ISPAddressCounterService, IStatusCounterService statusCounterService, ITimerService timerService)
+        public StatusUpdateModel(IISPAdressCounterService ISPAdressCounterService, IStatusCounterService statusCounterService, ITimerService timerService)
         {
-            ISPEndpointRequests = ISPAddressCounterService.GetISPEndpointRequestsCounter();
-            ServiceRequestCounter = ISPAddressCounterService.GetServiceRequestCounter();
-            ServiceCheckCounter = ISPAddressCounterService.GetServiceCheckCounter();
-            ExternalServiceCheckCounter = ISPAddressCounterService.GetExternalServiceCheckCounter();
-            FailedISPRequestCounter = ISPAddressCounterService.GetFailedISPRequestCounter();
+            ISPEndpointRequests = ISPAdressCounterService.GetISPEndpointRequestsCounter();
+            ServiceRequestCounter = ISPAdressCounterService.GetServiceRequestCounter();
+            ServiceCheckCounter = ISPAdressCounterService.GetServiceCheckCounter();
+            ExternalServiceCheckCounter = ISPAdressCounterService.GetExternalServiceCheckCounter();
+            FailedISPRequestCounter = ISPAdressCounterService.GetFailedISPRequestCounter();
 
             StatusUpdateRequested = statusCounterService.GetStatusUpdateRequested();
 
