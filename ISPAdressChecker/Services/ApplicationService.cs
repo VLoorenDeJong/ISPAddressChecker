@@ -34,12 +34,12 @@ namespace ISPAdressChecker.Services
             switch (configSuccess)
             {
                 case true:
-                    _logger.LogInformation("ApplicationService -> StartAsync -> FirstStart: configSuccess: {configSuccess}", configSuccess);
+                    _logger.LogInformation("StartAsync -> FirstStart: configSuccess: {configSuccess}", configSuccess);
                     _timerService!.StartISPCheckTimers();
                     await _checkISPAddressService.HeartBeatCheck();
                     break;
                 case false:
-                    _logger.LogInformation("ApplicationService -> StartAsync -> FirstStart: configSuccess: {configSuccess}", configSuccess);
+                    _logger.LogInformation("StartAsync -> FirstStart: configSuccess: {configSuccess}", configSuccess);
                     await StopAsync(default);
                     break;
             }           
@@ -51,7 +51,7 @@ namespace ISPAdressChecker.Services
         }
         private bool CheckAppsettings()
         {
-            _logger.LogInformation("ApplicationService -> CheckAppsettings");
+            _logger.LogInformation("CheckAppsettings -> Appsettings");
             bool appsettingsConfigSuccess = true;
 
             if (_applicationSettingsOptions is not null)
@@ -59,18 +59,18 @@ namespace ISPAdressChecker.Services
                 bool mailConfigured = true;
                 ConfigErrorReportModel report = new();
 
-                _logger.LogInformation("ApplicationService -> CheckAppsettings -> MandatoryConfigurationChecks STARTED", mailConfigured);
+                _logger.LogInformation("CheckAppsettings -> MandatoryConfigurationChecks STARTED", mailConfigured);
                 mailConfigured = ConfigHelpers.MandatoryConfigurationChecks(_applicationSettingsOptions, _logger);
 
-                _logger.LogInformation("ApplicationService -> CheckAppsettings -> mailConfigured: {mailConfigured}", mailConfigured);
+                _logger.LogInformation("CheckAppsettings -> mailConfigured: {mailConfigured}", mailConfigured);
                 switch (mailConfigured)
                 {
                     case false:
                         appsettingsConfigSuccess = false;
-                        _logger.LogInformation("ApplicationService -> CheckAppsettings -> appsettingsConfigSuccess: {appsettingsConfigSuccess}", appsettingsConfigSuccess);
+                        _logger.LogInformation("CheckAppsettings -> appsettingsConfigSuccess: {appsettingsConfigSuccess}", appsettingsConfigSuccess);
                         return appsettingsConfigSuccess;
                     case true:
-                        _logger.LogInformation("ApplicationService -> CheckAppsettings -> appsettingsConfigSuccess: {appsettingsConfigSuccess}", appsettingsConfigSuccess);
+                        _logger.LogInformation("CheckAppsettings -> appsettingsConfigSuccess: {appsettingsConfigSuccess}", appsettingsConfigSuccess);
                         report = ConfigHelpers.DefaultSettingsCheck(_applicationSettingsOptions, _logger);
                         break;
                 }
@@ -80,21 +80,21 @@ namespace ISPAdressChecker.Services
                     case false:
                         _emailService.SendConfigErrorMail(report.ErrorMessage!);
                         appsettingsConfigSuccess = false;
-                        _logger.LogInformation("ApplicationService -> CheckAppsettings -> report.ChecksPassed: {passed}, Messages:{messages}", report.ChecksPassed.ToString(), report.ErrorMessage);
+                        _logger.LogInformation("CheckAppsettings -> report.ChecksPassed: {passed}, Messages:{messages}", report.ChecksPassed.ToString(), report.ErrorMessage);
                         return appsettingsConfigSuccess;
                     case true:
                         _emailService.SendConfigSuccessMail(_counterService);
-                        _logger.LogInformation("ApplicationService -> CheckAppsettings -> report.ChecksPassed: {passed}", report.ChecksPassed.ToString());
+                        _logger.LogInformation("CheckAppsettings -> report.ChecksPassed: {passed}", report.ChecksPassed.ToString());
                         break;
                 }
             }
             else
             {
-                _logger.LogInformation("ApplicationService -> CheckAppsettings -> _applicationSettingsOptions is null");
+                _logger.LogInformation("CheckAppsettings -> _applicationSettingsOptions is null");
                 throw new ArgumentException();
             }
 
-            _logger.LogInformation("ApplicationService -> CheckAppsettings -> appsettingsConfigSuccess: {appsettingsConfigSuccess}", appsettingsConfigSuccess);
+            _logger.LogInformation("CheckAppsettings -> appsettingsConfigSuccess: {appsettingsConfigSuccess}", appsettingsConfigSuccess);
             return appsettingsConfigSuccess;
         }
     }    
