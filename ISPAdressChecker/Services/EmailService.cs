@@ -71,7 +71,7 @@ namespace ISPAdressChecker.Services
                     try
                     {
                         // Send the email message
-                        client.Send(message);
+                       // client.Send(message);
                         _logger.LogInformation("Sending: {subj}", subject);
                     }
                     catch (System.Net.Mail.SmtpException ex)

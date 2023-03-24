@@ -18,9 +18,9 @@ namespace ISPAdressChecker.Models
 
             StatusUpdateRequested = statusCounterService.GetStatusUpdateRequested();
 
-            Uptime = timerService.GetUptime();
+            Uptime = timerService.GetUptime().ToString();
         }
-        public TimeSpan Uptime { get; }
+        public string Uptime { get; }
         public int ISPEndpointRequests { get; }
         public int ServiceRequestCounter { get; }
         public int ServiceCheckCounter { get; }

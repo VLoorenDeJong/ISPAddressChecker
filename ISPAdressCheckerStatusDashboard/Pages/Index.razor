@@ -1,3 +1,33 @@
 ﻿@page "/"
+@using ISPAdressCheckerStatusDashboard.Models;
 
 <h1>Hello, world!</h1>
+<button @onclick="GetStatus"> get status </button>
+@timeSpan
+
+
+
+@code{
+    TimeSpan timeSpan;
+    protected override async Task OnInitializedAsync()
+    {
+
+        await base.OnInitializedAsync();
+    }
+    protected override void OnInitialized()
+    {
+
+
+        base.OnInitialized();
+    }
+
+
+    private async Task GetStatus()
+    {
+
+        var client = new Client("https://localhost:7235/");
+
+        StatusUpdateModel status = await client.GetStatusUpdateAsync();
+        timeSpan  = TimeSpan.Parse(status?.Uptime!);
+    }
+}

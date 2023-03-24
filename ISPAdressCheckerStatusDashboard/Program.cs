@@ -1,14 +1,10 @@
+using ISPAdressCheckerStatusDashboard.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddOpenApiDocument(document =>
-{
-    document.Title = "ISPAdressChecker";
-    document.Version = "v1";
-});
 
 
 
