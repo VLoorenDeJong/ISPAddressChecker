@@ -49,6 +49,14 @@ public class CheckISPAddressService : ICheckISPAddressService
 
                 _counterService!.AddServiceRequestCounter();
 
+
+                // Testing code
+                //if (_counterService!.GetServiceCheckCounter() == 5) 
+                //{
+                //    _logger.LogInformation("GetISPAddressAsync ->  GetService counter:{count} == 5 => mocing endpoint not found", _counterService!.GetServiceCheckCounter());
+                //    throw new HttpRequestException("Service Unavailable", null, HttpStatusCode.ServiceUnavailable); 
+                //};
+
                 HttpResponseMessage response = await client.GetAsync(_applicationSettingsOptions?.APIEndpointURL);
                 response.EnsureSuccessStatusCode();
 
