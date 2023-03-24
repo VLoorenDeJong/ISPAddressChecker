@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography.X509Certificates;
 
-namespace ISPAdressChecker.Options
+namespace ISPAddressChecker.Options
 {
     public class ApplicationSettingsOptions
     {
@@ -9,8 +9,8 @@ namespace ISPAdressChecker.Options
         public double TimeIntervalInMinutes { get; set; }
         public string? DNSRecordHostProviderName { get; set; }
         public string? DNSRecordHostProviderURL { get; set; }
-        public string? EmailToAdress { get; set; }
-        public string? EmailFromAdress { get; set; }
+        public string? EmailToAddress { get; set; }
+        public string? EmailFromAddress { get; set; }
         public string? EmailSubject { get; set; }
         public string? DateTimeFormat { get; set; }
         public string? MailServer { get; set; }
@@ -34,8 +34,8 @@ namespace ISPAdressChecker.Options
             public const string APIEndpointURL = "ThisAPIEnpointURL";
             public const string DNSRecordHostProviderName = "HostingProviderName";
             public const string DNSRecordHostProviderURL = "HostingProviderURL";
-            public const string EmailFromAdress = "EmailFromAdress";
-            public const string EmailToAdress = "EmailToAdress";
+            public const string EmailFromAddress = "EmailFromAddress";
+            public const string EmailToAddress = "EmailToAddress";
             public const string EmailSubject = "YourEmailSubject";
             public const string MailServer = "MailServer";
             public const string UserName = "UserName";

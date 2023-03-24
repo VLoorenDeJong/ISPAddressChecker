@@ -1,14 +1,14 @@
-﻿namespace ISPAdressChecker.Helpers
+﻿namespace ISPAddressChecker.Helpers
 {
     public static class StringHelpers
     {
 
-        public static string MakeISPAddressLogReady(string ISPAdress) 
+        public static string MakeISPAddressLogReady(string ISPAddress) 
         {
             string output = string.Empty;
-            if (!string.IsNullOrWhiteSpace(ISPAdress)) {
-                int secondToLastDotIndex = ISPAdress.LastIndexOf(".");
-                output = $"{ISPAdress.Substring(0, secondToLastDotIndex + 2)}*";
+            if (!string.IsNullOrWhiteSpace(ISPAddress)) {
+                int secondToLastDotIndex = ISPAddress.LastIndexOf(".");
+                output = $"{ISPAddress.Substring(0, secondToLastDotIndex + 2)}*";
             }
 
             return output;

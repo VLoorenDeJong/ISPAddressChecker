@@ -1,4 +1,4 @@
-﻿namespace ISPAdressChecker.Interfaces
+﻿namespace ISPAddressChecker.Interfaces
 {
     public interface IStatusCounterService
     {

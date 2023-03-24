@@ -1,26 +1,26 @@
-﻿using ISPAdressChecker.Helpers;
-using ISPAdressChecker.Interfaces;
-using ISPAdressChecker.Services;
+﻿using ISPAddressChecker.Helpers;
+using ISPAddressChecker.Interfaces;
+using ISPAddressChecker.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace ISPAdressChecker.Controllers
+namespace ISPAddressChecker.Controllers
 {
 
     [ApiController]
     [Route("[controller]")]
     public class HTTPController : ControllerBase
     {
-        private readonly IISPAdressCounterService _counterService;
+        private readonly IISPAddressCounterService _counterService;
         private readonly ILogger<HTTPController> _logger;
 
-        public HTTPController(ILogger<HTTPController> logger, IISPAdressCounterService counterService)
+        public HTTPController(ILogger<HTTPController> logger, IISPAddressCounterService counterService)
         {
             _counterService = counterService;
             _logger = logger;
         }
 
-        [HttpGet("MyISPAdress", Name = "MyISPAdress")]
+        [HttpGet("MyISPAddress", Name = "MyISPAddress")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<string> GetIpAddress()
@@ -64,7 +64,7 @@ namespace ISPAdressChecker.Controllers
                 {
                     logInfo = outputString;
                 }
-                _logger.LogInformation("Success adres returned:{logInfo}", logInfo);
+                _logger.LogInformation("Success address returned:{logInfo}", logInfo);
                 return outputString;
             }
             else
