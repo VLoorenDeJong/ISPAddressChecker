@@ -1,6 +1,4 @@
-﻿using ISPAdressChecker.Interfaces;
-using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics.Metrics;
+﻿using ISPAdressChecker.Services.Interfaces;
 
 namespace ISPAdressChecker.Services
 {

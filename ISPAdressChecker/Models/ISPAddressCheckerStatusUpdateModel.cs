@@ -1,14 +1,16 @@
-﻿using ISPAdressChecker.Interfaces;
+﻿using ISPAdressChecker.Services.Interfaces;
+using System.Diagnostics;
 
 namespace ISPAdressChecker.Models
 {
-    public class StatusUpdateModel
+    public class ISPAddressCheckerStatusUpdateModel
     {
-        public StatusUpdateModel()
+        public ISPAddressCheckerStatusUpdateModel()
         {
 
         }
-        public StatusUpdateModel(IISPAdressCounterService ISPAdressCounterService, IStatusCounterService statusCounterService, ITimerService timerService)
+
+        public ISPAddressCheckerStatusUpdateModel(IISPAdressCounterService ISPAdressCounterService, IStatusCounterService statusCounterService, ITimerService timerService)
         {
             ISPEndpointRequests = ISPAdressCounterService.GetISPEndpointRequestsCounter();
             ServiceRequestCounter = ISPAdressCounterService.GetServiceRequestCounter();
@@ -18,9 +20,10 @@ namespace ISPAdressChecker.Models
 
             StatusUpdateRequested = statusCounterService.GetStatusUpdateRequested();
 
-            Uptime = timerService.GetUptime().ToString();
+            StartDateTime = timerService.GetStartDateTime();
         }
-        public string Uptime { get; }
+
+        public DateTimeOffset StartDateTime { get; }
         public int ISPEndpointRequests { get; }
         public int ServiceRequestCounter { get; }
         public int ServiceCheckCounter { get; }

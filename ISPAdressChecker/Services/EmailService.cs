@@ -1,11 +1,9 @@
-﻿using ISPAdressChecker.Helpers;
-using ISPAdressChecker.Interfaces;
-using ISPAdressChecker.Models;
-using ISPAdressChecker.Options;
+﻿using static ISPAdressChecker.Options.ApplicationSettingsOptions;
+using ISPAdressChecker.Services.Interfaces;
 using Microsoft.Extensions.Options;
-using System.Net;
+using ISPAdressChecker.Options;
 using System.Net.Mail;
-using static ISPAdressChecker.Options.ApplicationSettingsOptions;
+using System.Net;
 
 namespace ISPAdressChecker.Services
 {

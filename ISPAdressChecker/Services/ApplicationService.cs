@@ -1,9 +1,8 @@
-﻿using ISPAdressChecker.Interfaces;
-using ISPAdressChecker.Options;
+﻿using ISPAdressChecker.Services.Interfaces;
 using Microsoft.Extensions.Options;
+using ISPAdressChecker.Options;
 using ISPAdressChecker.Helpers;
 using ISPAdressChecker.Models;
-using System.Runtime.CompilerServices;
 
 namespace ISPAdressChecker.Services
 {
@@ -49,6 +48,7 @@ namespace ISPAdressChecker.Services
         {
             await Task.Run(() => _timerService!.Dispose());
         }
+
         private bool CheckAppsettings()
         {
             _logger.LogInformation("CheckAppsettings -> Appsettings");

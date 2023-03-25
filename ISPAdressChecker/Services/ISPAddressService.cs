@@ -1,4 +1,4 @@
-﻿using ISPAdressChecker.Interfaces;
+﻿using ISPAdressChecker.Services.Interfaces;
 
 namespace ISPAdressChecker.Services
 {

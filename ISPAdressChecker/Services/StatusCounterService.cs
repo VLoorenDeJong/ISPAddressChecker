@@ -1,15 +1,17 @@
-﻿using ISPAdressChecker.Interfaces;
+﻿using ISPAdressChecker.Services.Interfaces;
 
 namespace ISPAdressChecker.Services
 {
     public class StatusCounterService : IStatusCounterService
     {
+        private int StatusUpdateRequested;
+        private int startDateRequested;
+
         public StatusCounterService()
         {
 
         }
 
-        private int StatusUpdateRequested;
 
 
         public void AddStatusUpdateRequested()
@@ -20,6 +22,16 @@ namespace ISPAdressChecker.Services
         public int GetStatusUpdateRequested()
         {
             return StatusUpdateRequested;
+        }
+
+        public void AddStartdateRequested()
+        {
+            startDateRequested = startDateRequested + 1;
+        }
+
+        public int GetStartdateRequested()
+        {
+            return startDateRequested;
         }
     }
 }

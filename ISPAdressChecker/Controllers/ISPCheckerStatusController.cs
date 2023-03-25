@@ -1,11 +1,11 @@
-﻿using ISPAdressChecker.Interfaces;
-using ISPAdressChecker.Models;
-using ISPAdressChecker.Options;
-using ISPAdressChecker.Services;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using ISPAdressChecker.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Http;
+using ISPAdressChecker.Options;
+using Microsoft.AspNetCore.Mvc;
+using ISPAdressChecker.Models;
+
 
 namespace ISPAdressChecker.Controllers
 {
@@ -32,8 +32,8 @@ namespace ISPAdressChecker.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(typeof(StatusUpdateModel), StatusCodes.Status200OK)]
-        public ActionResult<StatusUpdateModel> GetStatusUpdate()
+        [ProducesResponseType(typeof(ISPAddressCheckerStatusUpdateModel), StatusCodes.Status200OK)]
+        public ActionResult<ISPAddressCheckerStatusUpdateModel> GetStatusUpdate()
         {
             _statusCounterService.AddStatusUpdateRequested();
             _logger.LogInformation("Status update has been requested");
@@ -43,9 +43,29 @@ namespace ISPAdressChecker.Controllers
                 return Forbid();
             }
 
-            var output = new StatusUpdateModel(_ISPAddressCounterService, _statusCounterService, _timerService);
+            ISPAddressCheckerStatusUpdateModel output = new ISPAddressCheckerStatusUpdateModel(_ISPAddressCounterService, _statusCounterService, _timerService);
 
             return Ok(output);
         }
+
+        [HttpGet("StartDateTime", Name = "GetStartDateTime")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(DateTimeOffset), StatusCodes.Status200OK)]
+        public ActionResult<DateTimeOffset> GetStartDateTime()
+        {
+            _statusCounterService.AddStartdateRequested();
+            _logger.LogInformation("Start date has been requested");
+
+            if (!_applicationSettingsOptions.EnableStatusAccess)
+            {
+                return Forbid();
+            }
+
+            DateTimeOffset output = _timerService.GetStartDateTime();
+
+            return Ok(output);
+        }       
     }
 }

@@ -1,33 +1,37 @@
 ﻿@page "/"
-@using ISPAdressCheckerStatusDashboard.Models;
+@using System.Threading
+@using ISPAdressCheckerStatusDashboard.Services.Interfaces;
 
-<h1>Hello, world!</h1>
-<button @onclick="GetStatus"> get status </button>
-@timeSpan
+@inject ITimerService timerService;
 
+@implements IDisposable
 
+<p>@timerService?.UptimeString</p>
 
-@code{
-    TimeSpan timeSpan;
+@code {
+    bool timersStarted;
+    Timer? aTimer;
+
     protected override async Task OnInitializedAsync()
     {
+        await StartTimers();
 
         await base.OnInitializedAsync();
     }
-    protected override void OnInitialized()
+
+    private async Task StartTimers()
     {
-
-
-        base.OnInitialized();
+        await timerService.StartTimers();
+        aTimer = new Timer(async (state) => await Tick(), null, 0, 1000);
     }
 
-
-    private async Task GetStatus()
+    private async Task Tick()
     {
+        await InvokeAsync(StateHasChanged);
+    }
 
-        var client = new Client("https://localhost:7235/");
-
-        StatusUpdateModel status = await client.GetStatusUpdateAsync();
-        timeSpan  = TimeSpan.Parse(status?.Uptime!);
+    public void Dispose()
+    {
+        aTimer?.Dispose();
     }
 }

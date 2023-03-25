@@ -1,4 +1,4 @@
-﻿namespace ISPAdressChecker.Interfaces
+﻿namespace ISPAdressChecker.Services.Interfaces
 {
     public interface IISPAddressService
     {

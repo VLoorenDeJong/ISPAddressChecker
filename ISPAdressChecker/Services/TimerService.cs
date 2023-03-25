@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Options;
-using ISPAdressChecker.Interfaces;
+﻿using ISPAdressChecker.Services.Interfaces;
+using Microsoft.Extensions.Options;
 using ISPAdressChecker.Helpers;
 using ISPAdressChecker.Options;
 using ISPAdressChecker.Models;
@@ -14,6 +14,7 @@ namespace ISPAdressChecker.Services
         private readonly IISPAdressCounterService _counterService;
         private readonly ILogger _logger;
 
+        private DateTimeOffset StartDateTime = DateTimeOffset.UtcNow;
         private Timer? controlISPAdressCheckTimer;
         private Timer? ISPAdressCheckTimer;
         private Timer? HeartbeatemailTimer;
@@ -77,6 +78,11 @@ namespace ISPAdressChecker.Services
         {
             _logger.LogInformation("GetUptime: {Elapsed}", UpTime.Elapsed);
             return UpTime.Elapsed;
+        }
+
+        public DateTimeOffset GetStartDateTime()
+        {
+            return StartDateTime;
         }
 
         public void Dispose()

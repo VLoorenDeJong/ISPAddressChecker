@@ -1,11 +1,8 @@
-﻿using ISPAdressChecker.Helpers;
-using ISPAdressChecker.Interfaces;
-using ISPAdressChecker.Options;
-using ISPAdressChecker.Services;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using System.Net;
+﻿using ISPAdressChecker.Services.Interfaces;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Options;
+using ISPAdressChecker.Helpers;
+using ISPAdressChecker.Options;
 
 public class CheckISPAddressService : ICheckISPAddressService
 {

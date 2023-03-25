@@ -1,8 +1,8 @@
-﻿using ISPAdressChecker.Helpers;
-using ISPAdressChecker.Interfaces;
-using ISPAdressChecker.Services;
-using Microsoft.AspNetCore.Mvc;
+﻿using ISPAdressChecker.Services.Interfaces;
 using Microsoft.Extensions.Logging;
+using ISPAdressChecker.Services;
+using ISPAdressChecker.Helpers;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ISPAdressChecker.Controllers
 {

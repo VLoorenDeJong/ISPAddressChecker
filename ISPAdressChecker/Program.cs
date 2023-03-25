@@ -1,6 +1,6 @@
-using ISPAdressChecker.Interfaces;
 using ISPAdressChecker.Options;
 using ISPAdressChecker.Services;
+using ISPAdressChecker.Services.Interfaces;
 using static ISPAdressChecker.Options.ApplicationSettingsOptions;
 
 var builder = WebApplication.CreateBuilder(args);
