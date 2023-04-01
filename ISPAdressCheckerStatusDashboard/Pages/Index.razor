@@ -11,8 +11,7 @@
 <PageTitle>ISPAddressChecker - Dashboard</PageTitle>
 
 <div class="main-layout">
-    <UptimeIndicator UptimeDays="@timerService?.UptimeDays" UptimeClockString="@timerService?.UptimeClockString" />
-    <LinearGauge SuccessRate="successRate" />
+    <UptimeIndicator UptimeDays="@timerService?.UptimeDays" UptimeClockString="@timerService?.UptimeClockString" />    
 </div>
 
 
@@ -43,7 +42,6 @@
     protected override async Task OnInitializedAsync()
     {
 
-        successRate = new Random().Next(0, 101);
         await StartTimers();
 
         await base.OnInitializedAsync();

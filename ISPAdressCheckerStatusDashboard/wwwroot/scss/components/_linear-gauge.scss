@@ -1,65 +1,39 @@
 ﻿.linear-gauge {
     position: relative;
-    width: 30px;
-    height: 200px;
-    background: linear-gradient(to bottom, #7A0D18, #007C20);
+    width: 200px;
+    height: 40px;
     overflow: hidden;
-    border-radius: 5px;
+    border-radius: 10px;
 }
 
 .gauge-background {
     position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 5px;
-    height: 100%;
-    background-color: black;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    height: 5px;
+    width: 100%;
+    background-color: $primary-color;
+    border-radius: 5px;
 }
 
 .gauge-bar {
     position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 5px;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    height: 15px;
     border-radius: 2px;
-    transition: height 0.5s ease;
+    transition: width 0.5s ease;
 }
 
 .gauge-label {
     position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 10px;
-    color: white;
-    user-select: none;
-}
-
-/* Customize color based on value */
-.gauge-bar[data-value="0"] {
-    background-color: green;
-}
-
-.gauge-bar[data-value="100"] {
-    background-color: red;
-}
-
-.gauge-bar[data-value="1"] {
-    background-color: #ff4500;
-}
-
-.gauge-bar[data-value="99"] {
-    background-color: #00ff00;
-}
-
-/* Change gauge label color to black on white background */
-.linear-gauge.dark .gauge-label {
-    color: black;
-}
-
-/* Change gauge label color to white on black background */
-.linear-gauge.light .gauge-label {
-    color: white;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    padding-left: 5px;
+    font-size: 11px;
+    text-align: left;
+    color: $secondary-color;
 }

@@ -1,4 +1,6 @@
-﻿<div class="uptime-indicator">
+﻿
+
+<div class="uptime-indicator">
     <div class="uptime-icon">
         <i class="fa-solid fa-stopwatch"></i>
     </div>
@@ -8,11 +10,12 @@
     <div class="clock">
         @UptimeClockString
     </div>
+    <LinearGauge SuccessRate="@(new Random().Next(0, 101))" />
 </div>
 @code {
     [Parameter]
     public string? UptimeDays { get; set; }
-    
+
     [Parameter]
     public string? UptimeClockString { get; set; }
 

@@ -74,68 +74,42 @@
 
 .linear-gauge {
   position: relative;
-  width: 30px;
-  height: 200px;
-  background: linear-gradient(to bottom, #7A0D18, #007C20);
+  width: 200px;
+  height: 40px;
   overflow: hidden;
-  border-radius: 5px;
+  border-radius: 10px;
 }
 
 .gauge-background {
   position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 5px;
-  height: 100%;
-  background-color: black;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  height: 5px;
+  width: 100%;
+  background-color: #10232B;
+  border-radius: 5px;
 }
 
 .gauge-bar {
   position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 5px;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  height: 15px;
   border-radius: 2px;
-  transition: height 0.5s ease;
+  transition: width 0.5s ease;
 }
 
 .gauge-label {
   position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 10px;
-  color: white;
-  user-select: none;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  padding-left: 5px;
+  font-size: 11px;
+  text-align: left;
+  color: #547884;
 }
 
-/* Customize color based on value */
-.gauge-bar[data-value="0"] {
-  background-color: green;
-}
-
-.gauge-bar[data-value="100"] {
-  background-color: red;
-}
-
-.gauge-bar[data-value="1"] {
-  background-color: #ff4500;
-}
-
-.gauge-bar[data-value="99"] {
-  background-color: #00ff00;
-}
-
-/* Change gauge label color to black on white background */
-.linear-gauge.dark .gauge-label {
-  color: black;
-}
-
-/* Change gauge label color to white on black background */
-.linear-gauge.light .gauge-label {
-  color: white;
-}
-
-/*# sourceMappingURL=data:application/json;charset=utf-8,%7B%22version%22:3,%22sourceRoot%22:%22%22,%22sources%22:%5B%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/layout/_main-layout.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/partials/_variables.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_uptime-indicator.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_linear-gauge.scss%22%5D,%22names%22:%5B%5D,%22mappings%22:%22AAAC;EACG,kBCCa;EDAb;;;AAGJ;EACI;EACA;;;AAIJ;EACI;EACA,aCRU;EDSV;EACA,kBCfa;EDgBb,OCda;EDeb;;;AAGJ;EACI;EACA,aCfK;EDgBL;EACA,kBCvBc;EDwBd,OCzBa;ED0Bb;;;AAGJ;EACI;EACA,aCzBW;ED0BX;EACA,kBC/Ba;EDgCb,OClCa;EDmCb;;;AElCA;EACI;EACA;EACA;EACA,kBDLS;ECMT,ODJS;ECKT;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;AAGJ;EACI;EACA;EACA;EACA,ODtBU;;ACyBd;EACI;EACA;EACA;EACA,OD7BU;;ACgCd;EACI;EACA;EACA;EACA,ODpCU;ECqCV,aDjCM;;;AELb;EACG;EACA;EACA;EACA;EACA;EACA;;;AAGJ;EACI;EACA;EACA;EACA;EACA;EACA;EACA;;;AAGJ;EACI;EACA;EACA;EACA;EACA;EACA;EACA;;;AAGJ;EACI;EACA;EACA;EACA;EACA;EACA;EACA;;;AAGJ;AACA;EACI;;;AAGJ;EACI;;;AAGJ;EACI;;;AAGJ;EACI;;;AAGJ;AACA;EACI;;;AAGJ;AACA;EACI%22%7D */
+/*# sourceMappingURL=data:application/json;charset=utf-8,%7B%22version%22:3,%22sourceRoot%22:%22%22,%22sources%22:%5B%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/layout/_main-layout.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/partials/_variables.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_uptime-indicator.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_linear-gauge.scss%22%5D,%22names%22:%5B%5D,%22mappings%22:%22AAAC;EACG,kBCCa;EDAb;;;AAGJ;EACI;EACA;;;AAIJ;EACI;EACA,aCRU;EDSV;EACA,kBCfa;EDgBb,OCda;EDeb;;;AAGJ;EACI;EACA,aCfK;EDgBL;EACA,kBCvBc;EDwBd,OCzBa;ED0Bb;;;AAGJ;EACI;EACA,aCzBW;ED0BX;EACA,kBC/Ba;EDgCb,OClCa;EDmCb;;;AElCA;EACI;EACA;EACA;EACA,kBDLS;ECMT,ODJS;ECKT;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;AAGJ;EACI;EACA;EACA;EACA,ODtBU;;ACyBd;EACI;EACA;EACA;EACA,OD7BU;;ACgCd;EACI;EACA;EACA;EACA,ODpCU;ECqCV,aDjCM;;;AELb;EACG;EACA;EACA;EACA;EACA;;;AAGJ;EACI;EACA;EACA;EACA;EACA;EACA;EACA,kBFfa;EEgBb;;;AAGJ;EACI;EACA;EACA;EACA;EACA;EACA;EACA;;;AAGJ;EACI;EACA;EACA;EACA;EACA;EACA;EACA;EACA,OFpCc%22%7D */
