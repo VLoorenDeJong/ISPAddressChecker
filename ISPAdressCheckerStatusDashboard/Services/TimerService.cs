@@ -12,7 +12,8 @@ namespace ISPAdressCheckerStatusDashboard.Services
 
         private TimeSpan APIUpTime { get; set; }
         public DateTimeOffset APIStartDateTime { get; private set; }
-        public string UptimeString { get; private set; }
+        public string UptimeDays { get; private set; }
+        public string UptimeClockString { get; private set; }
 
         public TimerService()
         {
@@ -52,7 +53,8 @@ namespace ISPAdressCheckerStatusDashboard.Services
             if (APIStartDateTime != DateTimeOffset.MinValue)
             {
                 APIUpTime = CalculateUptime(APIStartDateTime);
-                UptimeString = string.Format("{0:%d} days, {0:%h}:{0:%m}:{0:%s}", APIUpTime);
+                UptimeDays = string.Format("{0:%d} days", APIUpTime);
+                UptimeClockString = string.Format("{0:hh\\:mm\\:ss}", APIUpTime);
             }
 
         }

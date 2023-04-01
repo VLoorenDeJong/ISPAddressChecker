@@ -1,6 +1,37 @@
-﻿.test-class {
+﻿body {
+    background-color: $tertiary-color;
+    margin:0;
+}
+
+.main-layout {
+    height: 100%;
+    width: 100%;
+}
+
+
+.test-class1 {
     font-weight: 100;
-    font-family: $basic-font;
+    font-family: $primary-font;
     font-size: xx-large;
     background-color: $primary-color;
+    color: $tertiary-color;
+    font-family: $primary-font !important;
+}
+
+.test-class2 {
+    font-weight: 100;
+    font-family: $secondary-font;
+    font-size: xx-large;
+    background-color: $secondary-color;
+    color: $primary-color;
+    font-family: $secondary-font !important;
+}
+
+.test-class3 {
+    font-weight: 100;
+    font-family: $tertiary-font;
+    font-size: xx-large;
+    background-color: $tertiary-color;
+    color: $primary-color;
+    font-family: $tertiary-font !important;
 }

@@ -3,7 +3,8 @@
     public interface ITimerService
     {
         DateTimeOffset APIStartDateTime { get; }
-        public string UptimeString { get; }
+        string UptimeClockString { get; }
+        string UptimeDays { get; }
 
         Task StartTimers();
     }

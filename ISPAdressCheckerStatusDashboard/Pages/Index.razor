@@ -1,23 +1,49 @@
 ﻿@page "/"
-@using System.Threading
+
 @using ISPAdressCheckerStatusDashboard.Services.Interfaces;
+@using ISPAdressCheckerStatusDashboard.Components;
+@using System.Threading
 
 @inject ITimerService timerService;
 
 @implements IDisposable
 
+<PageTitle>ISPAddressChecker - Dashboard</PageTitle>
+
+<div class="main-layout">
+    <UptimeIndicator UptimeDays="@timerService?.UptimeDays" UptimeClockString="@timerService?.UptimeClockString" />
+    <LinearGauge SuccessRate="successRate" />
+</div>
+
+
+
+@*
 <div class="test-class">
-    <p>@timerService?.UptimeString</p>
+    <p></p>
     <i class="fas fa-check"></i>
 </div>
-<div class="test-class">
+<div class="test-class1">
+    Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et
 </div>
+<div class="test-class2">
+    Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et
+</div>
+<div class="test-class3">
+    Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et
+</div>*@
+
+
+
 @code {
-    bool timersStarted;
-    Timer? aTimer;
+    private bool timersStarted;
+    private Timer? aTimer;
+
+    private int successRate;
 
     protected override async Task OnInitializedAsync()
     {
+
+        successRate = new Random().Next(0, 101);
         await StartTimers();
 
         await base.OnInitializedAsync();

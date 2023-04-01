@@ -1,0 +1,19 @@
+﻿<div class="uptime-indicator">
+    <div class="uptime-icon">
+        <i class="fa-solid fa-stopwatch"></i>
+    </div>
+    <div class="days-counter">
+        @UptimeDays
+    </div>
+    <div class="clock">
+        @UptimeClockString
+    </div>
+</div>
+@code {
+    [Parameter]
+    public string? UptimeDays { get; set; }
+    
+    [Parameter]
+    public string? UptimeClockString { get; set; }
+
+}

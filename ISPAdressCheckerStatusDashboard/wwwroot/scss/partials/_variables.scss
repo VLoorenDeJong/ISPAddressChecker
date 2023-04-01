@@ -1,8 +1,19 @@
-﻿$primary-color: yellow;
+﻿$primary-color: #10232B;
+$secondary-color: #547884;
+$tertiary-color: #ecfcff;
 
 $font-comic-sans: 'Comic Sans MS';
 $font-seg-ui: 'Segoe UI';
+$yu-gothic-ui: 'Lucida Sans';
+$tahoma: Tahoma;
+$Magneto: Magneto;
+$tw-cen-mt-condensed-extra-bold: 'Tw Cen MT Condensed Extra Bold';
+$calibri: Calibri;
 
 
 // Application font
-$basic-font: $font-comic-sans;
+$primary-font: $font-seg-ui;
+$secondary-font: $tahoma;
+$tertiary-font: $yu-gothic-ui;
+
+$clock-font: $tw-cen-mt-condensed-extra-bold;
