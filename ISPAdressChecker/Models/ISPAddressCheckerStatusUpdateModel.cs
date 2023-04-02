@@ -21,6 +21,9 @@ namespace ISPAdressChecker.Models
             StatusUpdateRequested = statusCounterService.GetStatusUpdateRequested();
 
             StartDateTime = timerService.GetStartDateTime();
+
+            //ToDo : calculate sucess percentage
+            //ToDo get current ISP Address
         }
 
         public DateTimeOffset StartDateTime { get; }
@@ -30,5 +33,9 @@ namespace ISPAdressChecker.Models
         public int ExternalServiceCheckCounter { get; }
         public int FailedISPRequestCounter { get; }
         public int StatusUpdateRequested { get; }
+
+        // Needed for sure:
+        public int RequestSuccessPercentage { get; set; } = 83;
+        public string CurrentISPAddress { get; set; } = "192.168.2.*!*";
     }
 }

@@ -6,6 +6,7 @@
         string UptimeClockString { get; }
         string UptimeDays { get; }
 
+        void ClearStatusUpdateTimer();
         Task StartTimers();
     }
 }

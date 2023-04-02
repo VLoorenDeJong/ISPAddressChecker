@@ -10,7 +10,7 @@ builder.Services.AddServerSideBlazor();
 
 builder.Services.Configure<ApplicationSettingsOptions>(builder.Configuration.GetSection(AppsettingsSections.ApplicationSettings));
 
-//builder.Services.AddSingleton<IApplicationService, ApplicationService>();
+builder.Services.AddSingleton<IApplicationService, ApplicationService>();
 
 builder.Services.AddScoped<ITimerService, TimerService>();
 

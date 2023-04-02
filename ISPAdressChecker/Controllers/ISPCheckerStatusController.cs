@@ -36,7 +36,7 @@ namespace ISPAdressChecker.Controllers
         public ActionResult<ISPAddressCheckerStatusUpdateModel> GetStatusUpdate()
         {
             _statusCounterService.AddStatusUpdateRequested();
-            _logger.LogInformation("Status update has been requested");
+            _logger.LogInformation("GetStatusUpdate -> Status update has been requested");
 
             if (!_applicationSettingsOptions.EnableStatusAccess)
             {
@@ -56,7 +56,7 @@ namespace ISPAdressChecker.Controllers
         public ActionResult<DateTimeOffset> GetStartDateTime()
         {
             _statusCounterService.AddStartdateRequested();
-            _logger.LogInformation("Start date has been requested");
+            _logger.LogInformation("GetStartDateTime -> Start date has been requested");
 
             if (!_applicationSettingsOptions.EnableStatusAccess)
             {
@@ -66,6 +66,27 @@ namespace ISPAdressChecker.Controllers
             DateTimeOffset output = _timerService.GetStartDateTime();
 
             return Ok(output);
-        }       
+        }
+
+        [HttpGet("ISPAddressCheckIntervalInMinutes", Name = "ISPAddressCheckIntervalInMinutes")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(double), StatusCodes.Status200OK)]
+        public ActionResult<double> ISPAddressCheckIntervalInMinutes()
+        {
+            _statusCounterService.AddISPAddressCheckIntervalRequested();
+            _logger.LogInformation("ISPAddressCheckIntervalInMinutes -> ISP address check interval has been requested (minutes)");
+
+            if (!_applicationSettingsOptions.EnableStatusAccess)
+            {
+                return Forbid();
+            }
+
+            double output = _applicationSettingsOptions.TimeIntervalInMinutes;
+            _logger.LogInformation("ISPAddressCheckIntervalInMinutes -> interval: {interval} (minutes)", _applicationSettingsOptions.TimeIntervalInMinutes);
+
+            return Ok(output);
+        }
     }
 }

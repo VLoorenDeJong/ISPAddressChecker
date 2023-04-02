@@ -11,7 +11,7 @@
 <PageTitle>ISPAddressChecker - Dashboard</PageTitle>
 
 <div class="main-layout">
-    <UptimeIndicator UptimeDays="@timerService?.UptimeDays" UptimeClockString="@timerService?.UptimeClockString" />    
+    <HealthIndicator UptimeDays="@timerService?.UptimeDays" UptimeClockString="@timerService?.UptimeClockString" />    
 </div>
 
 
@@ -60,6 +60,7 @@
 
     public void Dispose()
     {
+        timerService.ClearStatusUpdateTimer();
         aTimer?.Dispose();
     }
 }

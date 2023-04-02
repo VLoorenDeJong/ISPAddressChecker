@@ -4,13 +4,16 @@ namespace ISPAdressCheckerStatusDashboard.Services
 {
     public class ApplicationService : IApplicationService, IHostedService
     {
-        public ApplicationService()
-        {
+        private IISPAddressCheckerStatusService _statusService;
 
+        public ApplicationService(IISPAddressCheckerStatusService statusService)
+        {
+            _statusService = statusService;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
+            //await _statusService.GetAPICurrnetAPIStatus();
         }
 
         public Task StopAsync(CancellationToken cancellationToken)

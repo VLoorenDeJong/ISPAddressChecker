@@ -6,6 +6,7 @@ namespace ISPAdressChecker.Services
     {
         private int StatusUpdateRequested;
         private int startDateRequested;
+        private int iSPAddressCheckIntervalRequested;
 
         public StatusCounterService()
         {
@@ -32,6 +33,16 @@ namespace ISPAdressChecker.Services
         public int GetStartdateRequested()
         {
             return startDateRequested;
+        }
+
+        public void AddISPAddressCheckIntervalRequested()
+        {
+            iSPAddressCheckIntervalRequested = iSPAddressCheckIntervalRequested + 1;
+        }
+
+        public int GetISPAddressCheckIntervalRequested()
+        {
+            return iSPAddressCheckIntervalRequested;
         }
     }
 }

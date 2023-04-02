@@ -1,35 +1,22 @@
 ﻿.linear-gauge {
     position: relative;
-    width: 200px;
-    height: 40px;
-    overflow: hidden;
-    border-radius: 10px;
-}
-
-.gauge-background {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%);
-    height: 5px;
     width: 100%;
-    background-color: $primary-color;
-    border-radius: 5px;
+    overflow: hidden;
+    border-radius: 2px;
+    padding-top:2px;
 }
 
 .gauge-bar {
-    position: absolute;
-    top: 50%;
     left: 0;
     transform: translateY(-50%);
-    height: 15px;
+    height: 30px;
     border-radius: 2px;
     transition: width 0.5s ease;
 }
 
 .gauge-label {
     position: absolute;
-    top: 50%;
+    top: 70%;
     left: 0;
     transform: translateY(-50%);
     padding-left: 5px;

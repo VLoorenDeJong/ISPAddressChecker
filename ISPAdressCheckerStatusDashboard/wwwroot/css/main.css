@@ -35,75 +35,71 @@
   font-family: "Lucida Sans" !important;
 }
 
-.main-layout .uptime-indicator {
-  display: flex;
-  justify-content: space-between;
+.main-layout .health-indicator {
   margin: 0 auto;
   background-color: #10232B;
   color: #ecfcff;
   border-end-end-radius: 30px;
   border-end-start-radius: 30px;
   text-align: center;
-  min-width: 300px;
-  max-width: 500px;
-  height: 10%;
-  padding-top: 10px;
+  width: 500px;
+  padding-left: 2px;
+  padding-right: 2px;
   padding-bottom: 10px;
-  display: flex;
-  align-items: center;
 }
-.main-layout .uptime-icon {
+.main-layout .health-indicator .uptime-indicator {
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+}
+.main-layout .health-indicator .uptime-icon {
   flex: 1;
   text-align: center;
   font-size: xx-large;
   color: #547884;
 }
-.main-layout .days-counter {
+.main-layout .health-indicator .days-counter {
   flex: 1;
-  text-align: center;
+  text-align: left;
   font-size: 25px;
   color: #547884;
 }
-.main-layout .clock {
+.main-layout .health-indicator .clock {
   flex: 1;
-  text-align: center;
+  text-align: left;
   font-size: 25px;
+  color: #547884;
+  font-family: "Segoe UI";
+}
+.main-layout .health-indicator .protection-level-indicator {
+  margin: 0;
+  padding: 0;
+}
+.main-layout .health-indicator .isp-address {
+  font-size: 20px;
   color: #547884;
   font-family: "Segoe UI";
 }
 
 .linear-gauge {
   position: relative;
-  width: 200px;
-  height: 40px;
-  overflow: hidden;
-  border-radius: 10px;
-}
-
-.gauge-background {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  transform: translateY(-50%);
-  height: 5px;
   width: 100%;
-  background-color: #10232B;
-  border-radius: 5px;
+  overflow: hidden;
+  border-radius: 2px;
+  padding-top: 2px;
 }
 
 .gauge-bar {
-  position: absolute;
-  top: 50%;
   left: 0;
   transform: translateY(-50%);
-  height: 15px;
+  height: 30px;
   border-radius: 2px;
   transition: width 0.5s ease;
 }
 
 .gauge-label {
   position: absolute;
-  top: 50%;
+  top: 70%;
   left: 0;
   transform: translateY(-50%);
   padding-left: 5px;
@@ -112,4 +108,4 @@
   color: #547884;
 }
 
-/*# sourceMappingURL=data:application/json;charset=utf-8,%7B%22version%22:3,%22sourceRoot%22:%22%22,%22sources%22:%5B%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/layout/_main-layout.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/partials/_variables.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_uptime-indicator.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_linear-gauge.scss%22%5D,%22names%22:%5B%5D,%22mappings%22:%22AAAC;EACG,kBCCa;EDAb;;;AAGJ;EACI;EACA;;;AAIJ;EACI;EACA,aCRU;EDSV;EACA,kBCfa;EDgBb,OCda;EDeb;;;AAGJ;EACI;EACA,aCfK;EDgBL;EACA,kBCvBc;EDwBd,OCzBa;ED0Bb;;;AAGJ;EACI;EACA,aCzBW;ED0BX;EACA,kBC/Ba;EDgCb,OClCa;EDmCb;;;AElCA;EACI;EACA;EACA;EACA,kBDLS;ECMT,ODJS;ECKT;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;AAGJ;EACI;EACA;EACA;EACA,ODtBU;;ACyBd;EACI;EACA;EACA;EACA,OD7BU;;ACgCd;EACI;EACA;EACA;EACA,ODpCU;ECqCV,aDjCM;;;AELb;EACG;EACA;EACA;EACA;EACA;;;AAGJ;EACI;EACA;EACA;EACA;EACA;EACA;EACA,kBFfa;EEgBb;;;AAGJ;EACI;EACA;EACA;EACA;EACA;EACA;EACA;;;AAGJ;EACI;EACA;EACA;EACA;EACA;EACA;EACA;EACA,OFpCc%22%7D */
+/*# sourceMappingURL=data:application/json;charset=utf-8,%7B%22version%22:3,%22sourceRoot%22:%22%22,%22sources%22:%5B%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/layout/_main-layout.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/partials/_variables.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_health-indicator.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_linear-gauge.scss%22%5D,%22names%22:%5B%5D,%22mappings%22:%22AAAC;EACG,kBCCa;EDAb;;;AAGJ;EACI;EACA;;;AAIJ;EACI;EACA,aCRU;EDSV;EACA,kBCfa;EDgBb,OCda;EDeb;;;AAGJ;EACI;EACA,aCfK;EDgBL;EACA,kBCvBc;EDwBd,OCzBa;ED0Bb;;;AAGJ;EACI;EACA,aCzBW;ED0BX;EACA,kBC/Ba;EDgCb,OClCa;EDmCb;;;AElCA;EACI;EACA,kBDHS;ECIT,ODFS;ECGT;EACA;EACA;EACA;EACA;EACA;EACA;;AAEA;EACI;EACA;EACA;;AAGJ;EACI;EACA;EACA;EACA,ODtBM;;ACyBV;EACI;EACA;EACA;EACA,OD7BM;;ACgCV;EACI;EACA;EACA;EACA,ODpCM;ECqCN,aDjCE;;ACoCN;EACI;EACA;;AAGJ;EACI;EACA,OD/CM;ECgDN,aD5CE;;;AELb;EACG;EACA;EACA;EACA;EACA;;;AAGJ;EACI;EACA;EACA;EACA;EACA;;;AAGJ;EACI;EACA;EACA;EACA;EACA;EACA;EACA;EACA,OFvBc%22%7D */
