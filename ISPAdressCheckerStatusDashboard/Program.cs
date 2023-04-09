@@ -3,6 +3,7 @@ using ISPAdressCheckerStatusDashboard.Services.Interfaces;
 using ISPAdressCheckerStatusDashboard.Services;
 using ISPAdressCheckerStatusDashboard.Options;
 using ISPAdressCheckerStatusDashboard;
+using BlazorTestProjects.BlazorConcepts.StateContainer;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
@@ -11,14 +12,17 @@ builder.Services.AddServerSideBlazor();
 builder.Services.Configure<ApplicationSettingsOptions>(builder.Configuration.GetSection(AppsettingsSections.ApplicationSettings));
 
 builder.Services.AddSingleton<IApplicationService, ApplicationService>();
+builder.Services.AddSingleton<IStatusService, StatusService>();
+builder.Services.AddSingleton<ICounterService, CounterService>();
 
 builder.Services.AddScoped<ITimerService, TimerService>();
 
-builder.Services.AddTransient<IISPAddressCheckerStatusService, ISPAddressCheckerStatusService>();
 builder.Services.AddTransient<IOpenAPIClient, OpenAPIClient>();
-builder.Services.AddTransient<IISPAddressCheckerStatusService, ISPAddressCheckerStatusService>();
 builder.Services.AddTransient<IRequestEmailService, RequestEmailService>();
+builder.Services.AddTransient<IRequestISPAddressService, RequestISPAddressService>();
+builder.Services.AddTransient<IISPAddressCheckerStatusService, ISPAddressCheckerStatusService>();
 
+builder.Services.AddScoped<AppState>();
 
 var app = builder.Build();
 

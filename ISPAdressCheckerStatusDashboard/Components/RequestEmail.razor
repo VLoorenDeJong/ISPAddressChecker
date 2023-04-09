@@ -1,6 +1,7 @@
 ﻿@using ISPAdressCheckerStatusDashboard.Services.Interfaces;
 
 @inject IRequestEmailService _emailService;
+@inject ICounterService counterService;
 
 <div class="interactive-row-element col">
     <div class="align-items-center">
@@ -14,9 +15,40 @@
 
         <InputText PlaceHodlerText="E-mail address" @bind-StringValue="@emailRequest.EmailAddress" />
 
-        <div class="email-adress-submit">
-            <button @onclick="OnSendEmailButtonClicked">@ButtonText</button>
-        </div>
+        @switch (EmailType)
+        {
+            case SendEmailTypeEnum._0:
+                if (counterService.GetHeartbeatEmailRequestCounter() != 0)
+                {
+                    <div class="email-adress-submit">
+                        <button @onclick="OnSendEmailButtonClicked">@($"Send ({counterService.GetHeartbeatEmailRequestCounter()}x)")</button>
+                    </div>
+                }
+                else
+                {
+                    <div class="email-adress-submit">
+                        <button disabled>@($"Send ({counterService.GetHeartbeatEmailRequestCounter()}x)")</button>
+                    </div>
+                }
+                break;
+
+            case SendEmailTypeEnum._1:
+                if (counterService.GetISPAddressChangedRequestCounter() != 0)
+                {
+                    <div class="email-adress-submit">
+                        <button @onclick="OnSendEmailButtonClicked">@($"Send ({counterService.GetISPAddressChangedRequestCounter()}x)")</button>
+                    </div>
+
+                }
+                else
+                {
+
+                    <div class="email-adress-submit">
+                        <button disabled>@($"Send ({counterService.GetISPAddressChangedRequestCounter()}x)")</button>
+                    </div>
+                }
+                break;
+        }
     </div>
 </div>
 
@@ -24,10 +56,6 @@
     [Parameter]
     [EditorRequired]
     public string ItemHeader { get; set; } = "HeaderText";
-
-    [Parameter]
-    [EditorRequired]
-    public string ButtonText { get; set; } = "Button text";
 
     [Parameter]
     [EditorRequired]
@@ -48,6 +76,17 @@
 
     private async Task OnSendEmailButtonClicked()
     {
+        switch (EmailType)
+        {
+            case SendEmailTypeEnum._0:
+                counterService.SubtractHeartbeatEmailRequestCounter();
+                break;
+
+            case SendEmailTypeEnum._1:
+                counterService.SubtractISPAddressChangedRequestCounter();
+                break;
+        }
+
         //ToDo createValidation on input
         emailRequest.EmailValidated = true;
         emailRequest.EmailAddress = "test-email@jantje.hihi";

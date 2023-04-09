@@ -1,0 +1,67 @@
+﻿@using ISPAdressCheckerStatusDashboard.Services.Interfaces;
+
+@inject IRequestISPAddressService ispService;
+@inject IStatusService statusService;
+
+@implements IDisposable
+
+<div class="interactive-row-element col">
+    <div class="align-items-center">
+
+        @if (string.IsNullOrWhiteSpace(visitorIspAddress))
+        {
+            <div class="input-text-header-header">
+                Host machine ISP address:
+            </div>
+
+            <div class="input-text-header">
+                @statusService?.CurrentStatus?.CurrentISPAddress
+            </div>
+
+        }
+
+        @if (!string.IsNullOrWhiteSpace(visitorIspAddress))
+        {
+            <div class="input-text-header-header">
+                Your ISP address:
+            </div>
+            <div class="input-text-header">
+                @visitorIspAddress
+            </div>
+        }
+
+        <div class="email-adress-submit">
+            <button @onclick="GetVisitorIspAddress">Get your ISP address</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string visitorIspAddress = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        statusService.OnChange += StateHasChanged;
+        await base.OnInitializedAsync();
+    }
+
+    private async Task GetVisitorIspAddress()
+    {
+        string endpointURL = await ispService.GetCHeckISPAddressEndpointURLAsync();
+
+        if (!string.IsNullOrEmpty(endpointURL))
+        {
+            var httpClient = new HttpClient();
+            var response = await httpClient.GetAsync(endpointURL);
+            if (response.IsSuccessStatusCode)
+            {
+                visitorIspAddress = await response.Content.ReadAsStringAsync();
+            }
+        }
+    }
+
+    public void Dispose()
+    {
+        statusService.OnChange -= StateHasChanged;
+    }
+}

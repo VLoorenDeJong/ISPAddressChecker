@@ -1,6 +1,6 @@
 ﻿@using ISPAdressCheckerStatusDashboard.Services.Interfaces;
 
-@inject IISPAddressCheckerStatusService statusService;
+@inject IStatusService statusService;
 
 @implements IDisposable
 
@@ -38,16 +38,20 @@
     [Parameter]
     public string? UptimeClockString { get; set; }
 
-
     protected override async Task OnInitializedAsync()
     {
-        await statusService.GetCurrentISPCheckerStatus();
+
         statusService.OnChange += StateHasChanged;
         await base.OnInitializedAsync();
     }
 
     protected override void OnInitialized()
     {
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
     }
 
     public void Dispose()

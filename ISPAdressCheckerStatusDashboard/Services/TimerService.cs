@@ -7,7 +7,9 @@ namespace ISPAdressCheckerStatusDashboard.Services
 
     public class TimerService : ITimerService
     {
-        private readonly IISPAddressCheckerStatusService _statusService;
+        private readonly IStatusService _statusService;
+        private readonly IApplicationService _applicationService;
+        private readonly ICounterService _counterService;
         private IOpenAPIClient _apiClient;
         private readonly ILogger<TimerService> _logger;
 
@@ -21,25 +23,29 @@ namespace ISPAdressCheckerStatusDashboard.Services
         public string UptimeClockString { get; private set; }
 
         private double minutesInterval = 61;
+        bool timersStarted = false;
 
         public TimerService()
         {
 
         }
 
-        public TimerService(IOpenAPIClient aPIClient, ILogger<TimerService> logger, IISPAddressCheckerStatusService statusService)
+        public TimerService(IOpenAPIClient aPIClient, ILogger<TimerService> logger, IStatusService statusService, IApplicationService applicationService, ICounterService counterservice)
         {
             _apiClient = aPIClient;
             _logger = logger;
             _statusService = statusService;
-
+            _applicationService = applicationService;
+            _counterService = counterservice;
             upTimeCalculatorTimer = new Timer(state => HandleUptimeCalculation(), null, 0, 1000);
         }
 
         public async Task StartTimers()
         {
+            timersStarted = true;
             APIStartDateTime = await GetApiUptimeAsync();
             await StartStatusUpdateTimer();
+            StartCounterResetTimer();
         }
 
         private async Task<DateTimeOffset> GetApiUptimeAsync()
@@ -90,8 +96,30 @@ namespace ISPAdressCheckerStatusDashboard.Services
 
             ISPStatusUpdateTimer = new Timer(async (state) =>
             {
-                await _statusService.GetCurrentISPCheckerStatus();
+                await _statusService.GetStatus();
             }, null, (int)(nextOccurrence - now).TotalMilliseconds + 5000, (int)statusUpdateInterval.TotalMilliseconds);
+        }
+
+        private void StartCounterResetTimer()
+        {
+            // Set the start time to 12 o'clock today
+            DateTime startTime = DateTime.Today.AddHours(12);
+
+            // Calculate the time interval until the next occurrence of the start time
+            TimeSpan timeUntilNextOccurrence = startTime > DateTime.Now ? startTime - DateTime.Now : startTime.AddDays(1) - DateTime.Now;
+
+            // Create a timer that triggers the method after 24 hours
+            Timer timer = new Timer(async (state) =>
+            {
+                _counterService.ResetCounters();
+            }, null, timeUntilNextOccurrence, TimeSpan.FromHours(24));
+
+            // Testing code
+            // TimeSpan timeUntilNextOccurrence =TimeSpan.FromSeconds(30);
+            //Timer timer = new Timer(async (state) =>
+            //{
+            //    _counterService.ResetCounters();
+            //}, null, timeUntilNextOccurrence, TimeSpan.FromSeconds(10));
         }
 
 

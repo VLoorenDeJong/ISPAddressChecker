@@ -1,4 +1,5 @@
 ﻿using ISPAdressChecker.Services.Interfaces;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ISPAdressChecker.Services
 {
@@ -11,6 +12,9 @@ namespace ISPAdressChecker.Services
             ServiceCheckCounter = 1;
             FailedISPRequestCounter = 0;
             ExternalServiceCheckCounter = 0;
+            TotalFailedISPRequestCounter = 0;
+            SuccessFullRequestsCounter = 0;
+            SuccessPercentage = 100;
         }
 
         private int ISPEndpointRequests;
@@ -18,6 +22,26 @@ namespace ISPAdressChecker.Services
         private int ServiceCheckCounter;
         private int ExternalServiceCheckCounter;
         private int FailedISPRequestCounter;
+        private int TotalFailedISPRequestCounter;
+        private int SuccessFullRequestsCounter;
+        private int SuccessPercentage;
+
+        private int CalculateSuccessPercentage()
+        {
+            // Testing code:
+            TotalFailedISPRequestCounter = 1;
+            //SuccessFullRequestsCounter = 1;
+
+            int percentage = 100;
+
+            if (TotalFailedISPRequestCounter != 0)
+            {
+                int totalCalls = TotalFailedISPRequestCounter + SuccessFullRequestsCounter;
+                percentage = (int)Math.Round((double)SuccessFullRequestsCounter / totalCalls * 100);
+            }
+
+            return percentage;
+        }
 
         public void AddISPEndpointRequests()
         {
@@ -59,9 +83,23 @@ namespace ISPAdressChecker.Services
             return ExternalServiceCheckCounter;
         }
 
+        public void AddSuccessFullRequestsCounter()
+        {
+            SuccessFullRequestsCounter++;
+            SuccessPercentage = CalculateSuccessPercentage();
+        }
+
+        public int GetSuccessFullRequestsCounter()
+        {
+            return SuccessFullRequestsCounter;
+        }
+
+
         public void AddFailedISPRequestCounter()
         {
             FailedISPRequestCounter++;
+            TotalFailedISPRequestCounter++;
+            SuccessPercentage = CalculateSuccessPercentage();
         }
 
         public int GetFailedISPRequestCounter()
@@ -71,6 +109,12 @@ namespace ISPAdressChecker.Services
         public void ResetFailedISPRequestCounter()
         {
             FailedISPRequestCounter = 0;
+        }
+
+        public int GetSuccessPercentage()
+        {
+            SuccessPercentage = CalculateSuccessPercentage();
+            return SuccessPercentage;
         }
     }
 }

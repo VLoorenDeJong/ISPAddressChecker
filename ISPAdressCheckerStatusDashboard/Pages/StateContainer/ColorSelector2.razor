@@ -1,0 +1,31 @@
+﻿@page "/stateContainer2"
+@using BlazorTestProjects.BlazorConcepts.StateContainer
+
+@inject AppState AppState
+@implements IDisposable
+
+@AppState.SelectedColour
+
+<RedComponent />
+<BlueComponent />
+
+<div>
+    @foreach (string text in AppState.ColorList)
+    {
+        @text
+    }
+</div>
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        AppState.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        AppState.OnChange -= StateHasChanged;
+    }
+
+}

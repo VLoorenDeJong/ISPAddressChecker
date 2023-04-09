@@ -15,12 +15,16 @@ body {
 }
 
 .interactive-row-element {
-  padding: 50px;
   text-align: center;
-  /*    background-color:yellow;
-      border:solid 1px red;*/
 }
 
+@media (min-width: 1000px) {
+  .interactive-row-element {
+    padding: 50px;
+    /*    background-color:yellow;
+    border:solid 1px red;*/
+  }
+}
 .stats-section {
   padding: 50px;
   background-color: red;
@@ -39,13 +43,14 @@ body {
   flex-wrap: wrap;
 }
 
-.col {
-  flex-basis: 33.33%;
-  box-sizing: border-box;
-  padding-top: 150px;
+@media (min-width: 1000px) {
+  .col {
+    flex-basis: 33.33%;
+    box-sizing: border-box;
+    padding-top: 150px;
+  }
 }
-
-@media (max-width: 768px) {
+@media (max-width: 1000px) {
   .col {
     padding-top: 20px;
     flex-basis: 100%;
@@ -58,7 +63,8 @@ body {
   border-end-end-radius: 30px;
   border-end-start-radius: 30px;
   text-align: center;
-  width: 500px;
+  width: 90%;
+  max-width: 550px;
   padding-left: 2px;
   padding-right: 2px;
   padding-bottom: 10px;
@@ -95,6 +101,7 @@ body {
   font-size: 20px;
   color: #547884;
   font-family: "Segoe UI";
+  padding: 10px;
 }
 
 .linear-gauge {
@@ -137,6 +144,13 @@ input[type=text]:focus {
   /* or */
   box-shadow: 0 0 1px 1px #10232B !important;
 }
+@media (max-width: 1000px) {
+  input[type=text] {
+    outline: 3px solid #10232B !important;
+    width: 300px;
+    height: 40px;
+  }
+}
 
 .input-field {
   border-radius: 5px;
@@ -159,6 +173,13 @@ input[type=text]:focus {
   color: #547884;
 }
 
+@media (max-width: 1000px) {
+  .input-field {
+    border-radius: 5px;
+    border: solid 2px #547884;
+    font-size: 25px;
+  }
+}
 .interactive-row-element .input-text-header-header {
   font-family: Tahoma;
   color: #547884;
@@ -174,12 +195,7 @@ input[type=text]:focus {
   margin-bottom: 5px;
   font-weight: 600;
 }
-
-.email-adress-submit {
-  margin-top: 10px !important;
-}
-
-button {
+.interactive-row-element button {
   color: #547884;
   background-color: transparent;
   border: solid 1px #547884;
@@ -187,13 +203,95 @@ button {
   font-size: 12px;
   padding: 5px;
 }
-button:hover {
+.interactive-row-element button:hover {
   color: #ecfcff;
   border: solid 1px #547884;
   background-color: #10232B;
 }
-button:focus {
+.interactive-row-element button:focus {
   outline: 1px solid #10232B;
 }
+.interactive-row-element button:disabled {
+  opacity: 0.5;
+}
+.interactive-row-element button:disabled:hover {
+  color: #547884;
+  background-color: transparent;
+  border: solid 1px #547884;
+}
 
-/*# sourceMappingURL=data:application/json;charset=utf-8,%7B%22version%22:3,%22sourceRoot%22:%22%22,%22sources%22:%5B%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/bootstrap-overrides/_bootstrap-overrides.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/layout/_main-layout.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/partials/_variables.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_health-indicator.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_linear-gauge.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_InputText.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_request-email.scss%22%5D,%22names%22:%5B%5D,%22mappings%22:%22AAAC;AACD;AAAA;EAEI;;;ACHH;EACG,kBCCa;EDAb;;;AAGJ;EACI;EACA;;;AAGJ;EACI;EACA;AACJ;AAAA;;;AAIA;EACI;EACA;EACA;;;AAGJ;EACI;EACA;EACA;EACA;;;AAIJ;EACI;EACA;;;AAGJ;EACI;EACA;EACA;;;AAGJ;EACI;IACI;IACA;;;AE5CJ;EACI;EACA,kBDHS;ECIT,ODFS;ECGT;EACA;EACA;EACA;EACA;EACA;EACA;;AAEA;EACI;EACA;EACA;;AAGJ;EACI;EACA;EACA;EACA,ODtBM;;ACyBV;EACI;EACA;EACA;EACA,OD7BM;;ACgCV;EACI;EACA;EACA;EACA,ODpCM;ECqCN,aDjCE;;ACoCN;EACI;EACA;;AAGJ;EACI;EACA,OD/CM;ECgDN,aD5CE;;;AELb;EACG;EACA;EACA;EACA;EACA;;;AAGJ;EACI;EACA;EACA;EACA;EACA;;;AAGJ;EACI;EACA;EACA;EACA;EACA;EACA;EACA;EACA,OFvBc;;;AGDjB;AAAA;AAAA;AAAA;AAKD;EACI,OHNa;;AGQb;EACI;EACA;AACA;EACA;;;AAIR;EACI;EACA;;;AAGJ;EACI,OHrBc;;;AGwBlB;EACI,OHzBc;;;AG4BlB;EACI,OH7Bc;;;AGgClB;EACI,OHjCc;;;AIAd;EACI,aJKC;EIJD,OJFU;EIGV;EACA;EACA;;AAIJ;EACI,aJJC;EIKD,OJXU;EIYV;EACA;EACA;EACA;;;AAKR;EACI;;;AAGJ;EACI,OJzBc;EI0Bd;EACA;EACA;EACA;EACA;;AAEA;EACI,OJhCS;EIiCT;EACA,kBJpCS;;AIuCb;EACI%22%7D */
+.email-adress-submit {
+  margin-top: 10px !important;
+}
+
+@media (max-width: 1000px) {
+  .interactive-row-element {
+    padding-top: 1em;
+  }
+  .interactive-row-element .input-text-header-header {
+    font-size: 22px;
+    margin-left: 3px;
+    margin-bottom: 2px;
+  }
+  .interactive-row-element .input-text-header {
+    font-size: 25px;
+    margin-left: 3px;
+    margin-bottom: 5px;
+    font-weight: 600;
+  }
+  .interactive-row-element .input-text-header-header {
+    font-size: 12px;
+    margin-left: 3px;
+    margin-bottom: 2px;
+  }
+  .interactive-row-element .input-text-header {
+    font-size: 15px;
+    margin-left: 3px;
+    margin-bottom: 5px;
+    font-weight: 600;
+  }
+  .interactive-row-element .input-text-header-header {
+    font-size: 22px;
+    margin-left: 3px;
+    margin-bottom: 2px;
+  }
+  .interactive-row-element .input-text-header {
+    font-size: 25px;
+    margin-left: 3px;
+    margin-bottom: 5px;
+    font-weight: 600;
+  }
+  .interactive-row-element .email-adress-submit {
+    margin-top: 10px !important;
+  }
+  .interactive-row-element button {
+    border-radius: 5px;
+    border: solid 1px #547884;
+    outline: solid 1px #547884;
+    font-size: 22px;
+    padding: 10px;
+    margin: 15px;
+  }
+  .interactive-row-element button:hover {
+    border-radius: 5px;
+    color: #ecfcff;
+    outline: solid 1px #547884;
+    border: solid 1px #547884;
+    background-color: #10232B;
+  }
+  .interactive-row-element button:focus {
+    border-radius: 5px;
+    outline: 1px solid #10232B;
+    border: solid 1px #547884;
+  }
+  .interactive-row-element button:disabled {
+    opacity: 0.5;
+  }
+  .interactive-row-element button:disabled:hover {
+    color: #547884;
+    background-color: transparent;
+    border: solid 1px #547884;
+  }
+}
+
+/*# sourceMappingURL=data:application/json;charset=utf-8,%7B%22version%22:3,%22sourceRoot%22:%22%22,%22sources%22:%5B%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/bootstrap-overrides/_bootstrap-overrides.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/layout/_main-layout.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/partials/_variables.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_health-indicator.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_linear-gauge.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_InputText.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_request-email.scss%22%5D,%22names%22:%5B%5D,%22mappings%22:%22AAAC;AACD;AAAA;EAEI;;;ACHH;EACG,kBCCa;EDAb;;;AAGJ;EACI;EACA;;;AAGJ;EACI;;;AAGA;EACI;IACI;AACA;AAAA;;;AAKR;EACI;EACA;EACA;;;AAGJ;EACI;EACA;EACA;EACA;;;AAIJ;EACI;EACA;;;AAGJ;EACI;IACI;IACA;IACA;;;AAIR;EACI;IACI;IACA;;;AEnDR;EACI;EACA,kBDHS;ECIT,ODFS;ECGT;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;AAEA;EACI;EACA;EACA;;AAGJ;EACI;EACA;EACA;EACA,ODvBM;;AC0BV;EACI;EACA;EACA;EACA,OD9BM;;ACiCV;EACI;EACA;EACA;EACA,ODrCM;ECsCN,aDlCE;;ACqCN;EACI;EACA;;AAGJ;EACI;EACA,ODhDM;ECiDN,aD7CE;EC8CF;;;ACnDX;EACG;EACA;EACA;EACA;EACA;;;AAGJ;EACI;EACA;EACA;EACA;EACA;;;AAGJ;EACI;EACA;EACA;EACA;EACA;EACA;EACA;EACA,OFvBc;;;AGDjB;AAAA;AAAA;AAAA;AAKD;EACI,OHNa;;AGQb;EACI;EACA;AACA;EACA;;AAGJ;EAVJ;IAWQ;IACA;IACA;;;;AAIR;EACI;EACA;;;AAGJ;EACI,OH3Bc;;;AG8BlB;EACI,OH/Bc;;;AGkClB;EACI,OHnCc;;;AGsClB;EACI,OHvCc;;;AG0ClB;EACI;IACI;IACA;IACA;;;AC9CJ;EACI,aJKC;EIJD,OJFU;EIGV;EACA;EACA;;AAIJ;EACI,aJJC;EIKD,OJXU;EIYV;EACA;EACA;EACA;;AAGJ;EACI,OJnBU;EIoBV;EACA;EACA;EACA;EACA;;AAEA;EACI,OJ1BK;EI2BL;EACA,kBJ9BK;;AIiCT;EACI;;AAGJ;EACI;;AAEA;EACI,OJxCE;EIyCF;EACA;;;AAOhB;EACI;;;AAGJ;EAEI;IACI;;EAEA;IACI;IACA;IACA;;EAIJ;IACI;IACA;IACA;IACA;;EAGJ;IACI;IACA;IACA;;EAIJ;IACI;IACA;IACA;IACA;;EAGJ;IACI;IACA;IACA;;EAGJ;IACI;IACA;IACA;IACA;;EAGJ;IACI;;EAGJ;IACI;IACA;IACA;IACA;IACA;IACA;;EAEA;IACI;IACA,OJhHC;IIiHD;IACA;IACA,kBJrHC;;EIwHL;IACI;IACA;IACA;;EAGJ;IACI;;EAEA;IACI,OJjIF;IIkIE;IACA%22%7D */

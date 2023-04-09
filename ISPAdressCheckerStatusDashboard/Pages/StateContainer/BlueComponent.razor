@@ -1,0 +1,15 @@
+﻿<!-- Blue Component -->
+@using BlazorTestProjects.BlazorConcepts.StateContainer
+
+@inject AppState AppState
+
+<button @onclick="SelectColour">Select Blue</button>
+
+@code {
+
+    void SelectColour()
+    {
+        AppState.SetColour("Blue");
+    }
+
+}

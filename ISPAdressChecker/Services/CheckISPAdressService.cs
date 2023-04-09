@@ -60,6 +60,7 @@ public class CheckISPAddressService : ICheckISPAddressService
                 string fecthedISPAddress = await response?.Content?.ReadAsStringAsync()!;
                 if (!string.IsNullOrWhiteSpace(fecthedISPAddress))
                 {
+                    _counterService.AddSuccessFullRequestsCounter();
 
                     _logger.LogInformation("GetISPAddressAsync -> NewISPAddress before clear:{ispAdress}", StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetNewISPAddress()));
 
@@ -84,6 +85,7 @@ public class CheckISPAddressService : ICheckISPAddressService
                 if (ex.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
                 {
                     _counterService.AddFailedISPRequestCounter();
+
                     _logger.LogInformation("GetISPAddressAsync -> HttpStatusCode.ServiceUnavailable, starting external calls");
                     await GetISPAddressFromBackupAPIs(false);
                 }
@@ -102,6 +104,8 @@ public class CheckISPAddressService : ICheckISPAddressService
             catch (Exception ex)
             {
                 Type exceptionType = ex.GetType();
+
+                _counterService.AddFailedISPRequestCounter();
 
                 _logger.LogError("GetISPAddressAsync -> API Call general Exception. Exceptiontype: {type} Message:{message}", exceptionType, ex.Message);
                 _emailService.SendISPAPIExceptionEmail(exceptionType.Name, ex.Message);

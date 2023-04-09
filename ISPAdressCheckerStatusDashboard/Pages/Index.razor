@@ -5,6 +5,7 @@
 @using System.Threading
 
 @inject ITimerService timerService;
+@inject IStatusService statusService;
 
 @implements IDisposable
 
@@ -14,15 +15,10 @@
     <HealthIndicator UptimeDays="@timerService?.UptimeDays" UptimeClockString="@timerService?.UptimeClockString" />
 
     <div class="row">
-        <div class="interactive-row-element col">
-            <div class="align-content-center">
-                Your ISP Address
-
-            </div>
-        </div>
-        <RequestEmail ItemHeader="Heartbeat E-mail:" ButtonText="Send (8x)" EmailType="SendEmailTypeEnum.HeartBeatEmail" />
-        <RequestEmail ItemHeader="ISP Address changed E-mail" ButtonText="Send (7x)" EmailType="SendEmailTypeEnum.ISPAddressChanged" />
-
+        <RequestISPAddress />
+        <RequestEmail ItemHeader="Heartbeat E-mail:" EmailType="SendEmailTypeEnum._0" />
+        <RequestEmail ItemHeader="ISP Address changed E-mail" EmailType="SendEmailTypeEnum._1" />
+        <ISPAdressCheckerStatusDashboard.Pages.StateContainer.ColorSelector />
     </div>
 
     <div class="stats-section">
@@ -43,19 +39,34 @@
     private bool timersStarted;
     private Timer? aTimer;
 
+    private bool timersStrted;
+
     private int successRate;
 
     protected override async Task OnInitializedAsync()
     {
 
-        await StartTimers();
 
         await base.OnInitializedAsync();
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await StartTimers();
+            await statusService.GetStatus();
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
     private async Task StartTimers()
     {
-        await timerService.StartTimers();
+        if (!timersStrted)
+        {
+            timersStrted = true;
+            await timerService.StartTimers();
+        }
         aTimer = new Timer(async (state) => await Tick(), null, 0, 1000);
     }
 

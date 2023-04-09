@@ -1,4 +1,5 @@
-﻿using ISPAdressCheckerStatusDashboard.Services.Interfaces;
+﻿using ISPAdressChecker.Helpers;
+using ISPAdressCheckerStatusDashboard.Services.Interfaces;
 
 namespace ISPAdressCheckerStatusDashboard.Services
 {
@@ -8,28 +9,18 @@ namespace ISPAdressCheckerStatusDashboard.Services
         private readonly IOpenAPIClient? _apiClient;
         private readonly ILogger<ISPAddressCheckerStatusService> _logger;
 
-        public ISPAddressCheckerStatusUpdateModel CurrentStatus { get; private set; }
-        public event Action OnChange;
-
         public ISPAddressCheckerStatusService(IOpenAPIClient openAPIClient, ILogger<ISPAddressCheckerStatusService> logger)
         {
             _apiClient = openAPIClient;
             _logger = logger;
-            CurrentStatus = new();
         }
 
-        public async Task GetCurrentISPCheckerStatus()
-        {
-            CurrentStatus = await GetAPIStatusAsync();
-            NotifyStateChanged();
-        }
-
-        private async Task<ISPAddressCheckerStatusUpdateModel> GetAPIStatusAsync()
+        public async Task<ISPAddressCheckerStatusUpdateModel> GetAPIStatusAsync()
         {
             ISPAddressCheckerStatusUpdateModel status = new();
-
             try
             {
+                _logger.LogInformation("GetAPIStatusAsync -> Requesting API status");
                 status = await _apiClient!.GetStatusUpdateAsync();
             }
             catch (Exception ex)
@@ -39,6 +30,5 @@ namespace ISPAdressCheckerStatusDashboard.Services
 
             return status;
         }
-        private void NotifyStateChanged() => OnChange?.Invoke();
     }
 }

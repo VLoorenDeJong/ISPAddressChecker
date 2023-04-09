@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Http;
 using ISPAdressChecker.Options;
 using Microsoft.AspNetCore.Mvc;
 using ISPAdressChecker.Models;
+using Microsoft.AspNetCore.Mvc;
+
 
 
 namespace ISPAdressChecker.Controllers
@@ -18,13 +20,20 @@ namespace ISPAdressChecker.Controllers
         private readonly IStatusCounterService _statusCounterService;
         private readonly ILogger<ISPAddressCheckerStatusController> _logger;
         private readonly ApplicationSettingsOptions _applicationSettingsOptions;
+        private readonly IISPAddressService _iSPAddressService;
 
-        public ISPAddressCheckerStatusController(ITimerService timerService, IISPAdressCounterService ISPAddressCounterService, IStatusCounterService statusCounterService, IOptions<ApplicationSettingsOptions> applicationSettingsOptions, ILogger<ISPAddressCheckerStatusController> logger)
+        public ISPAddressCheckerStatusController(ITimerService timerService, 
+                                                 IISPAdressCounterService ISPAddressCounterService, 
+                                                 IStatusCounterService statusCounterService, 
+                                                 IOptions<ApplicationSettingsOptions> applicationSettingsOptions, 
+                                                 ILogger<ISPAddressCheckerStatusController> logger,
+                                                 IISPAddressService iSPAddressService)
         {
             _timerService = timerService;
             _statusCounterService = statusCounterService;
             _ISPAddressCounterService = ISPAddressCounterService;
             _applicationSettingsOptions = applicationSettingsOptions?.Value ?? throw new ArgumentNullException(nameof(applicationSettingsOptions));
+            _iSPAddressService = iSPAddressService;
             _logger = logger;
         }
 
@@ -43,7 +52,7 @@ namespace ISPAdressChecker.Controllers
             }
             _statusCounterService.AddStatusUpdateRequested();
 
-            ISPAddressCheckerStatusUpdateModel output = new ISPAddressCheckerStatusUpdateModel(_ISPAddressCounterService, _statusCounterService, _timerService);
+            ISPAddressCheckerStatusUpdateModel output = new ISPAddressCheckerStatusUpdateModel(_ISPAddressCounterService, _statusCounterService, _timerService, _iSPAddressService);
 
             return Ok(output);
         }
@@ -111,7 +120,7 @@ namespace ISPAdressChecker.Controllers
                 report.Id = emailRequest?.Id;
 
 
-                _logger.LogInformation("ISPAddressCheckSendEmail -> RequestId: {id}, EmailAddressValidated:{valid}, emailAddress:{emailAddress}", report.Id, emailRequest!.EmailValidated, Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress) );
+                _logger.LogInformation("ISPAddressCheckSendEmail -> RequestId: {id}, EmailAddressValidated:{valid}, emailAddress:{emailAddress}", report.Id, emailRequest!.EmailValidated, Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress));
                 if (emailRequest.EmailValidated)
                 {
                     switch (emailRequest.EmailType)
@@ -130,7 +139,7 @@ namespace ISPAdressChecker.Controllers
                             }
                             break;
                         case Models.Enums.SendEmailTypeEnum.ISPAddressChanged:
-                          
+
                             // ToDo make application send email with success ActionReportModel return
                             report.Success = true;
 
@@ -153,6 +162,31 @@ namespace ISPAdressChecker.Controllers
 
             _logger.LogInformation("ISPAddressCheckSendEmailRequest -> Failed -> RequestId: {id}, EmailType:{type} -> E-mail address:{email}, message: {message}", report.Id, emailRequest?.EmailType, Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest?.EmailAddress), report.Message);
             return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Failed to send email", report });
+        }
+
+        [HttpGet("ISPAddressCheckAPIEndpointURL", Name = "ISPAddressCheckAPIEndpointURL")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [Produces("text/plain")]
+        public ActionResult<string> ISPAddressCheckAPIEndpointURL()
+        {
+            _logger.LogInformation("ISPAddressCheckAPIEndpoint -> ISP address check Endpoint url has been requested");
+
+            if (!_applicationSettingsOptions.EnableDashboardAccess)
+            {
+                _logger.LogInformation("ISPAddressCheckAPIEndpoint -> Dashboard not enabled (appsettings:EnableDashboardAccess)");
+                return Forbid();
+            }
+
+            _statusCounterService.AddISPAddressCheckIntervalRequested();
+
+            string output = string.Empty;
+
+            output = _applicationSettingsOptions.APIEndpointURL!;
+            _logger.LogInformation("ISPAddressCheckAPIEndpoint ->  Endpoint url: {url} ", _applicationSettingsOptions!.APIEndpointURL);
+
+            return Ok(output);
         }
     }
 }

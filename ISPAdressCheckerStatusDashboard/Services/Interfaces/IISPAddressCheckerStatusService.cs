@@ -2,10 +2,6 @@
 {
     public interface IISPAddressCheckerStatusService
     {
-        ISPAddressCheckerStatusUpdateModel CurrentStatus { get; }
-
-        event Action OnChange;
-
-        Task GetCurrentISPCheckerStatus();
+        Task<ISPAddressCheckerStatusUpdateModel> GetAPIStatusAsync();
     }
 }

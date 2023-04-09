@@ -1,6 +1,6 @@
 ﻿body {
     background-color: $tertiary-color;
-    margin:0;
+    margin: 0;
 }
 
 .main-layout {
@@ -9,40 +9,47 @@
 }
 
 .interactive-row-element {
-    padding: 50px;
-    text-align:center;
-/*    background-color:yellow;
+    text-align: center;
+}
+
+    @media (min-width: $break-point) {
+        .interactive-row-element {
+            padding: 50px;
+            /*    background-color:yellow;
     border:solid 1px red;*/
-}
-
-.stats-section {
-    padding: 50px;
-    background-color: red;
-    border: solid 1px red;
-}
-
-.log-section {
-    padding: 50px;
-    background-color: green;
-    border: solid 1px red;
-    max-height: 25% !important;
-}
-
-
-.row {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.col {
-    flex-basis: 33.33%;
-    box-sizing: border-box;
-    padding-top: 150px;
-}
-
-@media (max-width: 768px) {
-    .col {
-        padding-top: 20px;
-        flex-basis: 100%;
+        }
     }
-}
+
+    .stats-section {
+        padding: 50px;
+        background-color: red;
+        border: solid 1px red;
+    }
+
+    .log-section {
+        padding: 50px;
+        background-color: green;
+        border: solid 1px red;
+        max-height: 25% !important;
+    }
+
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    @media (min-width: $break-point) {
+        .col {
+            flex-basis: 33.33%;
+            box-sizing: border-box;
+            padding-top: 150px;
+        }
+    }
+
+    @media (max-width: $break-point) {
+        .col {
+            padding-top: 20px;
+            flex-basis: 100%;
+        }
+    }

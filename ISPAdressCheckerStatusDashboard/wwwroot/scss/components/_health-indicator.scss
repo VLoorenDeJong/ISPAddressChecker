@@ -6,10 +6,11 @@
         border-end-end-radius: 30px;
         border-end-start-radius: 30px;
         text-align: center;
-        width: 500px;
+        width: 90%;
+        max-width: 550px;
         padding-left: 2px;
         padding-right: 2px;
-        padding-bottom:10px;
+        padding-bottom: 10px;
 
         .uptime-indicator {
             justify-content: space-between;
@@ -48,6 +49,7 @@
             font-size: 20px;
             color: $secondary-color;
             font-family: $primary-font;
+            padding: 10px;
         }
     }
 }

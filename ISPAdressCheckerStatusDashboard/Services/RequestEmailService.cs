@@ -7,9 +7,9 @@ namespace ISPAdressCheckerStatusDashboard.Services
     public class RequestEmailService : IRequestEmailService
     {
         private readonly IOpenAPIClient? _apiClient;
-        private readonly ILogger<ISPAddressCheckerStatusService> _logger;
+        private readonly ILogger<RequestEmailService> _logger;
 
-        public RequestEmailService(IOpenAPIClient openAPIClient, ILogger<ISPAddressCheckerStatusService> logger)
+        public RequestEmailService(IOpenAPIClient openAPIClient, ILogger<RequestEmailService> logger)
         {
             _apiClient = openAPIClient;
             _logger = logger;
