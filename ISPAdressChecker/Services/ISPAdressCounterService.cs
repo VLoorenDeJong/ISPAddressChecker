@@ -29,7 +29,7 @@ namespace ISPAdressChecker.Services
         private int CalculateSuccessPercentage()
         {
             // Testing code:
-            TotalFailedISPRequestCounter = 1;
+            //TotalFailedISPRequestCounter = 1;
             //SuccessFullRequestsCounter = 1;
 
             int percentage = 100;

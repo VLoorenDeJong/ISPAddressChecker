@@ -4,11 +4,8 @@ namespace ISPAdressCheckerStatusDashboard.Services
 {
     public class ApplicationService : IApplicationService, IHostedService
     {
-        private readonly IStatusService _statusService;
-
-        public ApplicationService(IStatusService statusService)
+        public ApplicationService()
         {
-            _statusService = statusService;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)

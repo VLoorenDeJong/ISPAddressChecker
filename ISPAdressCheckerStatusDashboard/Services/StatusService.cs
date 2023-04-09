@@ -6,7 +6,7 @@ namespace ISPAdressCheckerStatusDashboard.Services
     {
         public ISPAddressCheckerStatusUpdateModel CurrentStatus { get; private set; } = new();
 
-        public event Action OnChange;
+        public event Action? OnChange;
 
         private readonly IISPAddressCheckerStatusService _iSPStatusService;
 
@@ -17,8 +17,6 @@ namespace ISPAdressCheckerStatusDashboard.Services
         public async Task GetStatus()
         {
             CurrentStatus = await _iSPStatusService.GetAPIStatusAsync();
-            NotifyStateChanged();
         }
-        private void NotifyStateChanged() => OnChange?.Invoke();
     }
 }

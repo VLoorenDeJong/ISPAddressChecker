@@ -15,10 +15,9 @@
     <HealthIndicator UptimeDays="@timerService?.UptimeDays" UptimeClockString="@timerService?.UptimeClockString" />
 
     <div class="row">
-        <RequestISPAddress />
+        <RequestISPAddress HostISPAddress="@statusService?.CurrentStatus?.CurrentISPAddress" />
         <RequestEmail ItemHeader="Heartbeat E-mail:" EmailType="SendEmailTypeEnum._0" />
         <RequestEmail ItemHeader="ISP Address changed E-mail" EmailType="SendEmailTypeEnum._1" />
-        <ISPAdressCheckerStatusDashboard.Pages.StateContainer.ColorSelector />
     </div>
 
     <div class="stats-section">
@@ -45,7 +44,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-
+        statusService.OnChange += OnStatusChange;
 
         await base.OnInitializedAsync();
     }
@@ -77,7 +76,12 @@
 
     public void Dispose()
     {
+        statusService.OnChange -= StateHasChanged;
         timerService.ClearStatusUpdateTimer();
         aTimer?.Dispose();
+    }
+    private async void OnStatusChange()
+    {
+        await InvokeAsync(StateHasChanged);
     }
 }

@@ -185,14 +185,14 @@ input[type=text]:focus {
   color: #547884;
   font-size: 12px;
   margin-left: 3px;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
 }
 .interactive-row-element .input-text-header {
   font-family: Tahoma;
   color: #547884;
   font-size: 15px;
   margin-left: 3px;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
   font-weight: 600;
 }
 .interactive-row-element button {
@@ -251,14 +251,14 @@ input[type=text]:focus {
     font-weight: 600;
   }
   .interactive-row-element .input-text-header-header {
-    font-size: 22px;
+    font-size: 15px;
     margin-left: 3px;
-    margin-bottom: 2px;
+    margin-bottom: 4px;
   }
   .interactive-row-element .input-text-header {
-    font-size: 25px;
+    font-size: 20px;
     margin-left: 3px;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
     font-weight: 600;
   }
   .interactive-row-element .email-adress-submit {
@@ -268,9 +268,9 @@ input[type=text]:focus {
     border-radius: 5px;
     border: solid 1px #547884;
     outline: solid 1px #547884;
-    font-size: 22px;
+    font-size: 20px;
     padding: 10px;
-    margin: 15px;
+    margin: 5px;
   }
   .interactive-row-element button:hover {
     border-radius: 5px;

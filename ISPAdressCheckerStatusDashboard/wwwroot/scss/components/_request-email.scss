@@ -4,7 +4,7 @@
         color: $secondary-color;
         font-size: 12px;
         margin-left: 3px;
-        margin-bottom: 2px;
+        margin-bottom: 4px;
     }
 
 
@@ -13,7 +13,7 @@
         color: $secondary-color;
         font-size: 15px;
         margin-left: 3px;
-        margin-bottom: 5px;
+        margin-bottom: 6px;
         font-weight: 600;
     }
 
@@ -86,15 +86,15 @@
         }
 
         .input-text-header-header {
-            font-size: 22px;
+            font-size: 15px;
             margin-left: 3px;
-            margin-bottom: 2px;
+            margin-bottom: 4px;
         }
 
         .input-text-header {
-            font-size: 25px;
+            font-size: 20px;
             margin-left: 3px;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
             font-weight: 600;
         }
 
@@ -106,9 +106,9 @@
             border-radius: 5px;
             border: solid 1px $secondary-color;
             outline: solid 1px $secondary-color;
-            font-size: 22px;
+            font-size: 20px;
             padding: 10px;
-            margin: 15px;
+            margin: 5px;
 
             &:hover {
                 border-radius: 5px;
