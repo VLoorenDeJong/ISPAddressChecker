@@ -8,30 +8,41 @@
     width: 100%;
 }
 
-
-.test-class1 {
-    font-weight: 100;
-    font-family: $primary-font;
-    font-size: xx-large;
-    background-color: $primary-color;
-    color: $tertiary-color;
-    font-family: $primary-font !important;
+.interactive-row-element {
+    padding: 50px;
+    text-align:center;
+/*    background-color:yellow;
+    border:solid 1px red;*/
 }
 
-.test-class2 {
-    font-weight: 100;
-    font-family: $secondary-font;
-    font-size: xx-large;
-    background-color: $secondary-color;
-    color: $primary-color;
-    font-family: $secondary-font !important;
+.stats-section {
+    padding: 50px;
+    background-color: red;
+    border: solid 1px red;
 }
 
-.test-class3 {
-    font-weight: 100;
-    font-family: $tertiary-font;
-    font-size: xx-large;
-    background-color: $tertiary-color;
-    color: $primary-color;
-    font-family: $tertiary-font !important;
+.log-section {
+    padding: 50px;
+    background-color: green;
+    border: solid 1px red;
+    max-height: 25% !important;
+}
+
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.col {
+    flex-basis: 33.33%;
+    box-sizing: border-box;
+    padding-top: 150px;
+}
+
+@media (max-width: 768px) {
+    .col {
+        padding-top: 20px;
+        flex-basis: 100%;
+    }
 }

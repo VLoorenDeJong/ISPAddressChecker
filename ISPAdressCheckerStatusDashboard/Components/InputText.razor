@@ -1,0 +1,27 @@
+﻿<div>
+    <input type="text" class="input-field" placeholder="@PlaceHodlerText" @bind-value="@inputValue" />
+</div>
+
+@code {
+    private string inputValue;
+
+    private bool componentLocalBool;
+    [Parameter]
+    public string StringValue
+    {
+        get => inputValue;
+        set
+        {
+            if (inputValue == value) return;
+            inputValue = value;
+            StringValueChanged.InvokeAsync(inputValue);
+        }
+    }
+    [Parameter]
+    [EditorRequired]
+    public string? PlaceHodlerText { get; set; }
+
+    [Parameter]
+    public EventCallback<string> StringValueChanged { get; set; }
+
+}

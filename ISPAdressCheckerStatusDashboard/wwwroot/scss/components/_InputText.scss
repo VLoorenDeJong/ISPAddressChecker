@@ -1,0 +1,36 @@
+﻿/*
+$primary-font: $font-seg-ui;
+$secondary-font: $tahoma;
+$tertiary-font: $yu-gothic-ui;*/
+
+input[type="text"] {
+    color: $primary-color;
+
+    &:focus {
+        border-radius: 5px;
+        outline: 1px solid $primary-color !important;
+        /* or */
+        box-shadow: 0 0 1px 1px $primary-color !important;
+    }
+}
+
+.input-field {
+    border-radius: 5px;
+    border: solid 1px $secondary-color;
+}
+
+::-webkit-input-placeholder {
+    color: $secondary-color;
+}
+
+:-moz-placeholder {
+    color: $secondary-color;
+}
+
+::-moz-placeholder {
+    color: $secondary-color;
+}
+
+:-ms-input-placeholder {
+    color: $secondary-color;
+}

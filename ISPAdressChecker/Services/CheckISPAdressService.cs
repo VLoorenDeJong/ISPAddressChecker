@@ -57,14 +57,16 @@ public class CheckISPAddressService : ICheckISPAddressService
                 HttpResponseMessage response = await client.GetAsync(_applicationSettingsOptions?.APIEndpointURL);
                 response.EnsureSuccessStatusCode();
 
-
-                _logger.LogInformation("GetISPAddressAsync -> NewISPAddress before clear:{ispAdress}", StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetNewISPAddress()));
-
-                _ISPAdressService.ClearNewISPAddress();
-
-
                 string fecthedISPAddress = await response?.Content?.ReadAsStringAsync()!;
-                _ISPAdressService.SetNewISPAddress(fecthedISPAddress);
+                if (!string.IsNullOrWhiteSpace(fecthedISPAddress))
+                {
+
+                    _logger.LogInformation("GetISPAddressAsync -> NewISPAddress before clear:{ispAdress}", StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetNewISPAddress()));
+
+                    _ISPAdressService.ClearNewISPAddress();
+                    _ISPAdressService.SetNewISPAddress(fecthedISPAddress);
+                }
+
 
                 _logger.LogInformation("GetISPAddressAsync: Respons:{ispAdress}", StringHelpers.MakeISPAddressLogReady(fecthedISPAddress));
                 _logger.LogInformation("GetISPAddressAsync -> New NewISPAddress:{ispAdress}", StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetNewISPAddress()));
@@ -107,7 +109,7 @@ public class CheckISPAddressService : ICheckISPAddressService
             }
         }
 
-        _logger.LogInformation("GetISPAddressAsync -> if(NewISPAddress && CurrentISPAddress same) Connection reestablished -> {isp1}->{isp2}", _ISPAdressService.GetNewISPAddress(), _ISPAdressService.GetCurrentISPAddress());
+        _logger.LogInformation("GetISPAddressAsync -> if(NewISPAddress && CurrentISPAddress same) Connection reestablished -> {isp1}->{isp2}", StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetNewISPAddress()), StringHelpers.MakeISPAddressLogReady(_ISPAdressService.GetCurrentISPAddress()));
         if (!string.Equals(_ISPAdressService.GetNewISPAddress(), _ISPAdressService.GetCurrentISPAddress(), StringComparison.CurrentCultureIgnoreCase))
         {
             _logger.LogInformation("GetISPAddressAsync -> Connection reestablished");

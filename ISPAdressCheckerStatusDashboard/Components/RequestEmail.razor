@@ -1,0 +1,59 @@
+﻿@using ISPAdressCheckerStatusDashboard.Services.Interfaces;
+
+@inject IRequestEmailService _emailService;
+
+<div class="interactive-row-element col">
+    <div class="align-items-center">
+        <div class="input-text-header-header">
+            Send me a:
+        </div>
+
+        <div class="input-text-header">
+            @ItemHeader
+        </div>
+
+        <InputText PlaceHodlerText="E-mail address" @bind-StringValue="@emailRequest.EmailAddress" />
+
+        <div class="email-adress-submit">
+            <button @onclick="OnSendEmailButtonClicked">@ButtonText</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public string ItemHeader { get; set; } = "HeaderText";
+
+    [Parameter]
+    [EditorRequired]
+    public string ButtonText { get; set; } = "Button text";
+
+    [Parameter]
+    [EditorRequired]
+    public SendEmailTypeEnum EmailType { get; set; }
+
+
+    private SendEmailModel emailRequest = new();
+
+    private ActionReportModel report;
+
+    protected override Task OnInitializedAsync()
+    {
+        emailRequest.Id = Guid.NewGuid().ToString("N");
+        emailRequest.EmailType = EmailType;
+
+        return base.OnInitializedAsync();
+    }
+
+    private async Task OnSendEmailButtonClicked()
+    {
+        //ToDo createValidation on input
+        emailRequest.EmailValidated = true;
+        emailRequest.EmailAddress = "test-email@jantje.hihi";
+
+        report = new();
+        report = await _emailService.RequestEmail(emailRequest);
+    }
+
+}

@@ -17,6 +17,7 @@ builder.Services.AddScoped<ITimerService, TimerService>();
 builder.Services.AddTransient<IISPAddressCheckerStatusService, ISPAddressCheckerStatusService>();
 builder.Services.AddTransient<IOpenAPIClient, OpenAPIClient>();
 builder.Services.AddTransient<IISPAddressCheckerStatusService, ISPAddressCheckerStatusService>();
+builder.Services.AddTransient<IRequestEmailService, RequestEmailService>();
 
 
 var app = builder.Build();

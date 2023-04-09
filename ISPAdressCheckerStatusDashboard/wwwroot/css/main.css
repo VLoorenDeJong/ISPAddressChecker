@@ -1,4 +1,10 @@
-﻿body {
+﻿.container {
+  /*    background-color:purple !important;
+      border: solid 2px dotted green !important;*/
+  max-width: 2500px !important;
+}
+
+body {
   background-color: #ecfcff;
   margin: 0;
 }
@@ -8,33 +14,43 @@
   width: 100%;
 }
 
-.test-class1 {
-  font-weight: 100;
-  font-family: "Segoe UI";
-  font-size: xx-large;
-  background-color: #10232B;
-  color: #ecfcff;
-  font-family: "Segoe UI" !important;
+.interactive-row-element {
+  padding: 50px;
+  text-align: center;
+  /*    background-color:yellow;
+      border:solid 1px red;*/
 }
 
-.test-class2 {
-  font-weight: 100;
-  font-family: Tahoma;
-  font-size: xx-large;
-  background-color: #547884;
-  color: #10232B;
-  font-family: Tahoma !important;
+.stats-section {
+  padding: 50px;
+  background-color: red;
+  border: solid 1px red;
 }
 
-.test-class3 {
-  font-weight: 100;
-  font-family: "Lucida Sans";
-  font-size: xx-large;
-  background-color: #ecfcff;
-  color: #10232B;
-  font-family: "Lucida Sans" !important;
+.log-section {
+  padding: 50px;
+  background-color: green;
+  border: solid 1px red;
+  max-height: 25% !important;
 }
 
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.col {
+  flex-basis: 33.33%;
+  box-sizing: border-box;
+  padding-top: 150px;
+}
+
+@media (max-width: 768px) {
+  .col {
+    padding-top: 20px;
+    flex-basis: 100%;
+  }
+}
 .main-layout .health-indicator {
   margin: 0 auto;
   background-color: #10232B;
@@ -108,4 +124,76 @@
   color: #547884;
 }
 
-/*# sourceMappingURL=data:application/json;charset=utf-8,%7B%22version%22:3,%22sourceRoot%22:%22%22,%22sources%22:%5B%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/layout/_main-layout.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/partials/_variables.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_health-indicator.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_linear-gauge.scss%22%5D,%22names%22:%5B%5D,%22mappings%22:%22AAAC;EACG,kBCCa;EDAb;;;AAGJ;EACI;EACA;;;AAIJ;EACI;EACA,aCRU;EDSV;EACA,kBCfa;EDgBb,OCda;EDeb;;;AAGJ;EACI;EACA,aCfK;EDgBL;EACA,kBCvBc;EDwBd,OCzBa;ED0Bb;;;AAGJ;EACI;EACA,aCzBW;ED0BX;EACA,kBC/Ba;EDgCb,OClCa;EDmCb;;;AElCA;EACI;EACA,kBDHS;ECIT,ODFS;ECGT;EACA;EACA;EACA;EACA;EACA;EACA;;AAEA;EACI;EACA;EACA;;AAGJ;EACI;EACA;EACA;EACA,ODtBM;;ACyBV;EACI;EACA;EACA;EACA,OD7BM;;ACgCV;EACI;EACA;EACA;EACA,ODpCM;ECqCN,aDjCE;;ACoCN;EACI;EACA;;AAGJ;EACI;EACA,OD/CM;ECgDN,aD5CE;;;AELb;EACG;EACA;EACA;EACA;EACA;;;AAGJ;EACI;EACA;EACA;EACA;EACA;;;AAGJ;EACI;EACA;EACA;EACA;EACA;EACA;EACA;EACA,OFvBc%22%7D */
+/*
+$primary-font: $font-seg-ui;
+$secondary-font: $tahoma;
+$tertiary-font: $yu-gothic-ui;*/
+input[type=text] {
+  color: #10232B;
+}
+input[type=text]:focus {
+  border-radius: 5px;
+  outline: 1px solid #10232B !important;
+  /* or */
+  box-shadow: 0 0 1px 1px #10232B !important;
+}
+
+.input-field {
+  border-radius: 5px;
+  border: solid 1px #547884;
+}
+
+::-webkit-input-placeholder {
+  color: #547884;
+}
+
+:-moz-placeholder {
+  color: #547884;
+}
+
+::-moz-placeholder {
+  color: #547884;
+}
+
+:-ms-input-placeholder {
+  color: #547884;
+}
+
+.interactive-row-element .input-text-header-header {
+  font-family: Tahoma;
+  color: #547884;
+  font-size: 12px;
+  margin-left: 3px;
+  margin-bottom: 2px;
+}
+.interactive-row-element .input-text-header {
+  font-family: Tahoma;
+  color: #547884;
+  font-size: 15px;
+  margin-left: 3px;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.email-adress-submit {
+  margin-top: 10px !important;
+}
+
+button {
+  color: #547884;
+  background-color: transparent;
+  border: solid 1px #547884;
+  border-radius: 6px;
+  font-size: 12px;
+  padding: 5px;
+}
+button:hover {
+  color: #ecfcff;
+  border: solid 1px #547884;
+  background-color: #10232B;
+}
+button:focus {
+  outline: 1px solid #10232B;
+}
+
+/*# sourceMappingURL=data:application/json;charset=utf-8,%7B%22version%22:3,%22sourceRoot%22:%22%22,%22sources%22:%5B%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/bootstrap-overrides/_bootstrap-overrides.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/layout/_main-layout.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/partials/_variables.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_health-indicator.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_linear-gauge.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_InputText.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_request-email.scss%22%5D,%22names%22:%5B%5D,%22mappings%22:%22AAAC;AACD;AAAA;EAEI;;;ACHH;EACG,kBCCa;EDAb;;;AAGJ;EACI;EACA;;;AAGJ;EACI;EACA;AACJ;AAAA;;;AAIA;EACI;EACA;EACA;;;AAGJ;EACI;EACA;EACA;EACA;;;AAIJ;EACI;EACA;;;AAGJ;EACI;EACA;EACA;;;AAGJ;EACI;IACI;IACA;;;AE5CJ;EACI;EACA,kBDHS;ECIT,ODFS;ECGT;EACA;EACA;EACA;EACA;EACA;EACA;;AAEA;EACI;EACA;EACA;;AAGJ;EACI;EACA;EACA;EACA,ODtBM;;ACyBV;EACI;EACA;EACA;EACA,OD7BM;;ACgCV;EACI;EACA;EACA;EACA,ODpCM;ECqCN,aDjCE;;ACoCN;EACI;EACA;;AAGJ;EACI;EACA,OD/CM;ECgDN,aD5CE;;;AELb;EACG;EACA;EACA;EACA;EACA;;;AAGJ;EACI;EACA;EACA;EACA;EACA;;;AAGJ;EACI;EACA;EACA;EACA;EACA;EACA;EACA;EACA,OFvBc;;;AGDjB;AAAA;AAAA;AAAA;AAKD;EACI,OHNa;;AGQb;EACI;EACA;AACA;EACA;;;AAIR;EACI;EACA;;;AAGJ;EACI,OHrBc;;;AGwBlB;EACI,OHzBc;;;AG4BlB;EACI,OH7Bc;;;AGgClB;EACI,OHjCc;;;AIAd;EACI,aJKC;EIJD,OJFU;EIGV;EACA;EACA;;AAIJ;EACI,aJJC;EIKD,OJXU;EIYV;EACA;EACA;EACA;;;AAKR;EACI;;;AAGJ;EACI,OJzBc;EI0Bd;EACA;EACA;EACA;EACA;;AAEA;EACI,OJhCS;EIiCT;EACA,kBJpCS;;AIuCb;EACI%22%7D */

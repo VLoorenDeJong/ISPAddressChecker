@@ -2,17 +2,18 @@
 {
     public static class StringHelpers
     {
-        public static string MakeISPAddressLogReady(string ISPAdress) 
+        public static string MakeISPAddressLogReady(string ISPAdress)
         {
             string output = string.Empty;
-            if (!string.IsNullOrWhiteSpace(ISPAdress)) {
+            if (!string.IsNullOrWhiteSpace(ISPAdress))
+            {
 
                 string[] octets = ISPAdress.Split('.');
 
                 // Ensure the last octet has 3 digits
                 int lastOctet = int.Parse(octets[3]);
                 string lastOctetString = lastOctet.ToString().PadRight(3, '0');
-                
+
                 // Remove last 2 digits of octed                            
                 string lastOcted = lastOctetString.Substring(0, lastOctetString.Length - 2);
 
@@ -27,6 +28,19 @@
             }
 
             return output;
+        }
+
+        public static string MakeEmailAddressLogReady(string emailAddress)
+        {
+
+            if (!string.IsNullOrWhiteSpace(emailAddress))
+            {
+                int atIndex = emailAddress.IndexOf('@');
+                string maskedAddress = emailAddress.Substring(0, Math.Min(atIndex, 2)).PadRight(5, '*') + emailAddress.Substring(atIndex);
+                return maskedAddress; // Outputs "ex****@example.com"
+            }
+
+            return emailAddress;
         }
     }
 }

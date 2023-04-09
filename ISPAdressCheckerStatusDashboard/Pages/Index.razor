@@ -11,27 +11,33 @@
 <PageTitle>ISPAddressChecker - Dashboard</PageTitle>
 
 <div class="main-layout">
-    <HealthIndicator UptimeDays="@timerService?.UptimeDays" UptimeClockString="@timerService?.UptimeClockString" />    
+    <HealthIndicator UptimeDays="@timerService?.UptimeDays" UptimeClockString="@timerService?.UptimeClockString" />
+
+    <div class="row">
+        <div class="interactive-row-element col">
+            <div class="align-content-center">
+                Your ISP Address
+
+            </div>
+        </div>
+        <RequestEmail ItemHeader="Heartbeat E-mail:" ButtonText="Send (8x)" EmailType="SendEmailTypeEnum.HeartBeatEmail" />
+        <RequestEmail ItemHeader="ISP Address changed E-mail" ButtonText="Send (7x)" EmailType="SendEmailTypeEnum.ISPAddressChanged" />
+
+    </div>
+
+    <div class="stats-section">
+        <div class="justify-content-center">
+            STATS XYZ
+        </div>
+    </div>
+
+    <div class="log-section">
+        <div class="justify-content-center">
+            LOG
+        </div>
+    </div>
+
 </div>
-
-
-
-@*
-<div class="test-class">
-    <p></p>
-    <i class="fas fa-check"></i>
-</div>
-<div class="test-class1">
-    Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et
-</div>
-<div class="test-class2">
-    Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et
-</div>
-<div class="test-class3">
-    Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et
-</div>*@
-
-
 
 @code {
     private bool timersStarted;

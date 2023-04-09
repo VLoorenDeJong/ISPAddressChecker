@@ -22,7 +22,7 @@ namespace ISPAdressChecker.Options
         public DayOfWeek HeatbeatEmailDayOfWeek { get; set; }
         public int HeatbeatEmailIntervalDays = 7;
         public bool EnableSsl { get; set; }
-        public bool EnableStatusAccess { get; set; }
+        public bool EnableDashboardAccess { get; set; }
 
         public class AppsettingsSections
         {

@@ -1,5 +1,4 @@
 ﻿using ISPAdressChecker.Services.Interfaces;
-using System.Diagnostics;
 
 namespace ISPAdressChecker.Models
 {

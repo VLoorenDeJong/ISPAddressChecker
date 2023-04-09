@@ -7,13 +7,13 @@ namespace ISPAdressChecker.Services
         private int StatusUpdateRequested;
         private int startDateRequested;
         private int iSPAddressCheckIntervalRequested;
+        private int HeartbeatEmailRequested;
+        private int ISPAddressChangedEmailRequested;
 
         public StatusCounterService()
         {
 
         }
-
-
 
         public void AddStatusUpdateRequested()
         {
@@ -39,10 +39,27 @@ namespace ISPAdressChecker.Services
         {
             iSPAddressCheckIntervalRequested = iSPAddressCheckIntervalRequested + 1;
         }
-
         public int GetISPAddressCheckIntervalRequested()
         {
             return iSPAddressCheckIntervalRequested;
+        }
+
+        public void AddISPHeartbeatEmailRequested()
+        {
+            HeartbeatEmailRequested = HeartbeatEmailRequested + 1;
+        }
+        public int GetISPHeartbeatEmailRequested()
+        {
+            return HeartbeatEmailRequested;
+        }
+
+        public void AddISPISPAddressChangedEmailRequested()
+        {
+            ISPAddressChangedEmailRequested = ISPAddressChangedEmailRequested + 1;
+        }
+        public int GetISPISPAddressChangedEmailRequested()
+        {
+            return ISPAddressChangedEmailRequested;
         }
     }
 }
