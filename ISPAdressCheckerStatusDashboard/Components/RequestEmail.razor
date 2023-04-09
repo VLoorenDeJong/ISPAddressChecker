@@ -13,11 +13,11 @@
             @ItemHeader
         </div>
 
-        <InputText PlaceHodlerText="E-mail address" @bind-StringValue="@emailRequest.EmailAddress" />
+        <InputText PlaceHolderText="E-mail address" @bind-StringValue="@emailRequest.EmailAddress" />
 
         @switch (EmailType)
         {
-            case SendEmailTypeEnum._0:
+            case SendEmailTypeEnum._1:
                 if (counterService.GetHeartbeatEmailRequestCounter() != 0)
                 {
                     <div class="email-adress-submit">
@@ -32,7 +32,7 @@
                 }
                 break;
 
-            case SendEmailTypeEnum._1:
+            case SendEmailTypeEnum._2:
                 if (counterService.GetISPAddressChangedRequestCounter() != 0)
                 {
                     <div class="email-adress-submit">
@@ -76,23 +76,32 @@
 
     private async Task OnSendEmailButtonClicked()
     {
-        switch (EmailType)
+        if (ISPAdressChecker.Helpers.ConfigHelpers.EmailAddressIsValid(emailRequest.EmailAddress))
         {
-            case SendEmailTypeEnum._0:
-                counterService.SubtractHeartbeatEmailRequestCounter();
-                break;
+            switch (EmailType)
+            {
+                case SendEmailTypeEnum._1:
+                    counterService.SubtractHeartbeatEmailRequestCounter();
+                    emailRequest.EmailType = SendEmailTypeEnum._1;
+                    break;
 
-            case SendEmailTypeEnum._1:
-                counterService.SubtractISPAddressChangedRequestCounter();
-                break;
+                case SendEmailTypeEnum._2:
+                    counterService.SubtractISPAddressChangedRequestCounter();
+                    emailRequest.EmailType = SendEmailTypeEnum._2;
+                    break;
+            }
+
+            emailRequest.EmailValidated = true;
+            report = await _emailService.RequestEmail(emailRequest);
         }
-
-        //ToDo createValidation on input
-        emailRequest.EmailValidated = true;
-        emailRequest.EmailAddress = "test-email@jantje.hihi";
-
-        report = new();
-        report = await _emailService.RequestEmail(emailRequest);
+        else
+        {
+            report = new ActionReportModel
+                {
+                    Success = false,
+                    Message = "Email address not valid"
+                };
+        }
     }
 
 }

@@ -71,7 +71,7 @@ namespace ISPAdressChecker.Helpers
             return MandatoryConfigurationPassed;
         }
 
-        private static bool EmailAddressIsValid(string? emailAdressToValidate)
+        public static bool EmailAddressIsValid(string? emailAdressToValidate)
         {
             bool isVallid = false;
 

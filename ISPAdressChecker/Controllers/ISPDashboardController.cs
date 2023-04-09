@@ -5,9 +5,6 @@ using Microsoft.AspNetCore.Http;
 using ISPAdressChecker.Options;
 using Microsoft.AspNetCore.Mvc;
 using ISPAdressChecker.Models;
-using Microsoft.AspNetCore.Mvc;
-
-
 
 namespace ISPAdressChecker.Controllers
 {
@@ -15,19 +12,21 @@ namespace ISPAdressChecker.Controllers
     [Route("api/[controller]")]
     public class ISPAddressCheckerStatusController : ControllerBase
     {
-        private readonly ITimerService _timerService;
+        private readonly ApplicationSettingsOptions _applicationSettingsOptions;
+        private readonly ILogger<ISPAddressCheckerStatusController> _logger;
         private readonly IISPAdressCounterService _ISPAddressCounterService;
         private readonly IStatusCounterService _statusCounterService;
-        private readonly ILogger<ISPAddressCheckerStatusController> _logger;
-        private readonly ApplicationSettingsOptions _applicationSettingsOptions;
         private readonly IISPAddressService _iSPAddressService;
+        private readonly ITimerService _timerService;
+        private readonly IEmailService _emailService;
 
         public ISPAddressCheckerStatusController(ITimerService timerService, 
                                                  IISPAdressCounterService ISPAddressCounterService, 
                                                  IStatusCounterService statusCounterService, 
                                                  IOptions<ApplicationSettingsOptions> applicationSettingsOptions, 
                                                  ILogger<ISPAddressCheckerStatusController> logger,
-                                                 IISPAddressService iSPAddressService)
+                                                 IISPAddressService iSPAddressService,
+                                                 IEmailService emailService)
         {
             _timerService = timerService;
             _statusCounterService = statusCounterService;
@@ -35,6 +34,7 @@ namespace ISPAdressChecker.Controllers
             _applicationSettingsOptions = applicationSettingsOptions?.Value ?? throw new ArgumentNullException(nameof(applicationSettingsOptions));
             _iSPAddressService = iSPAddressService;
             _logger = logger;
+            _emailService = emailService;
         }
 
         [HttpGet("status", Name = "GetStatusUpdate")]
@@ -117,9 +117,6 @@ namespace ISPAdressChecker.Controllers
 
             if (emailRequest is not null)
             {
-                report.Id = emailRequest?.Id;
-
-
                 _logger.LogInformation("ISPAddressCheckSendEmail -> RequestId: {id}, EmailAddressValidated:{valid}, emailAddress:{emailAddress}", report.Id, emailRequest!.EmailValidated, Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress));
                 if (emailRequest.EmailValidated)
                 {
@@ -127,8 +124,14 @@ namespace ISPAdressChecker.Controllers
                     {
                         case Models.Enums.SendEmailTypeEnum.HeartBeatEmail:
 
-                            // ToDo make application send email with success ActionReportModel return
-                            report.Success = true;
+                            Dictionary<string, string> mocValues = new Dictionary<string, string>();
+
+                            foreach (string externalAPI in _applicationSettingsOptions.BackupAPIS!)
+                            {
+                                mocValues.Add($"{externalAPI}", "Value will be put here");
+                            }
+
+                            report = _emailService.SendHeartBeatEmail(_ISPAddressCounterService, _iSPAddressService.GetOldISPAddress(), _iSPAddressService.GetCurrentISPAddress(), _iSPAddressService.GetNewISPAddress(), mocValues, _emailService.APIEmailDetails);
 
                             if (report.Success)
                             {
@@ -140,8 +143,7 @@ namespace ISPAdressChecker.Controllers
                             break;
                         case Models.Enums.SendEmailTypeEnum.ISPAddressChanged:
 
-                            // ToDo make application send email with success ActionReportModel return
-                            report.Success = true;
+                            report = _emailService.SendISPAddressChangedEmail(_iSPAddressService.GetExternalISPAddress(), _iSPAddressService.GetOldISPAddress(), _ISPAddressCounterService, _applicationSettingsOptions.TimeIntervalInMinutes, emailRequest);
 
                             if (report.Success)
                             {

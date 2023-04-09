@@ -1,5 +1,5 @@
 ﻿<div>
-    <input type="text" class="input-field" placeholder="@PlaceHodlerText" @bind-value="@inputValue" />
+    <input type="text" class="input-field" placeholder="@PlaceHolderText" @bind-value="@inputValue" />
 </div>
 
 @code {
@@ -13,13 +13,13 @@
         set
         {
             if (inputValue == value) return;
-            inputValue = value;
+            value = inputValue;
             StringValueChanged.InvokeAsync(inputValue);
         }
     }
     [Parameter]
     [EditorRequired]
-    public string? PlaceHodlerText { get; set; }
+    public string? PlaceHolderText { get; set; }
 
     [Parameter]
     public EventCallback<string> StringValueChanged { get; set; }

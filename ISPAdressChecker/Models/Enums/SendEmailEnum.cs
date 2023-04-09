@@ -2,7 +2,8 @@
 {
     public enum SendEmailTypeEnum
     {
-        HeartBeatEmail = 0,
+        Internal = 0,
+        HeartBeatEmail,
         ISPAddressChanged
     }
 }

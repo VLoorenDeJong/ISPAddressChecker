@@ -782,6 +782,9 @@ namespace ISPAdressCheckerStatusDashboard
         [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Message { get; set; }
 
+        [Newtonsoft.Json.JsonProperty("sendEmailTypeEnum", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public SendEmailTypeEnum SendEmailTypeEnum { get; set; }
+
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.18.2.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -842,7 +845,8 @@ namespace ISPAdressCheckerStatusDashboard
         [Newtonsoft.Json.JsonProperty("emailValidated", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool EmailValidated { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("emailAddress", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("emailAddress", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required]
         public string EmailAddress { get; set; }
 
         [Newtonsoft.Json.JsonProperty("emailType", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -860,6 +864,8 @@ namespace ISPAdressCheckerStatusDashboard
         _0 = 0,
 
         _1 = 1,
+
+        _2 = 2,
 
     }
 

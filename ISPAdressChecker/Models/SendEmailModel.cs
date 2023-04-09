@@ -1,4 +1,5 @@
 ﻿using ISPAdressChecker.Models.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace ISPAdressChecker.Models
 {
@@ -7,10 +8,11 @@ namespace ISPAdressChecker.Models
 
         public SendEmailModel()
         {
-            Id = Guid.NewGuid().ToString();
+            Id = Guid.NewGuid().ToString("N");
         }
         public bool EmailValidated { get; set; }
-        public string? EmailAddress { get; set; }
+        [Required]
+        public string EmailAddress { get; set; } = string.Empty;
         public SendEmailTypeEnum EmailType { get; set; }
         public string Id { get; set; } 
 

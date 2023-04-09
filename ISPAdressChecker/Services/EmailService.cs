@@ -4,6 +4,10 @@ using Microsoft.Extensions.Options;
 using ISPAdressChecker.Options;
 using System.Net.Mail;
 using System.Net;
+using ISPAdressChecker.Models;
+using ISPAdressChecker.Models.Enums;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.Extensions.Logging;
 
 namespace ISPAdressChecker.Services
 {
@@ -14,11 +18,14 @@ namespace ISPAdressChecker.Services
         private readonly ApplicationSettingsOptions _applicationSettingsOptions;
 
         private MailMessage message = new MailMessage();
+        public SendEmailModel APIEmailDetails { get; private set; }
 
         public EmailService(ILogger<CheckISPAddressService> logger, IOptions<ApplicationSettingsOptions> applicationSettingsOptions)
         {
             _logger = logger;
             _applicationSettingsOptions = applicationSettingsOptions!.Value;
+
+            APIEmailDetails = CreateInternalSendEmail();
 
             CreateBasicMailMessage();
         }
@@ -27,7 +34,6 @@ namespace ISPAdressChecker.Services
         {
             // Set the sender, recipient, subject, and body of the message
             message.From = new MailAddress(_applicationSettingsOptions.EmailFromAdress!);
-            message.To.Add(new MailAddress(_applicationSettingsOptions.EmailToAdress!));
             message.Priority = MailPriority.High;
         }
 
@@ -48,47 +54,65 @@ namespace ISPAdressChecker.Services
             return outputMessage;
         }
 
-        private void SendEmail(string emailBody, string subject)
+        private ActionReportModel SendEmail(string subject, SendEmailModel sendEmailDetails, string emailBody)
         {
-            if (_applicationSettingsOptions is not null)
+            ActionReportModel report = new(sendEmailDetails);
+
+
+
+            //public bool Success { get; set; }
+            //public string Message { get; set; } = string.Empty;
+
+            if (_applicationSettingsOptions is not null && sendEmailDetails is not null)
             {
                 // Create a new SmtpClient object within a using block
                 using (SmtpClient client = new SmtpClient())
                 {
-                    client.Host = _applicationSettingsOptions.MailServer!; ; 
+                    client.Host = _applicationSettingsOptions.MailServer!; ;
                     client.Port = _applicationSettingsOptions.SMTPPort;
-                    client.UseDefaultCredentials = _applicationSettingsOptions.UseDefaultCredentials; 
-                    client.Credentials = new NetworkCredential(_applicationSettingsOptions?.UserName, _applicationSettingsOptions?.Password); 
-                    client.EnableSsl = _applicationSettingsOptions!.EnableSsl;             
-
+                    client.UseDefaultCredentials = _applicationSettingsOptions.UseDefaultCredentials;
+                    client.Credentials = new NetworkCredential(_applicationSettingsOptions?.UserName, _applicationSettingsOptions?.Password);
+                    client.EnableSsl = _applicationSettingsOptions!.EnableSsl;
 
                     message.Subject = subject;
                     message.Body = emailBody;
                     message.IsBodyHtml = true;
 
+                    if (string.IsNullOrWhiteSpace(sendEmailDetails.EmailAddress)) sendEmailDetails.EmailAddress = _applicationSettingsOptions!.EmailToAdress!;
+                    message.To.Add(new MailAddress(sendEmailDetails.EmailAddress));
+
                     try
                     {
                         // Send the email message
-                       // client.Send(message);
-                        _logger.LogInformation("Sending: {subj}", subject);
+                        client.Send(message);
+                        _logger.LogInformation("SendEmail -> Request Id: {id}, Sending: {subj}", sendEmailDetails.Id, subject);
+
+                        report.Success = true;
+                        report.Message = "E-mail has been send";
                     }
                     catch (System.Net.Mail.SmtpException ex)
                     {
                         Type exceptionType = ex.GetType();
-                        _logger.LogError("Email account password might be wrong. Exception type: {exceptionType}  Message:{message}", exceptionType, ex.Message);
+                        _logger.LogError("SendEmail -> Email account password might be wrong. Exception type: {exceptionType}  Message:{message}", exceptionType, ex.Message);
+
+                        report.Success = false;
+                        report.Message = $"Sending E-mail failed";
                     }
                     catch (Exception ex)
                     {
                         Type exceptionType = ex.GetType();
-                        _logger.LogError("Something went wrong with sending the email. Exception type: {exceptionType} Message:{message}", exceptionType, ex.Message);
+                        _logger.LogError("SendEmail -> Request Id: {id}, Something went wrong with sending the email. Exception type: {exceptionType} Message:{message}", sendEmailDetails.Id, exceptionType, ex.Message);
+
+                        report.Success = false;
+                        report.Message = $"Sending E-mail failed";
                     }
-
                 }
-
             }
+
+            return report;
         }
 
-        public void SendHeartBeatEmail(IISPAdressCounterService counterService, string oldISPAddress, string currentISPAddress, string newISPAddress, Dictionary<string, string> externalISPCheckResults)
+        public ActionReportModel SendHeartBeatEmail(IISPAdressCounterService counterService, string oldISPAddress, string currentISPAddress, string newISPAddress, Dictionary<string, string> externalISPCheckResults, SendEmailModel sendEmailDetails)
         {
             string message = $@"<p><strong>This was fun! </strong></p>"
                                  + $"<p>API calls:<strong> {counterService.GetServiceRequestCounter()}</strong></p>"
@@ -110,9 +134,9 @@ namespace ISPAdressChecker.Services
 
             string emailBody = CreateEmail(message);
 
-            _logger.LogInformation("Sending: SendHeartBeatEmail");
+            _logger.LogInformation("SendHeartBeatEmail -> Sending: SendHeartBeatEmail");
 
-            SendEmail(emailBody, "ISP address checker update");
+            return SendEmail("ISP address checker update", sendEmailDetails, emailBody);
         }
 
         public void SendCounterDifferenceEmail(IISPAdressCounterService counterService)
@@ -123,9 +147,9 @@ namespace ISPAdressChecker.Services
 
             string emailBody = CreateEmail(message);
 
-            _logger.LogInformation("Sending: SendCounterDifferenceEmail");
+            _logger.LogInformation("SendCounterDifferenceEmail -> Sending: CounterDifferenceEmail");
 
-            SendEmail(emailBody, "CheckISPAddress: counter difference");
+            SendEmail("CheckISPAddress: counter difference", APIEmailDetails, emailBody);
         }
 
         public void SendConfigErrorMail(string errorMessage)
@@ -133,9 +157,9 @@ namespace ISPAdressChecker.Services
             string emailBody = CreateEmail(errorMessage);
 
 
-            _logger.LogInformation("Sending: SendConfigErrorMail");
+            _logger.LogInformation("SendConfigErrorMail -> Sending: ConfigErrorMail");
 
-            SendEmail(emailBody, "CheckISPAddress: configuration error");
+            SendEmail("CheckISPAddress: configuration error", APIEmailDetails, emailBody);
         }
 
         public void SendConfigSuccessMail(IISPAdressCounterService counterService)
@@ -181,9 +205,9 @@ namespace ISPAdressChecker.Services
 
             string emailBody = CreateEmail(message);
 
-            _logger.LogInformation("Sending: SendConfigSuccessMail");
+            _logger.LogInformation("SendConfigSuccessMail -> Sending: ConfigSuccessMail");
 
-            SendEmail(emailBody, "ISPAdressChecker: Congratulations configuration succes!!");
+            SendEmail("ISPAdressChecker: Congratulations configuration succes!!", APIEmailDetails, emailBody);
         }
 
         public void SendConnectionReestablishedEmail(string newISPAddress, string oldISPAddress, IISPAdressCounterService counterService, double interval)
@@ -207,9 +231,9 @@ namespace ISPAdressChecker.Services
 
             string emailBody = CreateEmail(message);
 
-            _logger.LogInformation("Sending: SendConnectionReestablishedEmail");
+            _logger.LogInformation("SendConnectionReestablishedEmail -> Sending: ConnectionReestablishedEmail");
 
-            SendEmail(emailBody, "ISPAdressChecker:I found my self");
+            SendEmail("ISPAdressChecker:I found my self", APIEmailDetails, emailBody);
         }
 
         public void SendISPAPIHTTPExceptionEmail(string exceptionType, string exceptionMessage)
@@ -223,9 +247,9 @@ namespace ISPAdressChecker.Services
 
             string emailBody = CreateEmail(message);
 
-            _logger.LogInformation("Sending: SendISPAPIHTTPExceptionEmail");
+            _logger.LogInformation("SendISPAPIHTTPExceptionEmail -> Sending: ISPAPIHTTPExceptionEmail");
 
-            SendEmail(emailBody, "CheckISPAddress: API endpoint HTTP exception");
+            SendEmail("CheckISPAddress: API endpoint HTTP exception", APIEmailDetails, emailBody);
         }
 
         public void SendISPAPIExceptionEmail(string exceptionType, string exceptionMessage)
@@ -241,9 +265,9 @@ namespace ISPAdressChecker.Services
 
             string emailBody = CreateEmail(message);
 
-            _logger.LogInformation("Sending: SendISPAPIExceptionEmail");
+            _logger.LogInformation("SendISPAPIExceptionEmail -> Sending: ISPAPIExceptionEmail");
 
-            SendEmail(emailBody, "CheckISPAddress: API Call error");
+            SendEmail("CheckISPAddress: API Call error", APIEmailDetails, emailBody);
         }
 
         public void SendExternalAPIHTTPExceptionEmail(string APIUrl, string exceptionType, string exceptionMessage)
@@ -258,9 +282,9 @@ namespace ISPAdressChecker.Services
 
             string emailBody = CreateEmail(message);
 
-            _logger.LogInformation("Sending: SendExternalAPIHTTPExceptionEmail");
+            _logger.LogInformation("SendExternalAPIHTTPExceptionEmail -> Sending: ExternalAPIHTTPExceptionEmail");
 
-            SendEmail(emailBody, "CheckISPAddress: Backup API HTTP exception");
+            SendEmail("CheckISPAddress: Backup API HTTP exception", APIEmailDetails, emailBody);
         }
 
         public void SendExternalAPIExceptionEmail(string APIUrl, string exceptionType, string exceptionMessage)
@@ -274,18 +298,23 @@ namespace ISPAdressChecker.Services
 
             string emailBody = CreateEmail(message);
 
-            _logger.LogInformation("Sending: SendExternalAPIExceptionEmail");
+            _logger.LogInformation("SendExternalAPIExceptionEmail -> Sending: ExternalAPIExceptionEmail");
 
-            SendEmail(emailBody, "CheckISPAddress: API Call error");
+            SendEmail("CheckISPAddress: API Call error", APIEmailDetails, emailBody);
         }
 
-        public void SendISPAdressChangedEmail(string externalISPAddress, string oldISPAddress, IISPAdressCounterService counterService, double interval)
+        public ActionReportModel SendISPAddressChangedEmail(string externalISPAddress, string oldISPAddress, IISPAdressCounterService counterService, double interval, SendEmailModel sendEmailDetails)
         {
             // hostingProviderText is the link to the hostprovider, id specified is shows the name
             string hostingProviderText = string.Equals(_applicationSettingsOptions?.DNSRecordHostProviderName, StandardAppsettingsValues.DNSRecordHostProviderName, StringComparison.CurrentCultureIgnoreCase) ? _applicationSettingsOptions?.DNSRecordHostProviderURL! : _applicationSettingsOptions?.DNSRecordHostProviderName!;
 
+            string hostingProviderLink = $"<p>Go to <a href = '{_applicationSettingsOptions?.DNSRecordHostProviderURL}' target=\"_blank\"> <strong>{hostingProviderText}</strong> </a> to update the DNS record.</p>";
+            string externalEmailLink = $"<p>Go to <a href = '{_applicationSettingsOptions?.APIEndpointURL}'target=\"_blank\"> <strong>Your provider link goes here</strong> </a> to update the DNS record.</p>";
+
+            string emailLink = sendEmailDetails.EmailType != SendEmailTypeEnum.Internal ? externalEmailLink : hostingProviderLink;
+
             string message = @$"<p><strong> {externalISPAddress} </strong> is your new ISP adress</p>"
-                              + $"<p>Go to <a href = '{_applicationSettingsOptions?.DNSRecordHostProviderURL}'> <strong>{hostingProviderText}</strong> </a> to update the DNS record.</p>"
+                              + $"{emailLink}"
                               + $"<p>External API calls: <strong>{counterService.GetExternalServiceCheckCounter()}</strong></p>"
                               + $"<p>I wish you a splendid rest of your day!</p>"
                               + $"<p>Your API</p>"
@@ -302,9 +331,9 @@ namespace ISPAdressChecker.Services
 
             string emailBody = CreateEmail(message);
 
-            _logger.LogInformation("Sending: SendISPAdressChangedEmail");
+            _logger.LogInformation("SendISPAdressChangedEmail -> Sending: ISPAdressChangedEmail");
 
-            SendEmail(emailBody, _applicationSettingsOptions?.EmailSubject!);
+            return SendEmail(_applicationSettingsOptions?.EmailSubject!, sendEmailDetails, emailBody);
         }
 
         public void SendDifferendISPAdressValuesEmail(Dictionary<string, string> externalISPAdressChecks, string oldISPAddress, IISPAdressCounterService counterService, double interval)
@@ -333,9 +362,9 @@ namespace ISPAdressChecker.Services
 
             string emailBody = CreateEmail(message);
 
-            _logger.LogInformation("Sending: SendDifferendISPAdressValuesEmail");
+            _logger.LogInformation("SendDifferendISPAdressValuesEmail -> Sending: DifferendISPAdressValuesEmail");
 
-            SendEmail(emailBody, "ISPAdressChecker: multiple ISP adresses were returned");
+            SendEmail("ISPAdressChecker: multiple ISP adresses were returned", APIEmailDetails, emailBody);
         }
 
         public void SendNoISPAdressReturnedEmail(string oldISPAddress, IISPAdressCounterService counterService, double interval)
@@ -357,9 +386,28 @@ namespace ISPAdressChecker.Services
 
             string emailBody = CreateEmail(message);
 
-            _logger.LogInformation("Sending: SendNoISPAdressReturnedEmail");
+            _logger.LogInformation("SendNoISPAdressReturnedEmail -> Sending: NoISPAdressReturnedEmail");
 
-            SendEmail(emailBody, "ISPAdressChecker: No ISP adresses were returned");
+            SendEmail("ISPAdressChecker: No ISP adresses were returned", APIEmailDetails, emailBody);
+        }
+
+        private SendEmailModel CreateInternalSendEmail()
+        {
+            SendEmailModel output = new();
+
+            if (Helpers.ConfigHelpers.EmailAddressIsValid(_applicationSettingsOptions?.EmailToAdress))
+            {
+                output.EmailValidated = true;
+                output.EmailAddress = _applicationSettingsOptions!.EmailToAdress!;
+                output.EmailType = SendEmailTypeEnum.Internal;
+            }
+            else
+            {
+                _logger.LogError("CreateInternalSendEmail -> EmailToAddress not valid, E-mail: {email}", _applicationSettingsOptions?.EmailToAdress);
+                throw new Exception($"CreateInternalSendEmail -> EmailToAddress not valid, E-mail: {_applicationSettingsOptions?.EmailToAdress}");
+            }
+
+            return output;
         }
     }
 }
