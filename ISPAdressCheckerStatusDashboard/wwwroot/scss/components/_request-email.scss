@@ -1,4 +1,26 @@
 ﻿.interactive-row-element {
+
+    .message {
+
+        &--success {
+            margin: 5px;
+            background-color: #03BA71;
+            color: $primary-color;
+            border-radius: 5px;
+            max-width: 60%;
+            margin: auto;
+        }
+
+        &--warning {
+            margin: 5px;
+            background-color: #FFAE00;
+            color: #A30008;
+            border-radius: 5px;
+            max-width: 60%;
+            margin: auto;
+        }
+    }
+
     .input-text-header-header {
         font-family: $secondary-font;
         color: $secondary-color;
@@ -7,6 +29,11 @@
         margin-bottom: 4px;
     }
 
+    .validation-message-section {
+        text-align: center;
+        height: 30px;
+        width: 100%;
+    }
 
     .input-text-header {
         font-family: $secondary-font;
@@ -24,6 +51,7 @@
         border-radius: 6px;
         font-size: 12px;
         padding: 5px;
+        margin-bottom: 5px;
 
         &:hover {
             color: $tertiary-color;
@@ -56,6 +84,30 @@
 
     .interactive-row-element {
         padding-top: 1em;
+
+        .message {
+
+            &--success {
+                max-width: 50%;
+                padding: 5px;
+                font-family: $tertiary-font;
+            }
+
+            &--warning {
+                padding: 5px;
+                max-width: 50%;
+                font-family: $tertiary-font;
+            }
+        }
+
+        .message-warning {
+        }
+
+        .validation-message-section {
+            margin: auto;
+            height: 30px;
+            width: 100%;
+        }
 
         .input-text-header-header {
             font-size: 22px;

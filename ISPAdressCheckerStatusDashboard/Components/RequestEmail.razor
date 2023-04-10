@@ -5,6 +5,9 @@
 
 <div class="interactive-row-element col">
     <div class="align-items-center">
+
+
+
         <div class="input-text-header-header">
             Send me a:
         </div>
@@ -13,7 +16,7 @@
             @ItemHeader
         </div>
 
-        <InputText PlaceHolderText="E-mail address" @bind-StringValue="@emailRequest.EmailAddress" />
+        <InputText PlaceHolderText="E-mail address" @bind-StringValue="@emailRequest.EmailAddress" ShowValidation="@displayMessage" InputValid="@report.Success" />
 
         @switch (EmailType)
         {
@@ -50,6 +53,28 @@
                 break;
         }
     </div>
+
+    <div class="validation-message-section">
+    @if (displayMessage)
+    {
+            @switch (report?.Success)
+            {
+                case true:
+
+                    <div class="message--success">
+                        @report.Message
+                    </div>
+                    break;
+
+                case false:
+                    <div class="message--warning">
+                        @report.Message
+                    </div>
+                    break;
+            }
+        }
+    </div>
+
 </div>
 
 @code {
@@ -64,7 +89,9 @@
 
     private SendEmailModel emailRequest = new();
 
-    private ActionReportModel report;
+    private ActionReportModel report = new();
+
+    private bool displayMessage;
 
     protected override Task OnInitializedAsync()
     {
@@ -74,8 +101,18 @@
         return base.OnInitializedAsync();
     }
 
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (string.IsNullOrEmpty(emailRequest?.EmailAddress)) displayMessage = false;
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
     private async Task OnSendEmailButtonClicked()
     {
+        displayMessage = false;
+        // Trim spaces
+        if (!string.IsNullOrWhiteSpace(emailRequest.EmailAddress)) emailRequest.EmailAddress = emailRequest.EmailAddress.Replace(" ", "");
+
         if (ISPAdressChecker.Helpers.ConfigHelpers.EmailAddressIsValid(emailRequest.EmailAddress))
         {
             switch (EmailType)
@@ -93,6 +130,7 @@
 
             emailRequest.EmailValidated = true;
             report = await _emailService.RequestEmail(emailRequest);
+            displayMessage = true;
         }
         else
         {
@@ -101,6 +139,7 @@
                     Success = false,
                     Message = "Email address not valid"
                 };
+            displayMessage = true;
         }
     }
 

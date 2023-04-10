@@ -155,7 +155,7 @@ namespace ISPAdressChecker.Controllers
                             break;
                     }
                 }
-                if (!report.Success)
+                if (report.Success)
                 {
                     _logger.LogInformation("ISPAddressCheckSendEmailRequest -> Failed -> RequestId: {id}, EmailType:{type} -> E-mail address:{email}, message: {message}", report.Id, emailRequest.EmailType, Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress), report.Message);
                     return BadRequest(report);

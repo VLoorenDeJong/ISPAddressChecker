@@ -18,6 +18,16 @@ input[type="text"] {
         width: 300px;
         height: 40px;
     }
+
+
+    &.text-invalid {
+        box-shadow: 0 0 0 1px rgba(178, 8, 0, 0.5), 0 0 3px rgba(178, 8, 0, 0.5);
+    }
+
+    &.text-valid {
+        box-shadow: 0 0 0 1px rgb(22, 81, 24, 0.50), 0 0 3px rgb(119, 195, 132, 0.50);
+    }
+
 }
 
 .input-field {
@@ -46,5 +56,17 @@ input[type="text"] {
         border-radius: 5px;
         border: solid 2px $secondary-color;
         font-size:25px;
+    }
+
+    input[type="text"] {
+
+
+        &.text-invalid {
+            box-shadow: 0 0 0 5px rgba(178, 8, 0, 0.5), 0 0 10px rgba(178, 8, 0, 0.5);
+        }
+
+        &.text-valid {
+            box-shadow: 0 0 0 5px rgb(22, 81, 24, 0.50), 0 0 10px rgb(119, 195, 132, 0.50);
+        }
     }
 }

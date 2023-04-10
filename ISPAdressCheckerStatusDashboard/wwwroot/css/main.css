@@ -151,6 +151,12 @@ input[type=text]:focus {
     height: 40px;
   }
 }
+input[type=text].text-invalid {
+  box-shadow: 0 0 0 1px rgba(178, 8, 0, 0.5), 0 0 3px rgba(178, 8, 0, 0.5);
+}
+input[type=text].text-valid {
+  box-shadow: 0 0 0 1px rgba(22, 81, 24, 0.5), 0 0 3px rgba(119, 195, 132, 0.5);
+}
 
 .input-field {
   border-radius: 5px;
@@ -179,6 +185,28 @@ input[type=text]:focus {
     border: solid 2px #547884;
     font-size: 25px;
   }
+  input[type=text].text-invalid {
+    box-shadow: 0 0 0 5px rgba(178, 8, 0, 0.5), 0 0 10px rgba(178, 8, 0, 0.5);
+  }
+  input[type=text].text-valid {
+    box-shadow: 0 0 0 5px rgba(22, 81, 24, 0.5), 0 0 10px rgba(119, 195, 132, 0.5);
+  }
+}
+.interactive-row-element .message--success {
+  margin: 5px;
+  background-color: #03BA71;
+  color: #10232B;
+  border-radius: 5px;
+  max-width: 60%;
+  margin: auto;
+}
+.interactive-row-element .message--warning {
+  margin: 5px;
+  background-color: #FFAE00;
+  color: #A30008;
+  border-radius: 5px;
+  max-width: 60%;
+  margin: auto;
 }
 .interactive-row-element .input-text-header-header {
   font-family: Tahoma;
@@ -186,6 +214,11 @@ input[type=text]:focus {
   font-size: 12px;
   margin-left: 3px;
   margin-bottom: 4px;
+}
+.interactive-row-element .validation-message-section {
+  text-align: center;
+  height: 30px;
+  width: 100%;
 }
 .interactive-row-element .input-text-header {
   font-family: Tahoma;
@@ -202,6 +235,7 @@ input[type=text]:focus {
   border-radius: 6px;
   font-size: 12px;
   padding: 5px;
+  margin-bottom: 5px;
 }
 .interactive-row-element button:hover {
   color: #ecfcff;
@@ -227,6 +261,21 @@ input[type=text]:focus {
 @media (max-width: 1000px) {
   .interactive-row-element {
     padding-top: 1em;
+  }
+  .interactive-row-element .message--success {
+    max-width: 50%;
+    padding: 5px;
+    font-family: "Lucida Sans";
+  }
+  .interactive-row-element .message--warning {
+    padding: 5px;
+    max-width: 50%;
+    font-family: "Lucida Sans";
+  }
+  .interactive-row-element .validation-message-section {
+    margin: auto;
+    height: 30px;
+    width: 100%;
   }
   .interactive-row-element .input-text-header-header {
     font-size: 22px;
@@ -294,4 +343,4 @@ input[type=text]:focus {
   }
 }
 
-/*# sourceMappingURL=data:application/json;charset=utf-8,%7B%22version%22:3,%22sourceRoot%22:%22%22,%22sources%22:%5B%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/bootstrap-overrides/_bootstrap-overrides.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/layout/_main-layout.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/partials/_variables.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_health-indicator.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_linear-gauge.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_InputText.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_request-email.scss%22%5D,%22names%22:%5B%5D,%22mappings%22:%22AAAC;AACD;AAAA;EAEI;;;ACHH;EACG,kBCCa;EDAb;;;AAGJ;EACI;EACA;;;AAGJ;EACI;;;AAGA;EACI;IACI;AACA;AAAA;;;AAKR;EACI;EACA;EACA;;;AAGJ;EACI;EACA;EACA;EACA;;;AAIJ;EACI;EACA;;;AAGJ;EACI;IACI;IACA;IACA;;;AAIR;EACI;IACI;IACA;;;AEnDR;EACI;EACA,kBDHS;ECIT,ODFS;ECGT;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;AAEA;EACI;EACA;EACA;;AAGJ;EACI;EACA;EACA;EACA,ODvBM;;AC0BV;EACI;EACA;EACA;EACA,OD9BM;;ACiCV;EACI;EACA;EACA;EACA,ODrCM;ECsCN,aDlCE;;ACqCN;EACI;EACA;;AAGJ;EACI;EACA,ODhDM;ECiDN,aD7CE;EC8CF;;;ACnDX;EACG;EACA;EACA;EACA;EACA;;;AAGJ;EACI;EACA;EACA;EACA;EACA;;;AAGJ;EACI;EACA;EACA;EACA;EACA;EACA;EACA;EACA,OFvBc;;;AGDjB;AAAA;AAAA;AAAA;AAKD;EACI,OHNa;;AGQb;EACI;EACA;AACA;EACA;;AAGJ;EAVJ;IAWQ;IACA;IACA;;;;AAIR;EACI;EACA;;;AAGJ;EACI,OH3Bc;;;AG8BlB;EACI,OH/Bc;;;AGkClB;EACI,OHnCc;;;AGsClB;EACI,OHvCc;;;AG0ClB;EACI;IACI;IACA;IACA;;;AC9CJ;EACI,aJKC;EIJD,OJFU;EIGV;EACA;EACA;;AAIJ;EACI,aJJC;EIKD,OJXU;EIYV;EACA;EACA;EACA;;AAGJ;EACI,OJnBU;EIoBV;EACA;EACA;EACA;EACA;;AAEA;EACI,OJ1BK;EI2BL;EACA,kBJ9BK;;AIiCT;EACI;;AAGJ;EACI;;AAEA;EACI,OJxCE;EIyCF;EACA;;;AAOhB;EACI;;;AAGJ;EAEI;IACI;;EAEA;IACI;IACA;IACA;;EAIJ;IACI;IACA;IACA;IACA;;EAGJ;IACI;IACA;IACA;;EAIJ;IACI;IACA;IACA;IACA;;EAGJ;IACI;IACA;IACA;;EAGJ;IACI;IACA;IACA;IACA;;EAGJ;IACI;;EAGJ;IACI;IACA;IACA;IACA;IACA;IACA;;EAEA;IACI;IACA,OJhHC;IIiHD;IACA;IACA,kBJrHC;;EIwHL;IACI;IACA;IACA;;EAGJ;IACI;;EAEA;IACI,OJjIF;IIkIE;IACA%22%7D */
+/*# sourceMappingURL=data:application/json;charset=utf-8,%7B%22version%22:3,%22sourceRoot%22:%22%22,%22sources%22:%5B%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/bootstrap-overrides/_bootstrap-overrides.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/layout/_main-layout.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/partials/_variables.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_health-indicator.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_linear-gauge.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_InputText.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAdressChecker/ISPAdressCheckerStatusDashboard/wwwroot/scss/components/_request-email.scss%22%5D,%22names%22:%5B%5D,%22mappings%22:%22AAAC;AACD;AAAA;EAEI;;;ACHH;EACG,kBCCa;EDAb;;;AAGJ;EACI;EACA;;;AAGJ;EACI;;;AAGA;EACI;IACI;AACA;AAAA;;;AAKR;EACI;EACA;EACA;;;AAGJ;EACI;EACA;EACA;EACA;;;AAIJ;EACI;EACA;;;AAGJ;EACI;IACI;IACA;IACA;;;AAIR;EACI;IACI;IACA;;;AEnDR;EACI;EACA,kBDHS;ECIT,ODFS;ECGT;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;AAEA;EACI;EACA;EACA;;AAGJ;EACI;EACA;EACA;EACA,ODvBM;;AC0BV;EACI;EACA;EACA;EACA,OD9BM;;ACiCV;EACI;EACA;EACA;EACA,ODrCM;ECsCN,aDlCE;;ACqCN;EACI;EACA;;AAGJ;EACI;EACA,ODhDM;ECiDN,aD7CE;EC8CF;;;ACnDX;EACG;EACA;EACA;EACA;EACA;;;AAGJ;EACI;EACA;EACA;EACA;EACA;;;AAGJ;EACI;EACA;EACA;EACA;EACA;EACA;EACA;EACA,OFvBc;;;AGDjB;AAAA;AAAA;AAAA;AAKD;EACI,OHNa;;AGQb;EACI;EACA;AACA;EACA;;AAGJ;EAVJ;IAWQ;IACA;IACA;;;AAIJ;EACI;;AAGJ;EACI;;;AAKR;EACI;EACA;;;AAGJ;EACI,OHrCc;;;AGwClB;EACI,OHzCc;;;AG4ClB;EACI,OH7Cc;;;AGgDlB;EACI,OHjDc;;;AGoDlB;EACI;IACI;IACA;IACA;;EAMA;IACI;;EAGJ;IACI;;;AChEJ;EACI;EACA;EACA,OJPK;EIQL;EACA;EACA;;AAGJ;EACI;EACA;EACA;EACA;EACA;EACA;;AAIR;EACI,aJjBC;EIkBD,OJxBU;EIyBV;EACA;EACA;;AAGJ;EACI;EACA;EACA;;AAGJ;EACI,aJ/BC;EIgCD,OJtCU;EIuCV;EACA;EACA;EACA;;AAGJ;EACI,OJ9CU;EI+CV;EACA;EACA;EACA;EACA;EACA;;AAEA;EACI,OJtDK;EIuDL;EACA,kBJ1DK;;AI6DT;EACI;;AAGJ;EACI;;AAEA;EACI,OJpEE;EIqEF;EACA;;;AAOhB;EACI;;;AAGJ;EAEI;IACI;;EAII;IACI;IACA;IACA,aJtFD;;EIyFH;IACI;IACA;IACA,aJ5FD;;EImGP;IACI;IACA;IACA;;EAGJ;IACI;IACA;IACA;;EAIJ;IACI;IACA;IACA;IACA;;EAGJ;IACI;IACA;IACA;;EAIJ;IACI;IACA;IACA;IACA;;EAGJ;IACI;IACA;IACA;;EAGJ;IACI;IACA;IACA;IACA;;EAGJ;IACI;;EAGJ;IACI;IACA;IACA;IACA;IACA;IACA;;EAEA;IACI;IACA,OJpKC;IIqKD;IACA;IACA,kBJzKC;;EI4KL;IACI;IACA;IACA;;EAGJ;IACI;;EAEA;IACI,OJrLF;IIsLE;IACA%22%7D */
