@@ -16,11 +16,16 @@ namespace ISPAdressChecker.Models
             StatusUpdateRequested = statusCounterService.GetStatusUpdateRequested();
             StartDateTime = timerService.GetStartDateTime();
             CurrentISPAddress = iSPAddressService.GetCurrentISPAddress();
-            RequestSuccessPercentage = ISPAdressCounterService.GetSuccessPercentage();  
+            RequestSuccessPercentage = ISPAdressCounterService.GetSuccessPercentage();
+
+            InternalISPCheckCounter = ISPAdressCounterService.GetInternalISPCheckCounter();
+            ExternalISPCheckCounter = ISPAdressCounterService.GetExternalISPCheckCounter();
         }
 
         public int ISPEndpointRequests { get; }
         public int ServiceRequestCounter { get; }
+        public int InternalISPCheckCounter { get; }
+        public int ExternalISPCheckCounter { get; }
         public int StatusUpdateRequested { get; }
         public DateTimeOffset StartDateTime { get; }
         public int RequestSuccessPercentage { get; set; } = 83;

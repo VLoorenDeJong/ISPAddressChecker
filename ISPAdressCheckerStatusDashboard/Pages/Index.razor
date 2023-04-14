@@ -6,6 +6,7 @@
 
 @inject ITimerService timerService;
 @inject IStatusService statusService;
+@inject ICounterService counterService;
 
 @implements IDisposable
 
@@ -19,12 +20,7 @@
         <RequestEmail ItemHeader="Heartbeat E-mail:" EmailType="SendEmailTypeEnum._1" />
         <RequestEmail ItemHeader="ISP Address changed E-mail" EmailType="SendEmailTypeEnum._2" />
     </div>
-
-    <div class="stats-section">
-        <div class="justify-content-center">
-            STATS XYZ
-        </div>
-    </div>
+    <RequestDivision DashboardRequests="@value" ExternalISPCheckCounter="@(statusService!.CurrentStatus.InternalISPCheckCounter)" InternalISPCheckCounter="@(statusService.CurrentStatus.ExternalISPCheckCounter)" />
 
     <div class="log-section">
         <div class="justify-content-center">
@@ -42,6 +38,8 @@
 
     private int successRate;
 
+    int value;
+
     protected override async Task OnInitializedAsync()
     {
         statusService.OnChange += OnStatusChange;
@@ -56,6 +54,8 @@
             await StartTimers();
             await statusService.GetStatus();
         }
+
+        value = counterService.GetDashboardISPAddressRequestCounter();
 
         await base.OnAfterRenderAsync(firstRender);
     }

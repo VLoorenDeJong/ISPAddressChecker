@@ -12,11 +12,13 @@ namespace ISPAdressChecker.Controllers
     {
         private readonly IISPAdressCounterService _counterService;
         private readonly ILogger<HTTPController> _logger;
+        private readonly IISPAddressService _iSPAddressService;
 
-        public HTTPController(ILogger<HTTPController> logger, IISPAdressCounterService counterService)
+        public HTTPController(ILogger<HTTPController> logger, IISPAdressCounterService counterService, IISPAddressService iSPAddressService)
         {
             _counterService = counterService;
             _logger = logger;
+            _iSPAddressService = iSPAddressService;
         }
 
         [HttpGet("MyISPAdress", Name = "MyISPAdress")]
@@ -50,6 +52,15 @@ namespace ISPAdressChecker.Controllers
                 {
                     outputString = addresses[0].Trim();
                 }
+            }
+
+            if (string.Equals(outputString, _iSPAddressService.GetCurrentISPAddress(), StringComparison.CurrentCultureIgnoreCase))
+            {
+                _counterService.AddInternalISPCheckCounter();
+            }
+            else
+            {
+                _counterService.AddExternalISPCheckCounter();
             }
 
             if (!string.IsNullOrEmpty(outputString))

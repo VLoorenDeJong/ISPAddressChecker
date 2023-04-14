@@ -796,6 +796,12 @@ namespace ISPAdressCheckerStatusDashboard
         [Newtonsoft.Json.JsonProperty("serviceRequestCounter", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int ServiceRequestCounter { get; set; }
 
+        [Newtonsoft.Json.JsonProperty("internalISPCheckCounter", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int InternalISPCheckCounter { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("externalISPCheckCounter", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int ExternalISPCheckCounter { get; set; }
+
         [Newtonsoft.Json.JsonProperty("statusUpdateRequested", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int StatusUpdateRequested { get; set; }
 

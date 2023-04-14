@@ -14,7 +14,7 @@
 
     @media (min-width: $break-point) {
         .interactive-row-element {
-            padding: 50px;
+            padding: 30px;
             /*    background-color:yellow;
     border:solid 1px red;*/
         }
@@ -22,8 +22,6 @@
 
     .stats-section {
         padding: 50px;
-        background-color: red;
-        border: solid 1px red;
     }
 
     .log-section {
@@ -43,7 +41,7 @@
         .col {
             flex-basis: 33.33%;
             box-sizing: border-box;
-            padding-top: 150px;
+            padding-top: 40px;
         }
     }
 

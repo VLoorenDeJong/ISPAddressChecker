@@ -111,7 +111,7 @@ namespace ISPAdressCheckerStatusDashboard.Services
             // Create a timer that triggers the method after 24 hours
             Timer timer = new Timer(async (state) =>
             {
-                _counterService.ResetCounters();
+                _counterService.ResetEmailCounters();
             }, null, timeUntilNextOccurrence, TimeSpan.FromHours(24));
 
             // Testing code

@@ -118,7 +118,7 @@ namespace ISPAdressChecker.Services
                                  + $"<p>API calls:<strong> {counterService.GetServiceRequestCounter()}</strong></p>"
                                  + $"<p>API call check: <strong>{counterService.GetServiceCheckCounter()}</strong></p>"
                                  + $"<p>Internal API calls: <strong>{counterService.GetISPEndpointRequestsCounter()}</strong></p>"
-                                 + $"<p>External API calls: <strong>{counterService.GetExternalServiceCheckCounter()}</strong></p>"
+                                 + $"<p>External API calls: <strong>{counterService.GetExternalServiceUsekCounter()}</strong></p>"
                                  + $@"<p>Current ISP: <strong> {currentISPAddress}</strong></p>";
             foreach (KeyValuePair<string, string> ISPAdressCheck in externalISPCheckResults!)
             {
@@ -222,7 +222,7 @@ namespace ISPAdressChecker.Services
                             + $"<p>A call is made every <strong> {interval} </strong>minutes</p>"
                             + $"<p>The time of this check: <strong> {DateTime.Now.ToString(_applicationSettingsOptions?.DateTimeFormat)} </strong></p>"
                             + $"<p>Failed attempts counter: <strong> {counterService.GetFailedISPRequestCounter()} </strong>(This counter is reset after this E-mail is send)</p>"
-                            + $"<p>External API calls: <strong>{counterService.GetExternalServiceCheckCounter()}</strong></p>"
+                            + $"<p>External API calls: <strong>{counterService.GetExternalServiceUsekCounter()}</strong></p>"
                             + $"<p>API Calls: <strong> {counterService.GetServiceRequestCounter()} </strong></p>"
                             + $"<p>Script runs: <strong> {counterService.GetServiceCheckCounter()} </strong></p>"
                             + $"<p>Endpoint calls: <strong> {counterService.GetISPEndpointRequestsCounter()} </strong></p>"
@@ -315,7 +315,7 @@ namespace ISPAdressChecker.Services
 
             string message = @$"<p><strong> {externalISPAddress} </strong> is your new ISP adress</p>"
                               + $"{emailLink}"
-                              + $"<p>External API calls: <strong>{counterService.GetExternalServiceCheckCounter()}</strong></p>"
+                              + $"<p>External API calls: <strong>{counterService.GetExternalServiceUsekCounter()}</strong></p>"
                               + $"<p>I wish you a splendid rest of your day!</p>"
                               + $"<p>Your API</p>"
                               + $"<p><strong>Here are some statistics:</strong></p>"

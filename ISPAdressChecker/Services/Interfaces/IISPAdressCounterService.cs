@@ -2,14 +2,18 @@
 {
     public interface IISPAdressCounterService
     {
-        void AddExternalServiceCheckCounter();
+        void AddExternalISPCheckCounter();
+        void AddExternalServiceUseCounter();
         void AddFailedISPRequestCounter();
+        void AddInternalISPCheckCounter();
         void AddISPEndpointRequests();
         void AddServiceCheckCounter();
         void AddServiceRequestCounter();
         void AddSuccessFullRequestsCounter();
-        int GetExternalServiceCheckCounter();
+        int GetExternalISPCheckCounter();
+        int GetExternalServiceUsekCounter();
         int GetFailedISPRequestCounter();
+        int GetInternalISPCheckCounter();
         int GetISPEndpointRequestsCounter();
         int GetServiceCheckCounter();
         int GetServiceRequestCounter();

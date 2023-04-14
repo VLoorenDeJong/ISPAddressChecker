@@ -149,12 +149,12 @@ public class CheckISPAddressService : ICheckISPAddressService
 
     public async Task GetISPAddressFromBackupAPIs(bool heartBeatCheck)
     {
-        _logger.LogInformation("GetISPAddressFromBackupAPIs -> External call started, external call counter:{count}", _counterService.GetExternalServiceCheckCounter());
+        _logger.LogInformation("GetISPAddressFromBackupAPIs -> External call started, external call counter:{count}", _counterService.GetExternalServiceUsekCounter());
 
         if (ISPAdressChecks is null) ISPAdressChecks = new();
         ISPAdressChecks.Clear();
 
-        _counterService.AddExternalServiceCheckCounter();
+        _counterService.AddExternalServiceUseCounter();
 
         foreach (string? APIUrl in _applicationSettingsOptions?.BackupAPIS!)
         {

@@ -1,0 +1,36 @@
+﻿.stats-section {
+    /*
+
+$request-division-color-1:;
+$request-division-color-2:;
+$request-division-color-3:;
+      */
+    .linear-gauge {
+        display: flex;
+        height: 50px;
+        text-align:center;
+        padding:auto;
+    }
+
+    .gauge-bar {
+        color:$tertiary-color;
+        flex-grow: 1;
+        height: 100%;
+        border-radius: 5px;
+        height: 20px;
+        margin-top: 30px;
+        padding: 5px;
+    }
+
+    .color1 {
+        background-color: $request-division-color-1;
+    }
+
+    .color2 {
+        background-color: $request-division-color-2;
+    }
+
+    .color3 {
+        background-color: $request-division-color-3;
+    }
+}

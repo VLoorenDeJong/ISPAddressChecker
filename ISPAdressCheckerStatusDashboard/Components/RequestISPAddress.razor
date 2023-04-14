@@ -2,6 +2,8 @@
 
 @inject IRequestISPAddressService ispService;
 @inject IStatusService statusService;
+@inject ICounterService counterService;
+
 
 @implements IDisposable
 
@@ -54,6 +56,7 @@
 
         if (!string.IsNullOrEmpty(endpointURL))
         {
+            counterService.AddDashboardISPAddressRequestCounter();
             var httpClient = new HttpClient();
             var response = await httpClient.GetAsync(endpointURL);
             if (response.IsSuccessStatusCode)
@@ -61,6 +64,8 @@
                 visitorIspAddress = await response.Content.ReadAsStringAsync();
             }
         }
+
+        await statusService.GetStatus();
     }
 
     public void Dispose()

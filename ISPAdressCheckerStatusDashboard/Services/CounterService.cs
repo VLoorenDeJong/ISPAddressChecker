@@ -4,8 +4,9 @@ namespace ISPAdressCheckerStatusDashboard.Services
 {
     public class CounterService : ICounterService
     {
-        public int HeartbeatEmailRequestCounter = 10;
-        public int ISPAddressChangedRequestCounter = 10;
+        private int HeartbeatEmailRequestCounter = 10;
+        private int ISPAddressChangedRequestCounter = 10;
+        private int DashboardISPAddressRequestCounter;
 
         public int GetHeartbeatEmailRequestCounter()
         {
@@ -24,12 +25,21 @@ namespace ISPAdressCheckerStatusDashboard.Services
             ISPAddressChangedRequestCounter--;
         }
 
-
-        public void ResetCounters()
+        public void ResetEmailCounters()
         {
             ISPAddressChangedRequestCounter = 10;
             HeartbeatEmailRequestCounter = 10;
         }
 
+
+
+        public int GetDashboardISPAddressRequestCounter()
+        {
+            return DashboardISPAddressRequestCounter;
+        }
+        public void AddDashboardISPAddressRequestCounter()
+        {
+            DashboardISPAddressRequestCounter++;
+        }
     }
 }

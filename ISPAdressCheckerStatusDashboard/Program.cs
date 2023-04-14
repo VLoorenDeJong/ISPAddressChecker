@@ -22,6 +22,8 @@ builder.Services.AddTransient<IRequestEmailService, RequestEmailService>();
 builder.Services.AddTransient<IRequestISPAddressService, RequestISPAddressService>();
 builder.Services.AddTransient<IISPAddressCheckerStatusService, ISPAddressCheckerStatusService>();
 
+//ToDo Email text box input changed after sending. Sends email to old address? (Email adress not updated after input second email address)
+// ToDo Enpoint URL removal from appsettings
 
 var app = builder.Build();
 

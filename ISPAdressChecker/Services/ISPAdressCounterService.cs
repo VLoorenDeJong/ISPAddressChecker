@@ -11,16 +11,23 @@ namespace ISPAdressChecker.Services
             ServiceRequestCounter = 0;
             ServiceCheckCounter = 1;
             FailedISPRequestCounter = 0;
-            ExternalServiceCheckCounter = 0;
+            ExternalServiceUseCounter = 0;
             TotalFailedISPRequestCounter = 0;
             SuccessFullRequestsCounter = 0;
             SuccessPercentage = 100;
+
+
+            // Testing code:
+            //InternalISPCheckCounter = 81;
+            //ExternalISPCheckCounter = 17;
         }
 
         private int ISPEndpointRequests;
         private int ServiceRequestCounter;
         private int ServiceCheckCounter;
-        private int ExternalServiceCheckCounter;
+        private int ExternalServiceUseCounter;
+        private int InternalISPCheckCounter;
+        private int ExternalISPCheckCounter;
         private int FailedISPRequestCounter;
         private int TotalFailedISPRequestCounter;
         private int SuccessFullRequestsCounter;
@@ -73,14 +80,35 @@ namespace ISPAdressChecker.Services
             return ServiceCheckCounter;
         }
 
-        public void AddExternalServiceCheckCounter()
+        public void AddExternalServiceUseCounter()
         {
-            ExternalServiceCheckCounter++;
+            ExternalServiceUseCounter++;
         }
 
-        public int GetExternalServiceCheckCounter()
+        public int GetExternalServiceUsekCounter()
         {
-            return ExternalServiceCheckCounter;
+            return ExternalServiceUseCounter;
+        }
+
+
+        public void AddInternalISPCheckCounter()
+        {
+            InternalISPCheckCounter++;
+        }
+
+        public int GetInternalISPCheckCounter()
+        {
+            return InternalISPCheckCounter;
+        }
+
+        public void AddExternalISPCheckCounter()
+        {
+            ExternalISPCheckCounter++;
+        }
+
+        public int GetExternalISPCheckCounter()
+        {
+            return ExternalISPCheckCounter;
         }
 
         public void AddSuccessFullRequestsCounter()
