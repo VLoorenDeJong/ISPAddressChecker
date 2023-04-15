@@ -14,22 +14,20 @@
 
     @media (min-width: $break-point) {
         .interactive-row-element {
-            padding: 30px;
             /*    background-color:yellow;
     border:solid 1px red;*/
         }
     }
-
+    
     .stats-section {
-        padding: 50px;
+        padding: 20px;
     }
 
-    .log-section {
-        padding: 50px;
-        background-color: green;
-        border: solid 1px red;
-        max-height: 25% !important;
-    }
+.log-section {
+    height: calc(45 * 100vh / 100);
+    text-align: center;
+    padding:10px;
+}
 
 
     .row {

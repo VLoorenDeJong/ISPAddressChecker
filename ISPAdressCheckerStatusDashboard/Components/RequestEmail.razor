@@ -60,16 +60,11 @@
             @switch (report?.Success)
             {
                 case true:
-
-                    <div class="message--success">
-                        @report.Message
-                    </div>
+                <DisplaySuccess Message="@report.Message" />
                     break;
 
                 case false:
-                    <div class="message--warning">
-                        @report.Message
-                    </div>
+                    <DisplayWarning Message="@report.Message" />
                     break;
             }
         }

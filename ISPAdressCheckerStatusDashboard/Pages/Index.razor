@@ -20,14 +20,14 @@
         <RequestEmail ItemHeader="Heartbeat E-mail:" EmailType="SendEmailTypeEnum._1" />
         <RequestEmail ItemHeader="ISP Address changed E-mail" EmailType="SendEmailTypeEnum._2" />
     </div>
+
     <RequestDivision DashboardRequests="@value" ExternalISPCheckCounter="@(statusService!.CurrentStatus.InternalISPCheckCounter)" InternalISPCheckCounter="@(statusService.CurrentStatus.ExternalISPCheckCounter)" />
+    
+    <DisplayWarning Message="@(@"No personal details are being saved.")" />
 
-    <div class="log-section">
-        <div class="justify-content-center">
-            LOG
-        </div>
-    </div>
+    <LogMessageBoard />
 
+    <DisplaySuccess Message="@(@"E-mail: contact@victorloorendejong.nl")" />
 </div>
 
 @code {
