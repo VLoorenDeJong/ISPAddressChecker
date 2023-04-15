@@ -5,6 +5,10 @@ using Microsoft.AspNetCore.Http;
 using ISPAdressChecker.Options;
 using Microsoft.AspNetCore.Mvc;
 using ISPAdressChecker.Models;
+using Microsoft.AspNet.SignalR;
+using Microsoft.Owin.Logging;
+using Microsoft.AspNet.SignalR.Messaging;
+using Microsoft.AspNet.SignalR.Infrastructure;
 
 namespace ISPAdressChecker.Controllers
 {
@@ -12,29 +16,29 @@ namespace ISPAdressChecker.Controllers
     [Route("api/[controller]")]
     public class ISPAddressCheckerStatusController : ControllerBase
     {
-        private readonly ApplicationSettingsOptions _applicationSettingsOptions;
-        private readonly ILogger<ISPAddressCheckerStatusController> _logger;
+        private readonly ITimerService _timerService;
         private readonly IISPAdressCounterService _ISPAddressCounterService;
         private readonly IStatusCounterService _statusCounterService;
         private readonly IISPAddressService _iSPAddressService;
-        private readonly ITimerService _timerService;
         private readonly IEmailService _emailService;
-
-        public ISPAddressCheckerStatusController(ITimerService timerService, 
-                                                 IISPAdressCounterService ISPAddressCounterService, 
-                                                 IStatusCounterService statusCounterService, 
-                                                 IOptions<ApplicationSettingsOptions> applicationSettingsOptions, 
-                                                 ILogger<ISPAddressCheckerStatusController> logger,
-                                                 IISPAddressService iSPAddressService,
-                                                 IEmailService emailService)
+        private readonly ApplicationSettingsOptions _applicationSettingsOptions;
+        private readonly ILogger<ISPAddressCheckerStatusController> _logger;
+        public ISPAddressCheckerStatusController(
+            ITimerService timerService,
+            IISPAdressCounterService ISPAddressCounterService,
+            IStatusCounterService statusCounterService,
+            IISPAddressService iSPAddressService,
+            IEmailService emailService,
+            IOptions<ApplicationSettingsOptions> applicationSettingsOptions,
+            ILogger<ISPAddressCheckerStatusController> logger)
         {
             _timerService = timerService;
-            _statusCounterService = statusCounterService;
             _ISPAddressCounterService = ISPAddressCounterService;
-            _applicationSettingsOptions = applicationSettingsOptions?.Value ?? throw new ArgumentNullException(nameof(applicationSettingsOptions));
+            _statusCounterService = statusCounterService;
             _iSPAddressService = iSPAddressService;
-            _logger = logger;
             _emailService = emailService;
+            _applicationSettingsOptions = applicationSettingsOptions.Value ?? throw new ArgumentNullException(nameof(applicationSettingsOptions));
+            _logger = logger;
         }
 
         [HttpGet("status", Name = "GetStatusUpdate")]

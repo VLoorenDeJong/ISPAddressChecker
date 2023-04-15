@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.SignalR.Client
 
 @using ISPAdressCheckerStatusDashboard.Services.Interfaces;
 @using ISPAdressCheckerStatusDashboard.Components;
@@ -22,15 +23,21 @@
     </div>
 
     <RequestDivision DashboardRequests="@value" ExternalISPCheckCounter="@(statusService!.CurrentStatus.InternalISPCheckCounter)" InternalISPCheckCounter="@(statusService.CurrentStatus.ExternalISPCheckCounter)" />
-    
+
     <DisplayWarning Message="@(@"No personal details are being saved.")" />
+    <DisplayWarning Message="@currentTime" />
 
     <LogMessageBoard />
+
 
     <DisplaySuccess Message="@(@"E-mail: contact@victorloorendejong.nl")" />
 </div>
 
 @code {
+
+    private HubConnection hubConnection;
+    private string currentTime;
+
     private bool timersStarted;
     private Timer? aTimer;
 
@@ -42,7 +49,17 @@
 
     protected override async Task OnInitializedAsync()
     {
-        statusService.OnChange += OnStatusChange;
+        statusService.OnChange += OnStatusChange; hubConnection = new HubConnectionBuilder()
+                .WithUrl(@"https://localhost:7235/hubs/clock")
+            .Build();
+
+        hubConnection.On<DateTime>("TimeSent", time =>
+        {
+            currentTime = time.ToString("hh:mm:ss tt");
+            StateHasChanged();
+        });
+
+        await hubConnection.StartAsync();
 
         await base.OnInitializedAsync();
     }

@@ -1,6 +1,8 @@
 using ISPAdressChecker.Options;
 using ISPAdressChecker.Services;
 using ISPAdressChecker.Services.Interfaces;
+using Microsoft.AspNetCore.SignalR;
+using MyApplication;
 using static ISPAdressChecker.Options.ApplicationSettingsOptions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,11 +11,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(); 
+builder.Services.AddSignalR();
+builder.Services.AddHostedService<Worker>();
 
 // Add HttpClient and CheckISPAddressService
 builder.Services.AddHttpClient();
-
 builder.Services.AddSingleton<IISPAddressService, ISPAddressService>();
 builder.Services.AddSingleton<ITimerService, TimerService>();
 builder.Services.AddSingleton<IISPAdressCounterService, ISPAdressCounterService>();
@@ -40,5 +43,6 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+app.MapHub<ClockHub>("/hubs/clock");
 app.MapControllers();
 app.Run();

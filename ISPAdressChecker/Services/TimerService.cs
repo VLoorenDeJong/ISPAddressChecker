@@ -4,6 +4,7 @@ using ISPAdressChecker.Helpers;
 using ISPAdressChecker.Options;
 using ISPAdressChecker.Models;
 using System.Diagnostics;
+using Microsoft.AspNet.SignalR.Hubs;
 
 namespace ISPAdressChecker.Services
 {
@@ -46,7 +47,6 @@ namespace ISPAdressChecker.Services
             _logger.LogInformation("ControlISPAdressCheckTimer interval: {inter}(minutes), configured:{confInter}(minutes)", ISPAdressCHeckInterval, _applicationSettingsOptions.TimeIntervalInMinutes);
             SetupHeartbeatTimer();
             UpTime.Start();
-
         }
 
         private void SetupHeartbeatTimer()

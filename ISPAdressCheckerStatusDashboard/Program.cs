@@ -6,6 +6,8 @@ using ISPAdressCheckerStatusDashboard;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHostedService<ClockHubClient>();
+
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 

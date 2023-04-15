@@ -1,5 +1,4 @@
 ﻿using ISPAdressChecker.Services.Interfaces;
-using Microsoft.Extensions.Logging;
 using ISPAdressChecker.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
