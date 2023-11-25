@@ -8,12 +8,12 @@
         }
         public LogEntryModel(string ServiceName, string message)
         {
-            EntryDate = DateTimeOffset.Now;
+            EntryDateTime = DateTimeOffset.Now;
             Service = ServiceName;
             Message = message;
         }
 
-        public DateTimeOffset EntryDate { get; set; } 
+        public DateTimeOffset EntryDateTime { get; set; } 
         public string Service { get; set; }
         public string Message { get; set; }
     }
