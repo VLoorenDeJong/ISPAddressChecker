@@ -58,10 +58,18 @@
         {
             counterService.AddDashboardISPAddressRequestCounter();
             var httpClient = new HttpClient();
-            var response = await httpClient.GetAsync(endpointURL);
-            if (response.IsSuccessStatusCode)
+
+            try
             {
-                visitorIspAddress = await response.Content.ReadAsStringAsync();
+                var response = await httpClient.GetAsync(endpointURL);
+                if (response.IsSuccessStatusCode)
+                {
+                    visitorIspAddress = await response.Content.ReadAsStringAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
 

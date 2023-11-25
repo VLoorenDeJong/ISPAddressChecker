@@ -1,18 +1,9 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.SignalR.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-
-//// Create a SignalR connection to the specified hub
-//var connection = new HubConnectionBuilder()
-//    .WithUrl("http://localhost:5104/hubs/clock")
-//    .Build();
-
-//// Register the SignalR connection as a singleton service
-//builder.Services.AddSingleton(connection);
 
 var app = builder.Build();
 

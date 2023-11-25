@@ -1,25 +1,9 @@
 ﻿@page "/"
-@using Microsoft.AspNetCore.SignalR.Client
-@inject HubConnection? connection
-@implements IAsyncDisposable;
+Hellow  world
 
-<h1>Clock</h1>
-
-<p>@displayTime</p>
-
-@code {
-    private string? displayTime;
-
+@code{
     protected override async Task OnInitializedAsync()
     {
-
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        if (connection is not null)
-        {
-            await connection.DisposeAsync();
-        }
+        await base.OnInitializedAsync();
     }
 }

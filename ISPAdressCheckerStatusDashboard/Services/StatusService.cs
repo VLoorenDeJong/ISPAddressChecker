@@ -16,7 +16,14 @@ namespace ISPAdressCheckerStatusDashboard.Services
         }
         public async Task GetStatus()
         {
-            CurrentStatus = await _iSPStatusService.GetAPIStatusAsync();
+            try
+            {
+                CurrentStatus = await _iSPStatusService.GetAPIStatusAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }
