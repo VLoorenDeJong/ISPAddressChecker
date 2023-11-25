@@ -1,12 +1,20 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 
+
 namespace MyApplication
 {
     public class ClockHub : Hub<IClock>
     {
+        private ILogger<ClockHub> _logger;
+
+        public ClockHub(ILogger<ClockHub> logger)
+        {
+                _logger = logger;
+        }
         public async Task SendTimeToClients(DateTime dateTime)
         {
+            _logger.LogInformation("SendTimeToClients called");
             await Clients.All.ShowTime(dateTime);
         }
     }

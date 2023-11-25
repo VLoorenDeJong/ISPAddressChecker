@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISPAdressChecker", "ISPAdre
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISPAdressCheckerStatusDashboard", "ISPAdressCheckerStatusDashboard\ISPAdressCheckerStatusDashboard.csproj", "{0A0C3D19-D83B-4F07-BCB6-A26A8E61C9F0}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISPAddressCheckerTests", "ISPAddressCheckerTests\ISPAddressCheckerTests.csproj", "{1D9BFEEB-E310-4C29-8A72-C877D039ED53}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DisplayTime", "DisplayTime\DisplayTime.csproj", "{4E2A7606-5B83-4169-A527-238C76EAE417}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{0A0C3D19-D83B-4F07-BCB6-A26A8E61C9F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A0C3D19-D83B-4F07-BCB6-A26A8E61C9F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A0C3D19-D83B-4F07-BCB6-A26A8E61C9F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D9BFEEB-E310-4C29-8A72-C877D039ED53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D9BFEEB-E310-4C29-8A72-C877D039ED53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D9BFEEB-E310-4C29-8A72-C877D039ED53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D9BFEEB-E310-4C29-8A72-C877D039ED53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E2A7606-5B83-4169-A527-238C76EAE417}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E2A7606-5B83-4169-A527-238C76EAE417}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E2A7606-5B83-4169-A527-238C76EAE417}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E2A7606-5B83-4169-A527-238C76EAE417}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
