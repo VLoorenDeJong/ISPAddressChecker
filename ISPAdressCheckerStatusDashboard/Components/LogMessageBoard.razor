@@ -1,15 +1,58 @@
-﻿
+﻿@using Microsoft.AspNetCore.SignalR.Client;
+@implements IAsyncDisposable
+@inject ILogger<Index> logger
+
 <div class="log-section">
     <div class="log-message-board">
         <div class="message-board-title">ISP checker log message board</div>
         <div class="log-messages">
 
-
+            @_time
 
         </div>
     </div>
 </div>
 
 @code {
+    private string _time;
+    private HubConnection? hubConnection;
 
+
+    protected override async Task OnInitializedAsync()
+    {
+        string hubUrl = "http://localhost:5104/hubs/clock"; // Replace with your actual hub URL
+
+        hubConnection = new HubConnectionBuilder()
+        .WithUrl(hubUrl)
+        .WithAutomaticReconnect()
+            .Build();
+
+        hubConnection.On<DateTime>("ShowTime", (time) =>
+        {
+            InvokeAsync(() =>
+            {
+                _time = time.ToString();
+                StateHasChanged();
+            });
+        });
+
+        try
+        {
+            await hubConnection.StartAsync();
+            logger.LogInformation("Hub connection established.");
+        }
+        catch (Exception ex)
+        {
+            logger.LogInformation($"Error establishing hub connection: {ex.Message}");
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+}
 }
