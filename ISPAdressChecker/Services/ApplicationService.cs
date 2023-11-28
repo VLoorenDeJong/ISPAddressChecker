@@ -27,7 +27,7 @@ namespace ISPAdressChecker.Services
             _checkISPAddressService = checkISPAddressService; 
             configSuccess = CheckAppsettings();
         }
-
+        
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             switch (configSuccess)
@@ -59,7 +59,7 @@ namespace ISPAdressChecker.Services
                 bool mailConfigured = true;
                 ConfigErrorReportModel report = new();
 
-                _logger.LogInformation("CheckAppsettings -> MandatoryConfigurationChecks STARTED", mailConfigured);
+                _logger.LogInformation("CheckAppsettings -> MandatoryConfigurationChecks STARTED, mail configured: {config}", mailConfigured);
                 mailConfigured = ConfigHelpers.MandatoryConfigurationChecks(_applicationSettingsOptions, _logger);
 
                 _logger.LogInformation("CheckAppsettings -> mailConfigured: {mailConfigured}", mailConfigured);

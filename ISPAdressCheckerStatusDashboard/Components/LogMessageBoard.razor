@@ -1,33 +1,116 @@
-﻿@using Microsoft.AspNetCore.SignalR.Client;
+﻿@using ISPAdressChecker.Models;
+@using ISPAdressChecker.Models.Enums;
+@using Microsoft.AspNetCore.SignalR.Client;
+@using static ISPAdressChecker.Models.Enums.Constants
+
 @implements IAsyncDisposable
 @inject ILogger<Index> logger
 
 <div class="log-section">
     <div class="log-message-board">
-        <div class="message-board-title">ISP checker log message board</div>
+        <div class="log-message-board_title">ISP checker log message board</div>
         <div class="log-messages">
 
-            @_time
+        @*     <div class="log-messages_test-time">
+                @_time
+            </div> *@
+            <table>
+                <tbody>
 
+                    @foreach (var entry in logEntries)
+                    {
+                        <tr>
+                            <td class="log-messages_message_time">@(entry.Time.UtcDateTime.ToLocalTime().ToString())</td>
+                            @switch (entry.LogType)
+                            {
+                                case LogType.Information:
+                                    <td class="log-messages_message_type_information">@(entry.LogType.ToString())</td>
+                                    break;
+                                case LogType.Debug:
+                                    <td class="log-messages_message_type_debug">@(entry.LogType.ToString())</td>
+                                    break;
+                                case LogType.Warning:
+                                    <td class="log-messages_message_type_warning">@(entry.LogType.ToString())</td>
+                                    break;
+                                case LogType.Error:
+                                    <td class="log-messages_message_type_error">@(entry.LogType.ToString())</td>
+                                    break;
+                            }
+                            <td class="log-messages_message_service">@entry.Service</td>
+                            <td class="log-messages_message_message">@entry.Message</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 
 @code {
     private string _time;
-    private HubConnection? hubConnection;
+    private HubConnection? clockHubConnection;
+
+    private List<LogEntryModel> logEntries = new List<LogEntryModel>();
+    private HubConnection? logHubConnection;
 
 
     protected override async Task OnInitializedAsync()
     {
-        string hubUrl = "http://localhost:5104/hubs/clock"; // Replace with your actual hub URL
+        await instatiateClockHub();
+        await InstatiateLogHub();
+    }
 
-        hubConnection = new HubConnectionBuilder()
-        .WithUrl(hubUrl)
+    public async ValueTask DisposeAsync()
+    {
+        if (clockHubConnection is not null)
+        {
+            await clockHubConnection.DisposeAsync();
+        }
+        if (logHubConnection is not null)
+        {
+            await logHubConnection.DisposeAsync();
+        }
+    }
+
+    private async Task InstatiateLogHub()
+    {
+        string logHubUrl = "http://localhost:5104/hubs/log";
+
+        logHubConnection = new HubConnectionBuilder()
+        .WithUrl(logHubUrl)
         .WithAutomaticReconnect()
             .Build();
 
-        hubConnection.On<DateTime>("ShowTime", (time) =>
+        logHubConnection.On<LogEntryModel>(LogHubMethods.SendLogToClients, (entry) =>
+        {
+            InvokeAsync(() =>
+            {
+                logEntries.Add(entry);
+                StateHasChanged();
+            });
+        });
+
+        try
+        {
+            await logHubConnection.StartAsync();
+            logger.LogInformation("Hub connection established.");
+        }
+        catch (Exception ex)
+        {
+            logger.LogInformation($"Error establishing hub connection: {ex.Message}");
+        }
+    }
+
+    private async Task instatiateClockHub()
+    {
+        string clockHubUrl = "http://localhost:5104/hubs/clock"; // Replace with your actual hub URL
+
+        clockHubConnection = new HubConnectionBuilder()
+        .WithUrl(clockHubUrl)
+        .WithAutomaticReconnect()
+            .Build();
+
+        clockHubConnection.On<DateTime>("ShowTime", (time) =>
         {
             InvokeAsync(() =>
             {
@@ -38,7 +121,7 @@
 
         try
         {
-            await hubConnection.StartAsync();
+            await clockHubConnection.StartAsync();
             logger.LogInformation("Hub connection established.");
         }
         catch (Exception ex)
@@ -46,13 +129,5 @@
             logger.LogInformation($"Error establishing hub connection: {ex.Message}");
         }
     }
+}
 
-    public async ValueTask DisposeAsync()
-    {
-        if (hubConnection is not null)
-        {
-            await hubConnection.DisposeAsync();
-        }
-    }
-}
-}

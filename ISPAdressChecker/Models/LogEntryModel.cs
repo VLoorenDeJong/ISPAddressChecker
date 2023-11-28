@@ -1,4 +1,6 @@
-﻿namespace ISPAdressChecker.Models
+﻿using ISPAdressChecker.Models.Enums;
+
+namespace ISPAdressChecker.Models
 {
     public class LogEntryModel
     {
@@ -6,15 +8,19 @@
         {
             
         }
-        public LogEntryModel(string ServiceName, string message)
+        public LogEntryModel(LogType logType, string ServiceName, string message)
         {
-            EntryDateTime = DateTimeOffset.Now;
+            Time = DateTimeOffset.Now;
+            LogType = logType;
             Service = ServiceName;
             Message = message;
+            Id = Guid.NewGuid().ToString("N");
         }
 
-        public DateTimeOffset EntryDateTime { get; set; } 
+        public LogType  LogType { get; set; }
+        public DateTimeOffset Time { get; set; } 
         public string Service { get; set; }
         public string Message { get; set; }
+        public string Id { get; set; }
     }
 }

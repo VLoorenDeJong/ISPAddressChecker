@@ -1,6 +1,8 @@
 using ISPAdressChecker.Options;
 using ISPAdressChecker.Services;
 using ISPAdressChecker.Services.Interfaces;
+using ISPAdressChecker.SignalRHubs;
+using ISPAdressChecker.SignalRHubs.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 using MyApplication;
 using static ISPAdressChecker.Options.ApplicationSettingsOptions;
@@ -13,7 +15,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(); 
 builder.Services.AddSignalR();
-builder.Services.AddHostedService<Worker>();
+builder.Services.AddHostedService<ClockWorker>();
+//builder.Services.AddHostedService<LogWorker>();
 
 // Add HttpClient and CheckISPAddressService
 builder.Services.AddHttpClient();
@@ -43,6 +46,9 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+// ToDo make loghub URL configurable via appsettings.json
+// ToDo: make the url available via a endpoint
 app.MapHub<ClockHub>("/hubs/clock");
+app.MapHub<LogHub>("/hubs/log");
 app.MapControllers();
 app.Run();

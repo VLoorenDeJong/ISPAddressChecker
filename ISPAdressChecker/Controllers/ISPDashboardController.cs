@@ -5,10 +5,6 @@ using Microsoft.AspNetCore.Http;
 using ISPAdressChecker.Options;
 using Microsoft.AspNetCore.Mvc;
 using ISPAdressChecker.Models;
-using Microsoft.AspNet.SignalR;
-using Microsoft.Owin.Logging;
-using Microsoft.AspNet.SignalR.Messaging;
-using Microsoft.AspNet.SignalR.Infrastructure;
 
 namespace ISPAdressChecker.Controllers
 {

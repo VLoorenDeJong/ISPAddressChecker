@@ -4,6 +4,12 @@ using Microsoft.Extensions.Options;
 using ISPAdressChecker.Helpers;
 using ISPAdressChecker.Options;
 using MyApplication;
+using ISPAdressChecker.SignalRHubs.Interfaces;
+using ISPAdressChecker.SignalRHubs;
+using Microsoft.AspNetCore.SignalR;
+using ISPAdressChecker.Models;
+using ISPAdressChecker.Models.Enums;
+using static ISPAdressChecker.Models.Enums.Constants;
 
 public class CheckISPAddressService : ICheckISPAddressService
 {
@@ -11,17 +17,19 @@ public class CheckISPAddressService : ICheckISPAddressService
     private readonly IISPAdressCounterService _counterService;
     private readonly IISPAddressService _iSPAddressService;
     private readonly IEmailService _emailService;
-    private readonly ILogger _logger;
+    private readonly ILogger<CheckISPAddressService> _logger;
+    private readonly IHubContext<LogHub, ILogHub> _logHub;
 
     private Dictionary<string, string> ISPAdressChecks = new();
 
-    public CheckISPAddressService(ILogger<CheckISPAddressService> logger, IOptions<ApplicationSettingsOptions> applicationSettingsOptions, IEmailService emailService, IISPAdressCounterService counterService, IISPAddressService ISPAdressService)
+    public CheckISPAddressService(ILogger<CheckISPAddressService> logger, IOptions<ApplicationSettingsOptions> applicationSettingsOptions, IEmailService emailService, IISPAdressCounterService counterService, IISPAddressService ISPAdressService, IHubContext<LogHub, ILogHub> logHub)
     {
         _logger = logger;
         _applicationSettingsOptions = applicationSettingsOptions?.Value!;
         _emailService = emailService;
         _counterService = counterService;
         _iSPAddressService = ISPAdressService;
+        _logHub = logHub;
     }
 
     public async Task HeartBeatCheck()
@@ -39,6 +47,26 @@ public class CheckISPAddressService : ICheckISPAddressService
             try
             {
                 _logger.LogInformation("GetISPAddressAsync -> Requesting ISP adress from endpoint");
+                var logEntry = new LogEntryModel(LogType.Information,
+                                                 nameof(CheckISPAddressService),
+                                                 $"{nameof(GetISPAddressAsync)} -> Requesting ISP adress from endpoint");
+                await _logHub.Clients.All.SendLogToClients(logEntry);
+                var logEntry1 = new LogEntryModel(LogType.Warning,
+                                                 nameof(CheckISPAddressService),
+                                                 $"{nameof(GetISPAddressAsync)} -> Requesting ISP adress from endpoint");
+                await _logHub.Clients.All.SendLogToClients(logEntry1);
+                var logEntry2 = new LogEntryModel(LogType.Debug,
+                                                 nameof(CheckISPAddressService),
+                                                 $"{nameof(GetISPAddressAsync)} -> Requesting ISP adress from endpoint");
+                await _logHub.Clients.All.SendLogToClients(logEntry2);
+                var logEntry3 = new LogEntryModel(LogType.Error,
+                                                 nameof(CheckISPAddressService),
+                                                 $"{nameof(GetISPAddressAsync)} -> Requesting ISP adress from endpoint");
+                await _logHub.Clients.All.SendLogToClients(logEntry3);
+
+                // ToDo remove extra log entries above
+                //Todo: add the log hub to send the logs to the client if EnableDashboardAccess is true
+
                 //Testing code:
                 //throw new HttpRequestException();
                 //throw new Exception();
@@ -59,6 +87,7 @@ public class CheckISPAddressService : ICheckISPAddressService
                 response.EnsureSuccessStatusCode();
 
                 string fecthedISPAddress = await response?.Content?.ReadAsStringAsync()!;
+
                 if (!string.IsNullOrWhiteSpace(fecthedISPAddress))
                 {
                     _counterService.AddSuccessFullRequestsCounter();

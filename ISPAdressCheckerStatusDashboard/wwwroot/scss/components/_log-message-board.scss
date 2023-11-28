@@ -1,20 +1,72 @@
 ﻿.log-section {
-    .message-board-title {
-        color: $secondary-color;
-        font-family: $primary-font;
-        font-size: larger;
-    }
 
     .log-message-board {
         background-color: $primary-color;
         height: 100%;
         border-radius: 10px;
         border: 1px solid $secondary-color;
+
+        &_title {
+            color: $secondary-color;
+            font-family: $primary-font;
+            font-size: larger;
+        }
     }
 
     .log-messages {
         height: 90%;
-        border: 1px solid $tertiary-color;        
-        margin: 0 10px 10px 10px;
+        border: 1px solid $tertiary-color;
+        margin: 10px 10px 10px 10px;
+        overflow-y: auto;
+
+        &_test-time {
+            color: yellow;
+        }
+
+        &_message {
+            // ToDo: add colors to variables
+            &_time {
+                color: #006600;
+                font-family: inherit;
+                font-family: $console-font;
+            }
+
+            &_type {
+                &_information {
+                    color: #ffff99;
+                    font-family: inherit;
+                    font-family: $console-font;
+                    font-size: small;
+                }
+
+                &_warning {
+                    color: #ffa31a;
+                    font-family: $console-font;
+                    font-size: small;
+                }
+
+                &_error {
+                    color: #e60000;
+                    font-family: $console-font;
+                    font-size: small;
+                }
+
+                &_debug {
+                    color: #3366ff;
+                    font-family: $console-font;
+                    font-size: small;
+                }
+            }
+
+            &_service {
+                color: #006600;
+                font-family: $console-font;
+            }
+
+            &_message {
+                color: #009933;
+                font-family: $console-font;
+            }
+        }
     }
 }

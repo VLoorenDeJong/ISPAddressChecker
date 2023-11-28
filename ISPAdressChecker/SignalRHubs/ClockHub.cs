@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.SignalR;
-using System.Threading.Tasks;
+﻿using ISPAdressChecker.SignalRHubs.Interfaces;
+using Microsoft.AspNetCore.SignalR;
 
-
-namespace MyApplication
+namespace ISPAdressChecker.SignalRHubs
 {
     public class ClockHub : Hub<IClock>
     {
@@ -10,8 +9,9 @@ namespace MyApplication
 
         public ClockHub(ILogger<ClockHub> logger)
         {
-                _logger = logger;
+            _logger = logger;
         }
+
         public async Task SendTimeToClients(DateTime dateTime)
         {
             _logger.LogInformation("SendTimeToClients called");
@@ -19,17 +19,12 @@ namespace MyApplication
         }
     }
 
-    public interface IClock
+    public class ClockWorker : BackgroundService
     {
-        Task ShowTime(DateTime currentTime);
-    }
-
-    public class Worker : BackgroundService
-    {
-        private readonly ILogger<Worker> _logger;
+        private readonly ILogger<ClockWorker> _logger;
         private readonly IHubContext<ClockHub, IClock> _clockHub;
 
-        public Worker(ILogger<Worker> logger, IHubContext<ClockHub, IClock> clockHub)
+        public ClockWorker(ILogger<ClockWorker> logger, IHubContext<ClockHub, IClock> clockHub)
         {
             _logger = logger;
             _clockHub = clockHub;
@@ -39,11 +34,10 @@ namespace MyApplication
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                _logger.LogInformation("Worker running at: {Time}", DateTime.Now);
+                _logger.LogInformation("LogWorker running at: {Time}", DateTime.Now);
                 await _clockHub.Clients.All.ShowTime(DateTime.Now);
                 await Task.Delay(1000, stoppingToken);
             }
         }
     }
 }
-

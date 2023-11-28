@@ -4,7 +4,6 @@ using ISPAdressChecker.Helpers;
 using ISPAdressChecker.Options;
 using ISPAdressChecker.Models;
 using System.Diagnostics;
-using Microsoft.AspNet.SignalR.Hubs;
 
 namespace ISPAdressChecker.Services
 {

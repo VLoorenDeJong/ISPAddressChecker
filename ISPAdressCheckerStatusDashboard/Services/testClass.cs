@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR.Client;
+﻿using ISPAdressChecker.SignalRHubs.Interfaces;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.VisualBasic;
 using MyApplication;
 
