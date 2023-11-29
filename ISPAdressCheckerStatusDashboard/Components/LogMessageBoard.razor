@@ -86,6 +86,7 @@
             InvokeAsync(() =>
             {
                 logEntries.Add(entry);
+                logEntries = logEntries.OrderByDescending(x => x.Time).ToList();
                 StateHasChanged();
             });
         });

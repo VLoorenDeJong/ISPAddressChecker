@@ -28,6 +28,7 @@ builder.Services.AddSingleton<IApplicationService, ApplicationService>();
 
 builder.Services.AddTransient<ICheckISPAddressService, CheckISPAddressService>();
 builder.Services.AddTransient<IEmailService, EmailService>();
+builder.Services.AddTransient<ILogHubService, LogHubService>();
 
 builder.Services.Configure<ApplicationSettingsOptions>(builder.Configuration.GetSection(AppsettingsSections.ApplicationSettings));
 

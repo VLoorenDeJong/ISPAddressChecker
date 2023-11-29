@@ -9,6 +9,14 @@
             {
 
                 string[] octets = ISPAdress.Split('.');
+                int secondOctetInt = int.Parse(octets[1]);
+                string secondOctetString = secondOctetInt.ToString().PadRight(3, '0');
+                string secondOctet = secondOctetString.Substring(0, secondOctetString.Length - 2);
+                secondOctet += "**";
+
+                octets[1] = secondOctet;
+
+
 
                 // Ensure the last octet has 3 digits
                 int lastOctet = int.Parse(octets[3]);

@@ -25,7 +25,9 @@
 
         &_message {
             // ToDo: add colors to variables
+
             &_time {
+                padding-right: 5px;
                 color: #006600;
                 font-family: inherit;
                 font-family: $console-font;
@@ -33,6 +35,7 @@
 
             &_type {
                 &_information {
+                    padding-right: 5px;
                     color: #ffff99;
                     font-family: inherit;
                     font-family: $console-font;
@@ -40,18 +43,21 @@
                 }
 
                 &_warning {
+                    padding-right: 5px;
                     color: #ffa31a;
                     font-family: $console-font;
                     font-size: small;
                 }
 
                 &_error {
+                    padding-right: 5px;
                     color: #e60000;
                     font-family: $console-font;
                     font-size: small;
                 }
 
                 &_debug {
+                    padding-right: 5px;
                     color: #3366ff;
                     font-family: $console-font;
                     font-size: small;
@@ -59,13 +65,16 @@
             }
 
             &_service {
+                padding-right: 5px;
                 color: #006600;
                 font-family: $console-font;
             }
 
             &_message {
+                padding-right: 5px;
                 color: #009933;
                 font-family: $console-font;
+                text-align: left;
             }
         }
     }
