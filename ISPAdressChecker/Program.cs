@@ -34,6 +34,7 @@ builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddTransient<ILogHubService, LogHubService>();
 
 builder.Services.Configure<ApplicationSettingsOptions>(builder.Configuration.GetSection(AppsettingsSections.ApplicationSettings));
+builder.Services.Configure<EmailSettingsOptions>(builder.Configuration.GetSection(AppsettingsSections.EmailSettings));
 
 var app = builder.Build();
 

@@ -6,17 +6,17 @@ namespace ISPAdressChecker.Services.Interfaces
     {
         SendEmailModel APIEmailDetails { get; }
 
-        void SendConfigErrorMail(string errorMessage);
-        void SendConfigSuccessMail(IISPAdressCounterService counterService);
-        void SendConnectionReestablishedEmail(string newISPAddress, string oldISPAddress, IISPAdressCounterService counterService, double interval);
-        void SendCounterDifferenceEmail(IISPAdressCounterService counterService);
-        void SendDifferendISPAdressValuesEmail(Dictionary<string, string> externalISPAdressChecks, string oldISPAddress, IISPAdressCounterService counterService, double interval);
-        void SendExternalAPIExceptionEmail(string APIUrl, string exceptionType, string exceptionMessage);
-        void SendExternalAPIHTTPExceptionEmail(string APIUrl, string exceptionType, string exceptionMessage);
-        ActionReportModel SendHeartBeatEmail(IISPAdressCounterService counterService, string oldISPAddress, string currentISPAddress, string newISPAddress, Dictionary<string, string> externalISPCheckResults, SendEmailModel sendEmailDetails);
-        ActionReportModel SendISPAddressChangedEmail(string externalISPAddress, string oldISPAddress, IISPAdressCounterService counterService, double interval, SendEmailModel sendEmailDetails);
-        void SendISPAPIExceptionEmail(string exceptionType, string exceptionMessage);
-        void SendISPAPIHTTPExceptionEmail(string exceptionType, string exceptionMessage);
-        void SendNoISPAdressReturnedEmail(string oldISPAddress, IISPAdressCounterService counterService, double interval);
+        Task SendConfigErrorMail(string errorMessage);
+        Task SendConfigSuccessMail(IISPAdressCounterService counterService);
+        Task SendConnectionReestablishedEmail(string newISPAddress, string oldISPAddress, IISPAdressCounterService counterService, double interval);
+        Task SendCounterDifferenceEmail(IISPAdressCounterService counterService);
+        Task SendDifferendISPAdressValuesEmail(Dictionary<string, string> externalISPAdressChecks, string oldISPAddress, IISPAdressCounterService counterService, double interval);
+        Task SendExternalAPIExceptionEmail(string APIUrl, string exceptionType, string exceptionMessage);
+        Task SendExternalAPIHTTPExceptionEmail(string APIUrl, string exceptionType, string exceptionMessage);
+        Task<ActionReportModel> SendHeartBeatEmail(IISPAdressCounterService counterService, string oldISPAddress, string currentISPAddress, string newISPAddress, Dictionary<string, string> externalISPCheckResults, SendEmailModel sendEmailDetails);
+        Task<ActionReportModel> SendISPAddressChangedEmail(string externalISPAddress, string oldISPAddress, IISPAdressCounterService counterService, double interval, SendEmailModel sendEmailDetails);
+        Task SendISPAPIExceptionEmail(string exceptionType, string exceptionMessage);
+        Task SendISPAPIHTTPExceptionEmail(string exceptionType, string exceptionMessage);
+        Task SendNoISPAdressReturnedEmail(string oldISPAddress, IISPAdressCounterService counterService, double interval);
     }
 }

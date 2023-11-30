@@ -103,10 +103,24 @@
         try
         {
             await logHubConnection.StartAsync();
+            logEntries.Add(new LogEntryModel
+            {
+                LogType = LogType.Information,
+                Message = "Hub connection established.",
+                Service = "LogHub",
+                Time = DateTime.UtcNow
+            });
             logger.LogInformation("Hub connection established.");
         }
         catch (Exception ex)
         {
+            logEntries.Add(new LogEntryModel
+            {
+                LogType = LogType.Error,
+                Message = $"Error establishing hub connection: {ex.Message}",
+                Service = "LogHub",
+                Time = DateTime.UtcNow
+            });
             logger.LogInformation($"Error establishing hub connection: {ex.Message}");
         }
     }
@@ -139,10 +153,24 @@
         {
             await clockHubConnection.StartAsync();
             logger.LogInformation("Hub connection established.");
+            logEntries.Add(new LogEntryModel
+            {
+                LogType = LogType.Information,
+                Message = "Hub connection established.",
+                Service = "ClockHub",
+                Time = DateTime.UtcNow
+            });
         }
         catch (Exception ex)
         {
             logger.LogInformation($"Error establishing hub connection: {ex.Message}");
+            logEntries.Add(new LogEntryModel
+            {
+                LogType = LogType.Error,
+                Message = $"Error establishing hub connection: {ex.Message}",
+                Service = "ClockHub",
+                Time = DateTime.UtcNow
+            });
         }
     }
 }

@@ -153,7 +153,7 @@ namespace ISPAdressChecker.Controllers
                                 mocValues.Add($"{externalAPI}", "Value will be put here");
                             }
 
-                            report = _emailService.SendHeartBeatEmail(_ISPAddressCounterService, _iSPAddressService.GetOldISPAddress(), _iSPAddressService.GetCurrentISPAddress(), _iSPAddressService.GetNewISPAddress(), mocValues, _emailService.APIEmailDetails);
+                            report = await _emailService.SendHeartBeatEmail(_ISPAddressCounterService, _iSPAddressService.GetOldISPAddress(), _iSPAddressService.GetCurrentISPAddress(), _iSPAddressService.GetNewISPAddress(), mocValues, _emailService.APIEmailDetails);
 
                             if (report.Success)
                             {
@@ -166,7 +166,7 @@ namespace ISPAdressChecker.Controllers
                             break;
                         case Models.Enums.SendEmailTypeEnum.ISPAddressChanged:
 
-                            report = _emailService.SendISPAddressChangedEmail(_iSPAddressService.GetExternalISPAddress(), _iSPAddressService.GetOldISPAddress(), _ISPAddressCounterService, _applicationSettingsOptions.TimeIntervalInMinutes, emailRequest);
+                            report = await _emailService.SendISPAddressChangedEmail(_iSPAddressService.GetExternalISPAddress(), _iSPAddressService.GetOldISPAddress(), _ISPAddressCounterService, _applicationSettingsOptions.TimeIntervalInMinutes, emailRequest);
 
                             if (report.Success)
                             {

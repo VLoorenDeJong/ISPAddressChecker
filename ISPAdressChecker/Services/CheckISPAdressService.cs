@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.SignalR;
 using ISPAdressChecker.Models;
 using ISPAdressChecker.Models.Enums;
 using static ISPAdressChecker.Models.Enums.Constants;
-using ISPAdressChecker.Services;
 
 public class CheckISPAddressService : ICheckISPAddressService
 {

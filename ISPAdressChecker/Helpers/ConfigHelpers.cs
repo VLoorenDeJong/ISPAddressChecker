@@ -10,11 +10,11 @@ namespace ISPAdressChecker.Helpers
 {
     public static class ConfigHelpers
     {
-        public static bool MandatoryConfigurationChecks(ApplicationSettingsOptions _applicationSettingsOptions, ILogger logger)
+        public static bool MandatoryConfigurationChecks(EmailSettingsOptions emailSettingsOptions, ApplicationSettingsOptions applicationSettingOptions, ILogger logger)
         {
             bool MandatoryConfigurationPassed = true;
 
-            if (string.Equals(_applicationSettingsOptions?.MailServer, StandardAppsettingsValues.MailServer, StringComparison.CurrentCultureIgnoreCase))
+            if (string.Equals(emailSettingsOptions?.MailServer, StandardAppsettingsValues.MailServer, StringComparison.CurrentCultureIgnoreCase))
             {
                 MandatoryConfigurationPassed = false;
                 string errorMessage = "appsettings: MailServer in appsettings not configured, this is for the mail you will recieve when the ISP adress is changed.";
@@ -23,7 +23,7 @@ namespace ISPAdressChecker.Helpers
             }
 
 
-            if (string.Equals(_applicationSettingsOptions?.UserName, StandardAppsettingsValues.UserName, StringComparison.CurrentCultureIgnoreCase))
+            if (string.Equals(emailSettingsOptions?.UserName, StandardAppsettingsValues.UserName, StringComparison.CurrentCultureIgnoreCase))
             {
                 MandatoryConfigurationPassed = false;
                 string errorMessage = "appsettings: UserName in appsettings not configured, this is for the mail you will recieve when the ISP adress is changed.";
@@ -33,7 +33,7 @@ namespace ISPAdressChecker.Helpers
             }
 
 
-            if (!_applicationSettingsOptions!.UseDefaultCredentials && string.Equals(_applicationSettingsOptions?.Password, StandardAppsettingsValues.Password, StringComparison.CurrentCultureIgnoreCase))
+            if (!emailSettingsOptions!.UseDefaultCredentials && string.Equals(emailSettingsOptions?.Password, StandardAppsettingsValues.Password, StringComparison.CurrentCultureIgnoreCase))
             {
                 MandatoryConfigurationPassed = false;
                 string errorMessage = "appsettings: Password in appsettings not configured, this is for the mail you will recieve when the ISP adress is changed.";
@@ -42,24 +42,24 @@ namespace ISPAdressChecker.Helpers
             }
 
 
-            if (string.Equals(_applicationSettingsOptions?.EmailToAdress, StandardAppsettingsValues.EmailToAdress, StringComparison.CurrentCultureIgnoreCase) || !EmailAddressIsValid(_applicationSettingsOptions?.EmailToAdress))
+            if (string.Equals(emailSettingsOptions?.EmailToAdress, StandardAppsettingsValues.EmailToAdress, StringComparison.CurrentCultureIgnoreCase) || !EmailAddressIsValid(emailSettingsOptions?.EmailToAdress))
             {
                 MandatoryConfigurationPassed = false;
-                string errorMessage = $"appsettings: EmailToAdress: {_applicationSettingsOptions?.EmailToAdress} in appsettings not confugured correctly";
+                string errorMessage = $"appsettings: EmailToAdress: {emailSettingsOptions?.EmailToAdress} in appsettings not confugured correctly";
 
                 ThrowEmailConfigError(errorMessage, logger);
             }
 
 
-            if (string.Equals(_applicationSettingsOptions?.EmailFromAdress, StandardAppsettingsValues.EmailFromAdress, StringComparison.CurrentCultureIgnoreCase) || !EmailAddressIsValid(_applicationSettingsOptions?.EmailFromAdress))
+            if (string.Equals(emailSettingsOptions?.EmailFromAdress, StandardAppsettingsValues.EmailFromAdress, StringComparison.CurrentCultureIgnoreCase) || !EmailAddressIsValid(emailSettingsOptions?.EmailFromAdress))
             {
                 MandatoryConfigurationPassed = false;
-                string errorMessage = $"appsettings: EmailFromAdress: {_applicationSettingsOptions?.EmailFromAdress} in appsettings not confugured correctly";
+                string errorMessage = $"appsettings: EmailFromAdress: {emailSettingsOptions?.EmailFromAdress} in appsettings not confugured correctly";
 
                 ThrowEmailConfigError(errorMessage, logger);
             }
 
-            if (_applicationSettingsOptions?.BackupAPIS is null || BackupAPIUrlError(_applicationSettingsOptions?.BackupAPIS, logger))
+            if (applicationSettingOptions?.BackupAPIS is null || BackupAPIUrlError(applicationSettingOptions?.BackupAPIS, logger))
             {
 
                 MandatoryConfigurationPassed = false;
@@ -73,12 +73,14 @@ namespace ISPAdressChecker.Helpers
 
         public static bool EmailAddressIsValid(string? emailAdressToValidate)
         {
-            bool isVallid = false;
+            bool isVallid = true;
 
             if (!string.IsNullOrWhiteSpace(emailAdressToValidate))
             {
                 isVallid = Regex.IsMatch(emailAdressToValidate!, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
             }
+            
+            // ToDo: Check validation it fails correct emailadresses
 
             return isVallid;
         }
@@ -103,7 +105,7 @@ namespace ISPAdressChecker.Helpers
             return urlConfigError;
         }
 
-        public static ConfigErrorReportModel DefaultSettingsCheck(ApplicationSettingsOptions applicationSettingsOptions, ILogger logger)
+        public static ConfigErrorReportModel DefaultSettingsCheck(EmailSettingsOptions emailSettingsOptions, ApplicationSettingsOptions applicationSettingsOptions, ILogger logger)
         {
             ConfigErrorReportModel report = new();
 
@@ -122,7 +124,7 @@ namespace ISPAdressChecker.Helpers
             }
 
 
-            if (string.Equals(applicationSettingsOptions?.DNSRecordHostProviderURL, StandardAppsettingsValues.DNSRecordHostProviderURL, StringComparison.CurrentCultureIgnoreCase))
+            if (string.Equals(emailSettingsOptions?.DNSRecordHostProviderURL, StandardAppsettingsValues.DNSRecordHostProviderURL, StringComparison.CurrentCultureIgnoreCase))
             {
                 report.ChecksPassed = false;
 
@@ -134,7 +136,7 @@ namespace ISPAdressChecker.Helpers
                 report.ErrorMessage = report.ErrorMessage + errorMessage;
             }
 
-            if (string.Equals(applicationSettingsOptions?.EmailSubject, StandardAppsettingsValues.EmailSubject, StringComparison.CurrentCultureIgnoreCase))
+            if (string.Equals(emailSettingsOptions?.EmailSubject, StandardAppsettingsValues.EmailSubject, StringComparison.CurrentCultureIgnoreCase))
             {
                 report.ChecksPassed = false;
 
@@ -146,7 +148,7 @@ namespace ISPAdressChecker.Helpers
                 report.ErrorMessage = report.ErrorMessage + errorMessage;
             }
                         
-            if (applicationSettingsOptions?.HeatbeatEmailIntervalDays == 0)
+            if (emailSettingsOptions?.HeatbeatEmailIntervalDays == 0)
             {
                 report.ChecksPassed = false;
 

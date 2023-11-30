@@ -10,6 +10,7 @@ namespace ISPAdressChecker.Services
     public class TimerService : ITimerService
     {
         private readonly ApplicationSettingsOptions _applicationSettingsOptions;
+        private readonly EmailSettingsOptions _emailSettingsOptions;
         private readonly ICheckISPAddressService _ISPAdressService;
         private readonly IISPAdressCounterService _counterService;
         private readonly ILogger _logger;
@@ -23,10 +24,12 @@ namespace ISPAdressChecker.Services
 
         private double ISPAdressCHeckInterval;
 
-        public TimerService(ILogger<CheckISPAddressService> logger, IOptions<ApplicationSettingsOptions> applicationSettingsOptions, IISPAdressCounterService counterService, ICheckISPAddressService ISPAdressService)
+        public TimerService(ILogger<CheckISPAddressService> logger, IOptions<ApplicationSettingsOptions> applicationSettingsOptions, IISPAdressCounterService counterService, ICheckISPAddressService ISPAdressService, IOptions<EmailSettingsOptions> emailSettingsOptions)
         {
             _logger = logger;
             _applicationSettingsOptions = applicationSettingsOptions?.Value!;
+
+            _emailSettingsOptions = emailSettingsOptions!.Value;
             _counterService = counterService;
             _ISPAdressService = ISPAdressService;
         }
@@ -54,16 +57,16 @@ namespace ISPAdressChecker.Services
             DateTime now = DateTime.Now;
 
             _logger.LogInformation("SetupHeartbeatTimer: {time}", DateTime.UtcNow);
-            DateTime nextOccurrence = now.AddDays(((int)_applicationSettingsOptions.HeatbeatEmailDayOfWeek - (int)now.DayOfWeek + 7) % 7).Date.Add(_applicationSettingsOptions.HeatbeatEmailTimeOfDay);
+            DateTime nextOccurrence = now.AddDays(((int)_emailSettingsOptions.HeatbeatEmailDayOfWeek - (int)now.DayOfWeek + 7) % 7).Date.Add(_emailSettingsOptions.HeatbeatEmailTimeOfDay);
 
             _logger.LogInformation("SetupHeartbeatTimer: nextOccurrence:{date}", nextOccurrence);
             if (nextOccurrence < now)
             {
-                nextOccurrence = nextOccurrence.AddDays(_applicationSettingsOptions.HeatbeatEmailIntervalDays);
+                nextOccurrence = nextOccurrence.AddDays(_emailSettingsOptions.HeatbeatEmailIntervalDays);
                 _logger.LogInformation("SetupHeartbeatTimer: nextOccurrence + days:{date}", nextOccurrence);
             }
 
-            TimeSpan heartBeatInterval = TimeSpan.FromDays(_applicationSettingsOptions.HeatbeatEmailIntervalDays);
+            TimeSpan heartBeatInterval = TimeSpan.FromDays(_emailSettingsOptions.HeatbeatEmailIntervalDays);
 
             _logger.LogInformation("HeartBeatInterval: {heartBeatInterval}(Days)", heartBeatInterval);
 

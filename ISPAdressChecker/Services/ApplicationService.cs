@@ -9,6 +9,7 @@ namespace ISPAdressChecker.Services
     public class ApplicationService : IApplicationService, IHostedService
     {
         private readonly ApplicationSettingsOptions _applicationSettingsOptions;
+        private readonly EmailSettingsOptions _emailSettingsOptions;
         private readonly ITimerService _timerService;
         private readonly IEmailService _emailService;
         private readonly IISPAdressCounterService _counterService;
@@ -17,10 +18,11 @@ namespace ISPAdressChecker.Services
 
         private bool configSuccess = false;
 
-        public ApplicationService(ILogger<CheckISPAddressService> logger, IOptions<ApplicationSettingsOptions> applicationSettingsOptions, ITimerService timerService, IEmailService emailService, IISPAdressCounterService counterService, ICheckISPAddressService checkISPAddressService)
+        public ApplicationService(ILogger<CheckISPAddressService> logger, IOptions<ApplicationSettingsOptions> applicationSettingsOptions, IOptions<EmailSettingsOptions> emailSettingsOptions, ITimerService timerService, IEmailService emailService, IISPAdressCounterService counterService, ICheckISPAddressService checkISPAddressService)
         {
             _logger = logger;
             _applicationSettingsOptions = applicationSettingsOptions?.Value!;
+            _emailSettingsOptions = emailSettingsOptions!.Value;
             _timerService = timerService;
             _emailService = emailService;
             _counterService = counterService;
@@ -60,7 +62,7 @@ namespace ISPAdressChecker.Services
                 ConfigErrorReportModel report = new();
 
                 _logger.LogInformation("CheckAppsettings -> MandatoryConfigurationChecks STARTED, mail configured: {config}", mailConfigured);
-                mailConfigured = ConfigHelpers.MandatoryConfigurationChecks(_applicationSettingsOptions, _logger);
+                mailConfigured = ConfigHelpers.MandatoryConfigurationChecks(_emailSettingsOptions, _applicationSettingsOptions, _logger);
 
                 _logger.LogInformation("CheckAppsettings -> mailConfigured: {mailConfigured}", mailConfigured);
                 switch (mailConfigured)
@@ -71,7 +73,7 @@ namespace ISPAdressChecker.Services
                         return appsettingsConfigSuccess;
                     case true:
                         _logger.LogInformation("CheckAppsettings -> appsettingsConfigSuccess: {appsettingsConfigSuccess}", appsettingsConfigSuccess);
-                        report = ConfigHelpers.DefaultSettingsCheck(_applicationSettingsOptions, _logger);
+                        report = ConfigHelpers.DefaultSettingsCheck(_emailSettingsOptions,_applicationSettingsOptions, _logger);
                         break;
                 }
 
@@ -90,7 +92,7 @@ namespace ISPAdressChecker.Services
             }
             else
             {
-                _logger.LogInformation("CheckAppsettings -> _applicationSettingsOptions is null");
+                _logger.LogInformation("CheckAppsettings -> _emailSettingsOptions is null");
                 throw new ArgumentException();
             }
 

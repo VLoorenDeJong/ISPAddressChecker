@@ -7,26 +7,13 @@ namespace ISPAdressChecker.Options
         public string? APIEndpointURL { get; set; }
         public List<string?>? BackupAPIS { get; set; }
         public double TimeIntervalInMinutes { get; set; }
-        public string? DNSRecordHostProviderName { get; set; }
-        public string? DNSRecordHostProviderURL { get; set; }
-        public string? EmailToAdress { get; set; }
-        public string? EmailFromAdress { get; set; }
-        public string? EmailSubject { get; set; }
         public string? DateTimeFormat { get; set; }
-        public string? MailServer { get; set; }
-        public int SMTPPort { get; set; }
-        public bool UseDefaultCredentials { get; set; }
-        public string? UserName { get; set; }
-        public string? Password { get; set; }
-        public TimeSpan HeatbeatEmailTimeOfDay { get; set; }
-        public DayOfWeek HeatbeatEmailDayOfWeek { get; set; }
-        public int HeatbeatEmailIntervalDays = 7;
-        public bool EnableSsl { get; set; }
         public bool EnableDashboardAccess { get; set; }
 
         public class AppsettingsSections
         {
             public const string ApplicationSettings = "ApplicationSettings";
+            public const string EmailSettings = "EmailSettings";
         }
 
         public class StandardAppsettingsValues 
