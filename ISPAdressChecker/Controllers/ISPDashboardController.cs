@@ -5,6 +5,10 @@ using Microsoft.AspNetCore.Http;
 using ISPAdressChecker.Options;
 using Microsoft.AspNetCore.Mvc;
 using ISPAdressChecker.Models;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using static ISPAdressChecker.Models.Enums.Constants;
+using ISPAdressChecker.Helpers;
 
 namespace ISPAdressChecker.Controllers
 {
@@ -20,7 +24,7 @@ namespace ISPAdressChecker.Controllers
         private readonly ApplicationSettingsOptions _applicationSettingsOptions;
         private readonly ILogger<ISPAddressCheckerStatusController> _logger;
         private readonly ILogHubService _loghub;
-
+        private readonly IUrlHelper _urlHelper;
         private readonly string serviceName = nameof(ISPAddressCheckerStatusController);
 
         public ISPAddressCheckerStatusController(
@@ -31,7 +35,10 @@ namespace ISPAdressChecker.Controllers
             IEmailService emailService,
             IOptions<ApplicationSettingsOptions> applicationSettingsOptions,
             ILogger<ISPAddressCheckerStatusController> logger,
-            ILogHubService loghub)
+            ILogHubService loghub,
+            IUrlHelperFactory urlHelperFactory, 
+            IActionContextAccessor actionContextAccessor
+            )
         {
             _timerService = timerService;
             _ISPAddressCounterService = ISPAddressCounterService;
@@ -41,8 +48,10 @@ namespace ISPAdressChecker.Controllers
             _applicationSettingsOptions = applicationSettingsOptions.Value ?? throw new ArgumentNullException(nameof(applicationSettingsOptions));
             _logger = logger;
             _loghub = loghub;
-        }
 
+                _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
+        }
+        
         [HttpGet("status", Name = "GetStatusUpdate")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -221,5 +230,81 @@ namespace ISPAdressChecker.Controllers
 
             return Ok(output);
         }
+
+        [HttpGet("ISPAddressGetAPILoghubURL", Name = "ISPAddressGetAPILoghubURL")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [Produces("text/plain")]
+        public async Task<ActionResult<string>> ISPAddressGetAPILoghubURL()
+        {
+
+            _logger.LogInformation("ISPAddressGetAPILoghubURL -> ISP address check LogHub URL has been requested");
+            await _loghub.SendLogInfoAsync(serviceName, "ISPAddressGetAPILoghubURL -> ISP address check LogHub URL has been requested");
+
+            if (!_applicationSettingsOptions.EnableDashboardAccess)
+            {
+                _logger.LogInformation("ISPAddressGetAPILoghubURL -> Dashboard not enabled (appsettings:EnableDashboardAccess)");
+                await _loghub.SendLogWarningAsync(serviceName, "ISPAddressGetAPILoghubURL -> Dashboard not enabled (appsettings:EnableDashboardAccess)");
+
+                return Forbid();
+            }
+
+
+            var request = _urlHelper.ActionContext.HttpContext.Request;
+            var host = request.Host.Value; // This includes the port if it's included in the request
+            var protocol = request.Scheme;
+            var baseUrl = $"{protocol}://{host}";
+            string output = $"{baseUrl}{SignalRHubUrls.LogHubURL}";
+
+            string dashboardOutput = $"{protocol}://{StringHelpers.MakeHttpRequestHostDashboardReady(host)}{SignalRHubUrls.LogHubURL}";
+
+            if (!string.IsNullOrWhiteSpace(output))
+            {
+                _logger.LogInformation("ISPAddressGetAPILoghubURL ->  LogHub URL: {url} ", output);
+
+                await _loghub.SendLogInfoAsync(serviceName, $"ISPAddressGetAPILoghubURL ->  LogHub URL: {dashboardOutput}");
+                return Ok(output);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+        [HttpGet("ISPAddressGetAPIClockhubURL", Name = "ISPAddressGetAPIClockhubURL")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [Produces("text/plain")]
+        public ActionResult<string> ISPAddressGetAPIClockhubURL()
+        {
+
+            _logger.LogInformation("ISPAddressGetAPIClockhubURL -> ISP address check Clock Hub URL has been requested");
+
+            if (!_applicationSettingsOptions.EnableDashboardAccess)
+            {
+                _logger.LogInformation("ISPAddressGetAPIClockhubURL -> Dashboard not enabled (appsettings:EnableDashboardAccess)");
+
+                return Forbid();
+            }
+
+            var request = _urlHelper.ActionContext.HttpContext.Request;
+            var host = request.Host.Value; // This includes the port if it's included in the request
+            var protocol = request.Scheme;
+            var baseUrl = $"{protocol}://{host}";
+            string output = $"{baseUrl}{SignalRHubUrls.ClockHubURL}";
+
+            if (!string.IsNullOrWhiteSpace(output))
+            {
+                _logger.LogInformation("ISPAddressGetAPIClockhubURL ->  ClockHub URL: {url} ", output);
+                return Ok(output);
+            }
+            else
+            {
+                _logger.LogWarning("ISPAddressGetAPIClockhubURL -> Bad Request: ClockHub URL: {url} ", output);
+                return BadRequest();
+            }
+        }
+
     }
 }

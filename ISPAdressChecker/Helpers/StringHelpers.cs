@@ -1,4 +1,6 @@
-﻿namespace ISPAdressChecker.Helpers
+﻿using System.Text;
+
+namespace ISPAdressChecker.Helpers
 {
     public static class StringHelpers
     {
@@ -49,6 +51,28 @@
             }
 
             return emailAddress;
+        }
+
+        public static string MakeHttpRequestHostDashboardReady(string host)
+        {
+            string output = "NoHostFound";
+
+            if (!string.IsNullOrWhiteSpace(host))
+            {
+                if (host.Length > 4)
+                {
+                    // replcae last four characters with *
+                    output = host.Substring(0, host.Length - 4) + "****";
+
+                }
+                else
+                {
+                    output = new string('*', host.Length);
+                }
+
+            }
+
+            return output;
         }
     }
 }

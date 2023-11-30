@@ -3,6 +3,7 @@ using ISPAdressChecker.Services;
 using ISPAdressChecker.Services.Interfaces;
 using ISPAdressChecker.SignalRHubs;
 using ISPAdressChecker.SignalRHubs.Interfaces;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.SignalR;
 using MyApplication;
 using static ISPAdressChecker.Models.Enums.Constants;
@@ -26,6 +27,7 @@ builder.Services.AddSingleton<ITimerService, TimerService>();
 builder.Services.AddSingleton<IISPAdressCounterService, ISPAdressCounterService>();
 builder.Services.AddSingleton<IStatusCounterService, StatusCounterService>();
 builder.Services.AddSingleton<IApplicationService, ApplicationService>();
+builder.Services.AddSingleton<IActionContextAccessor,  ActionContextAccessor>();
 
 builder.Services.AddTransient<ICheckISPAddressService, CheckISPAddressService>();
 builder.Services.AddTransient<IEmailService, EmailService>();

@@ -76,5 +76,60 @@ namespace ISPAddressCheckerTests
             Assert.Equal(expected, actual);
         }
 
+        [Fact]
+        public void TestMakeHttpRequestHostDashboardReady()
+        {
+            // Arrange
+            string host = null;
+            string expected = "NoHostFound";
+
+            // Act
+            string result1 = StringHelpers.MakeHttpRequestHostDashboardReady(host);
+
+            // Assert
+            Assert.Equal(expected, result1);
+        }
+
+        [Fact]
+        public void TestMakeHttpRequestHostDashboardReady_EmptyHost_ReturnsNoHostFound()
+        {
+            // Arrange
+            string host = "";
+            string expected = "NoHostFound";
+
+            // Act
+            string result2 = StringHelpers.MakeHttpRequestHostDashboardReady(host);
+
+            // Assert
+            Assert.Equal(expected, result2);
+        }
+
+        [Fact]
+        public void TestMakeHttpRequestHostDashboardReady_ShortHost_ReturnsMaskedHost()
+        {
+            // Arrange
+            string host = "abc";
+            string expected = "***";
+
+            // Act
+            string result3 = StringHelpers.MakeHttpRequestHostDashboardReady(host);
+
+            // Assert
+            Assert.Equal(expected, result3);
+        }
+
+        [Fact]
+        public void TestMakeHttpRequestHostDashboardReady_LongHost_ReturnsMaskedHost()
+        {
+            // Arrange
+            string host = "example.com";
+            string expected = "example****";
+
+            // Act
+            string result4 = StringHelpers.MakeHttpRequestHostDashboardReady(host);
+
+            // Assert
+            Assert.Equal(expected, result4);
+        }
     }
 }
