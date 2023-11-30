@@ -1,10 +1,12 @@
 ﻿@using ISPAdressChecker.Models;
 @using ISPAdressChecker.Models.Enums;
+@using ISPAdressCheckerStatusDashboard.Services.Interfaces
 @using Microsoft.AspNetCore.SignalR.Client;
 @using static ISPAdressChecker.Models.Enums.Constants
 
 @implements IAsyncDisposable
 @inject ILogger<Index> logger
+@inject IRequestISPAddressService requestISPAddressService;
 
 <div class="log-section">
     <div class="log-message-board">
@@ -74,7 +76,14 @@
 
     private async Task InstatiateLogHub()
     {
-        string logHubUrl = "http://localhost:5104/hubs/log";
+        string logHubUrl = string.Empty;
+
+        do
+        {
+            logHubUrl = await requestISPAddressService.GetLogHubURLAsync();
+        }
+        while (string.IsNullOrEmpty(logHubUrl));
+
 
         logHubConnection = new HubConnectionBuilder()
         .WithUrl(logHubUrl)
@@ -104,7 +113,13 @@
 
     private async Task instatiateClockHub()
     {
-        string clockHubUrl = "http://localhost:5104/hubs/clock"; // Replace with your actual hub URL
+        string clockHubUrl = string.Empty;
+
+        do
+        {
+            clockHubUrl = await requestISPAddressService.GetClockhubURLAsync();
+        }
+        while (string.IsNullOrWhiteSpace(clockHubUrl));
 
         clockHubConnection = new HubConnectionBuilder()
         .WithUrl(clockHubUrl)

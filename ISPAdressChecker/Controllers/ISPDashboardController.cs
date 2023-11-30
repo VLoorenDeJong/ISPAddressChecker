@@ -56,15 +56,13 @@ namespace ISPAdressChecker.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(ISPAddressCheckerStatusUpdateModel), StatusCodes.Status200OK)]
-        public async Task<ActionResult<ISPAddressCheckerStatusUpdateModel>> GetStatusUpdate()
+        public ActionResult<ISPAddressCheckerStatusUpdateModel> GetStatusUpdate()
         {
             _logger.LogInformation("GetStatusUpdate -> Status update has been requested");
-            await _loghub.SendLogInfoAsync(serviceName, "GetStatusUpdate -> Status update has been requested");
 
             if (!_applicationSettingsOptions.EnableDashboardAccess)
             {
                 _logger.LogWarning("ISPAddressCheckIntervalInMinutes -> Dashboard not enabled (appsettings:EnableDashboardAccess)");
-                await _loghub.SendLogWarningAsync(serviceName, "ISPAddressCheckIntervalInMinutes -> Dashboard not enabled (appsettings:EnableDashboardAccess)");
 
                 return Forbid();
             }
@@ -79,15 +77,13 @@ namespace ISPAdressChecker.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(DateTimeOffset), StatusCodes.Status200OK)]
-        public async Task<ActionResult<DateTimeOffset>> GetStartDateTime()
+        public ActionResult<DateTimeOffset> GetStartDateTime()
         {
             _logger.LogInformation("GetStartDateTime -> Start date has been requested");
-            await _loghub.SendLogInfoAsync(serviceName, "GetStartDateTime -> Start date has been requested");
 
             if (!_applicationSettingsOptions.EnableDashboardAccess)
             {
                 _logger.LogWarning("ISPAddressCheckIntervalInMinutes -> Dashboard not enabled (appsettings:EnableDashboardAccess)");
-                await _loghub.SendLogWarningAsync(serviceName, "ISPAddressCheckIntervalInMinutes -> Dashboard not enabled (appsettings:EnableDashboardAccess)");
 
                 return Forbid();
             }
@@ -102,15 +98,13 @@ namespace ISPAdressChecker.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(double), StatusCodes.Status200OK)]
-        public async Task<ActionResult<double>> ISPAddressCheckIntervalInMinutes()
+        public ActionResult<double> ISPAddressCheckIntervalInMinutes()
         {
             _logger.LogInformation("ISPAddressCheckIntervalInMinutes -> ISP address check interval has been requested (minutes)");
-            await _loghub.SendLogInfoAsync(serviceName, "ISPAddressCheckIntervalInMinutes -> ISP address check interval has been requested (minutes)");
 
             if (!_applicationSettingsOptions.EnableDashboardAccess)
             {
                 _logger.LogWarning("ISPAddressCheckIntervalInMinutes -> Dashboard not enabled (appsettings:EnableDashboardAccess)");
-                await _loghub.SendLogWarningAsync(serviceName, "ISPAddressCheckIntervalInMinutes -> Dashboard not enabled (appsettings:EnableDashboardAccess)");
 
                 return Forbid();
             }
@@ -119,7 +113,6 @@ namespace ISPAdressChecker.Controllers
 
             double output = _applicationSettingsOptions.TimeIntervalInMinutes;
             _logger.LogInformation("ISPAddressCheckIntervalInMinutes -> interval: {interval} (minutes)", output);
-            await _loghub.SendLogInfoAsync(serviceName, $"ISPAddressCheckIntervalInMinutes -> interval: {output} (minutes)");
 
             return Ok(output);
         }
@@ -207,15 +200,13 @@ namespace ISPAdressChecker.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [Produces("text/plain")]
-        public async Task<ActionResult<string>> ISPAddressCheckAPIWebEndpointURL()
+        public ActionResult<string> ISPAddressCheckAPIWebEndpointURL()
         {
             _logger.LogInformation("ISPAddressCheckAPIEndpoint -> ISP address check Endpoint url has been requested");
-            await _loghub.SendLogInfoAsync(serviceName, "ISPAddressCheckAPIEndpoint -> ISP address check Endpoint url has been requested");
 
             if (!_applicationSettingsOptions.EnableDashboardAccess)
             {
                 _logger.LogInformation("ISPAddressCheckAPIEndpoint -> Dashboard not enabled (appsettings:EnableDashboardAccess)");
-                await _loghub.SendLogWarningAsync(serviceName, "ISPAddressCheckAPIEndpoint -> Dashboard not enabled (appsettings:EnableDashboardAccess)");
 
                 return Forbid();
             }
@@ -226,7 +217,6 @@ namespace ISPAdressChecker.Controllers
 
             output = _applicationSettingsOptions.APIEndpointURL!;
             _logger.LogInformation("ISPAddressCheckAPIEndpoint ->  Endpoint url: {url} ", _applicationSettingsOptions!.APIEndpointURL);
-            await _loghub.SendLogInfoAsync(serviceName, $"ISPAddressCheckAPIEndpoint ->  Endpoint url: {_applicationSettingsOptions!.APIEndpointURL}");
 
             return Ok(output);
         }

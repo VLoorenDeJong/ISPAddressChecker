@@ -12,20 +12,28 @@ namespace ISPAdressChecker.Controllers
         private readonly IISPAdressCounterService _counterService;
         private readonly ILogger<HTTPController> _logger;
         private readonly IISPAddressService _iSPAddressService;
+        private readonly ILogHubService _loghub;
 
-        public HTTPController(ILogger<HTTPController> logger, IISPAdressCounterService counterService, IISPAddressService iSPAddressService)
+        private readonly string serviceName = nameof(HTTPController);
+
+
+        public HTTPController(ILogger<HTTPController> logger, IISPAdressCounterService counterService, IISPAddressService iSPAddressService, ILogHubService loghub)
         {
             _counterService = counterService;
             _logger = logger;
             _iSPAddressService = iSPAddressService;
+            _loghub = loghub;
+
         }
 
         [HttpGet("MyISPAdress", Name = "MyISPAdress")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<string> GetIpAddress()
+        public async Task<ActionResult<string>> GetIpAddress()
         {
             _logger.LogInformation("ISP address has been requested");
+            await _loghub.SendLogInfoAsync(serviceName, "ISP address has been requested");
+
             _counterService.AddISPEndpointRequests();
 
             HttpContext context = HttpContext;
@@ -74,11 +82,15 @@ namespace ISPAdressChecker.Controllers
                     logInfo = outputString;
                 }
                 _logger.LogInformation("Success adres returned:{logInfo}", logInfo);
+                await _loghub.SendLogInfoAsync(serviceName, $"Success adres returned:{logInfo}");
+
                 return outputString;
             }
             else
             {
                 _logger.LogError("Something went wrong output was: {outputString}", outputString);
+                await _loghub.SendLogErrorAsync(serviceName, $"Something went wrong output was: {outputString}");
+
                 return "What?!?";
             }
 

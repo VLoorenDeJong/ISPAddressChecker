@@ -20,11 +20,45 @@ namespace ISPAdressCheckerStatusDashboard.Services
             try
             {
                 _logger.LogInformation("GetCHeckISPAddressEndpointURLAsync -> Requesting URL for ISP address check");
-                url = await _apiClient!.ISPAddressCheckAPIEndpointURLAsync();
+                url = await _apiClient!.ISPAddressCheckAPIWebEndpointURLAsync();
             }
             catch (Exception ex)
             {
                 _logger.LogError("GetCHeckISPAddressEndpointURLAsync -> ISP address check URL Request Error:{message}", ex.Message);
+            }
+
+            return url;
+        }
+
+        public async Task<string> GetLogHubURLAsync()
+        {
+            string url = string.Empty;
+
+            try
+            {
+                _logger.LogInformation("GetLogHubURLAsync -> Requesting LogHub URL");
+                url = await _apiClient!.ISPAddressGetAPILoghubURLAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("GetLogHubURLAsync -> ISP address LogHubURL Request Error:{message}", ex.Message);
+            }
+
+            return url;
+        }
+
+        public async Task<string> GetClockhubURLAsync()
+        {
+            string url = string.Empty;
+
+            try
+            {
+                _logger.LogInformation("GetClockhubURLAsync -> Requesting URL for LogHub");
+                url = await _apiClient!.ISPAddressGetAPIClockhubURLAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("GetClockhubURLAsync -> LogHub URL Request Error:{message}", ex.Message);
             }
 
             return url;
