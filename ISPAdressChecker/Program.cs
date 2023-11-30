@@ -53,6 +53,7 @@ app.UseAuthorization();
 
 // ToDo make loghub URL configurable via appsettings.json
 // ToDo: make the url available via a endpoint
+// ToDo Add uptime to the heartbeat email
 app.MapHub<ClockHub>(SignalRHubUrls.ClockHubURL);
 app.MapHub<LogHub>(SignalRHubUrls.LogHubURL);
 app.MapControllers();
