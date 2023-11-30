@@ -595,7 +595,7 @@ namespace ISPAdressCheckerStatusDashboard
         public virtual async System.Threading.Tasks.Task<string> ISPAddressCheckAPIEndpointURLAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ISPAddressCheckerStatus/ISPAddressCheckAPIEndpointURL");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ISPAddressCheckerStatus/ISPAddressCheckAPIWebEndpointURL");
 
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;

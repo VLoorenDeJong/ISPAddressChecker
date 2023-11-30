@@ -5,6 +5,7 @@ using ISPAdressChecker.SignalRHubs;
 using ISPAdressChecker.SignalRHubs.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 using MyApplication;
+using static ISPAdressChecker.Models.Enums.Constants;
 using static ISPAdressChecker.Options.ApplicationSettingsOptions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,7 +50,7 @@ app.UseAuthorization();
 
 // ToDo make loghub URL configurable via appsettings.json
 // ToDo: make the url available via a endpoint
-app.MapHub<ClockHub>("/hubs/clock");
-app.MapHub<LogHub>("/hubs/log");
+app.MapHub<ClockHub>(SignalRHubUrls.ClockHubURL);
+app.MapHub<LogHub>(SignalRHubUrls.LogHubURL);
 app.MapControllers();
 app.Run();

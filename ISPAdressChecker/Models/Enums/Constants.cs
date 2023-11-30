@@ -11,5 +11,10 @@
         {
             public const string SendLogToClients = "SendLogToClients";
         }
+        public class SignalRHubUrls
+        {
+            public const string ClockHubURL = "/hubs/clock";
+            public const string LogHubURL = "/hubs/log";
+        }
     }
 }
