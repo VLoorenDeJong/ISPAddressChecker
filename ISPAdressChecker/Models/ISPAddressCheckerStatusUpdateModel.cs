@@ -1,6 +1,6 @@
-﻿using ISPAdressChecker.Services.Interfaces;
+﻿using ISPAddressChecker.Services.Interfaces;
 
-namespace ISPAdressChecker.Models
+namespace ISPAddressChecker.Models
 {
     public class ISPAddressCheckerStatusUpdateModel
     {
@@ -9,17 +9,17 @@ namespace ISPAdressChecker.Models
 
         }
 
-        public ISPAddressCheckerStatusUpdateModel(IISPAdressCounterService ISPAdressCounterService, IStatusCounterService statusCounterService, ITimerService timerService, IISPAddressService iSPAddressService)
+        public ISPAddressCheckerStatusUpdateModel(IISPAddressCounterService ISPAddressCounterService, IStatusCounterService statusCounterService, ITimerService timerService, IISPAddressService iSPAddressService)
         {
-            ISPEndpointRequests = ISPAdressCounterService.GetISPEndpointRequestsCounter();
-            ServiceRequestCounter = ISPAdressCounterService.GetServiceRequestCounter();
+            ISPEndpointRequests = ISPAddressCounterService.GetISPEndpointRequestsCounter();
+            ServiceRequestCounter = ISPAddressCounterService.GetServiceRequestCounter();
             StatusUpdateRequested = statusCounterService.GetStatusUpdateRequested();
             StartDateTime = timerService.GetStartDateTime();
             CurrentISPAddress = iSPAddressService.GetCurrentISPAddress();
-            RequestSuccessPercentage = ISPAdressCounterService.GetSuccessPercentage();
+            RequestSuccessPercentage = ISPAddressCounterService.GetSuccessPercentage();
 
-            InternalISPCheckCounter = ISPAdressCounterService.GetInternalISPCheckCounter();
-            ExternalISPCheckCounter = ISPAdressCounterService.GetExternalISPCheckCounter();
+            InternalISPCheckCounter = ISPAddressCounterService.GetInternalISPCheckCounter();
+            ExternalISPCheckCounter = ISPAddressCounterService.GetExternalISPCheckCounter();
         }
 
         public int ISPEndpointRequests { get; }

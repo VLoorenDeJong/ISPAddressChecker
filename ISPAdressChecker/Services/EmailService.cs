@@ -1,15 +1,15 @@
-﻿using static ISPAdressChecker.Options.ApplicationSettingsOptions;
-using ISPAdressChecker.Services.Interfaces;
+﻿using static ISPAddressChecker.Options.ApplicationSettingsOptions;
+using ISPAddressChecker.Services.Interfaces;
 using Microsoft.Extensions.Options;
-using ISPAdressChecker.Options;
+using ISPAddressChecker.Options;
 using System.Net.Mail;
 using System.Net;
-using ISPAdressChecker.Models;
-using ISPAdressChecker.Models.Enums;
+using ISPAddressChecker.Models;
+using ISPAddressChecker.Models.Enums;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Logging;
 
-namespace ISPAdressChecker.Services
+namespace ISPAddressChecker.Services
 {
     //Todo: add the log hub to send the logs to the client if EnableDashboardAccess is true
     public class EmailService : IEmailService
@@ -40,7 +40,7 @@ namespace ISPAdressChecker.Services
         private void CreateBasicMailMessage()
         {
             // Set the sender, recipient, subject, and body of the message
-            message.From = new MailAddress(_emailSettingsOptions.EmailFromAdress!);
+            message.From = new MailAddress(_emailSettingsOptions.EmailFromAddress!);
             message.Priority = MailPriority.High;
         }
 
@@ -85,7 +85,7 @@ namespace ISPAdressChecker.Services
                     message.Body = emailBody;
                     message.IsBodyHtml = true;
 
-                    if (string.IsNullOrWhiteSpace(sendEmailDetails.EmailAddress)) sendEmailDetails.EmailAddress = _emailSettingsOptions!.EmailToAdress!;
+                    if (string.IsNullOrWhiteSpace(sendEmailDetails.EmailAddress)) sendEmailDetails.EmailAddress = _emailSettingsOptions!.EmailToAddress!;
                     message.To.Add(new MailAddress(sendEmailDetails.EmailAddress));
 
                     try
@@ -125,7 +125,7 @@ namespace ISPAdressChecker.Services
             return report;
         }
 
-        public async Task<ActionReportModel> SendHeartBeatEmail(IISPAdressCounterService counterService, string oldISPAddress, string currentISPAddress, string newISPAddress, Dictionary<string, string> externalISPCheckResults, SendEmailModel sendEmailDetails)
+        public async Task<ActionReportModel> SendHeartBeatEmail(IISPAddressCounterService counterService, string oldISPAddress, string currentISPAddress, string newISPAddress, Dictionary<string, string> externalISPCheckResults, SendEmailModel sendEmailDetails)
         {
             string message = $@"<p><strong>This was fun! </strong></p>"
                                  + $"<p>API calls:<strong> {counterService.GetServiceRequestCounter()}</strong></p>"
@@ -133,10 +133,10 @@ namespace ISPAdressChecker.Services
                                  + $"<p>Internal API calls: <strong>{counterService.GetISPEndpointRequestsCounter()}</strong></p>"
                                  + $"<p>External API calls: <strong>{counterService.GetExternalServiceUsekCounter()}</strong></p>"
                                  + $@"<p>Current ISP: <strong> {currentISPAddress}</strong></p>";
-            foreach (KeyValuePair<string, string> ISPAdressCheck in externalISPCheckResults!)
+            foreach (KeyValuePair<string, string> ISPAddressCheck in externalISPCheckResults!)
             {
 
-                string ispReport = $"<p>Backup API: <a href = '{ISPAdressCheck.Key}'> {ISPAdressCheck.Key} </a> -> <strong>{ISPAdressCheck.Value}</strong></p>";
+                string ispReport = $"<p>Backup API: <a href = '{ISPAddressCheck.Key}'> {ISPAddressCheck.Key} </a> -> <strong>{ISPAddressCheck.Value}</strong></p>";
                 message = $"{message} {ispReport}";
             }
             message = $"{message} <p>TimeIntervalInMinutes: <strong>{_applicationSettingsOptions?.TimeIntervalInMinutes}</strong></p>"
@@ -152,7 +152,7 @@ namespace ISPAdressChecker.Services
             return await SendEmail("ISP address checker update", sendEmailDetails, emailBody);
         }
 
-        public async Task SendCounterDifferenceEmail(IISPAdressCounterService counterService)
+        public async Task SendCounterDifferenceEmail(IISPAddressCounterService counterService)
         {
             string message = $"<p>The ISP check counters are out of sync.</p>"
                               + $"<p>requestCounter : <strong>{counterService.GetServiceRequestCounter()}</strong></p>"
@@ -176,7 +176,7 @@ namespace ISPAdressChecker.Services
             await SendEmail("CheckISPAddress: configuration error", APIEmailDetails, emailBody);
         }
 
-        public async Task SendConfigSuccessMail(IISPAdressCounterService counterService)
+        public async Task SendConfigSuccessMail(IISPAddressCounterService counterService)
         {
             string message = $@"<p>You have succesfully configured this application.</p>"
                                   + "<p><strong>This was fun! </strong></p>"
@@ -189,8 +189,8 @@ namespace ISPAdressChecker.Services
                                   + $"<p>Every week on <strong> {_emailSettingsOptions?.HeatbeatEmailDayOfWeek} </strong> at <strong> {_emailSettingsOptions?.HeatbeatEmailTimeOfDay} </strong> a E-mail will be send</p>"
                                   + $"<p>DNSRecordHostProviderName: <strong>{_emailSettingsOptions?.DNSRecordHostProviderName}</strong></p>"
                                   + $"<p>DNSRecordHostProviderURL : <strong>{_emailSettingsOptions?.DNSRecordHostProviderURL}</strong></p>"
-                                  + $"<p>EmailFromAdress : <strong>{_emailSettingsOptions?.EmailFromAdress}</strong></p>"
-                                  + $"<p>EmailToAdress : <strong>{_emailSettingsOptions?.EmailToAdress}</strong></p>"
+                                  + $"<p>EmailFromAddress : <strong>{_emailSettingsOptions?.EmailFromAddress}</strong></p>"
+                                  + $"<p>EmailToAddress : <strong>{_emailSettingsOptions?.EmailToAddress}</strong></p>"
                                   + $"<p>EmailSubject : <strong>{_emailSettingsOptions?.EmailSubject}</strong></p>"
                                   + $"<p>MailServer : <strong>{_emailSettingsOptions?.MailServer}</strong></p>"
                                   + $"<p>userName: <strong>{_emailSettingsOptions?.UserName}</strong></p>"
@@ -222,10 +222,10 @@ namespace ISPAdressChecker.Services
             _logger.LogInformation("SendConfigSuccessMail -> Sending: ConfigSuccessMail");
             await _loghub.SendLogInfoAsync(serviceName, $"SendConfigSuccessMail -> Sending: ConfigSuccessMail");
 
-            await SendEmail("ISPAdressChecker: Congratulations configuration succes!!", APIEmailDetails, emailBody);
+            await SendEmail("ISPAddressChecker: Congratulations configuration succes!!", APIEmailDetails, emailBody);
         }
 
-        public async Task SendConnectionReestablishedEmail(string newISPAddress, string oldISPAddress, IISPAdressCounterService counterService, double interval)
+        public async Task SendConnectionReestablishedEmail(string newISPAddress, string oldISPAddress, IISPAddressCounterService counterService, double interval)
         {
             string message = @$"<p>ISP adress has changed and I found my self again.</p>"
                             + @$"<p><strong> {newISPAddress} </strong> is your new ISP adress</p>"
@@ -249,7 +249,7 @@ namespace ISPAdressChecker.Services
             _logger.LogInformation("SendConnectionReestablishedEmail -> Sending: ConnectionReestablishedEmail");
             await _loghub.SendLogInfoAsync(serviceName, $"SendConnectionReestablishedEmail -> Sending: ConnectionReestablishedEmail");
 
-            await SendEmail("ISPAdressChecker:I found my self", APIEmailDetails, emailBody);
+            await SendEmail("ISPAddressChecker:I found my self", APIEmailDetails, emailBody);
         }
 
         public async Task SendISPAPIHTTPExceptionEmail(string exceptionType, string exceptionMessage)
@@ -324,7 +324,7 @@ namespace ISPAdressChecker.Services
             await SendEmail("CheckISPAddress: API Call error", APIEmailDetails, emailBody);
         }
 
-        public async Task<ActionReportModel> SendISPAddressChangedEmail(string externalISPAddress, string oldISPAddress, IISPAdressCounterService counterService, double interval, SendEmailModel sendEmailDetails)
+        public async Task<ActionReportModel> SendISPAddressChangedEmail(string externalISPAddress, string oldISPAddress, IISPAddressCounterService counterService, double interval, SendEmailModel sendEmailDetails)
         {
             // hostingProviderText is the link to the hostprovider, id specified is shows the name
             string hostingProviderText = string.Equals(_emailSettingsOptions?.DNSRecordHostProviderName, StandardAppsettingsValues.DNSRecordHostProviderName, StringComparison.CurrentCultureIgnoreCase) ? _emailSettingsOptions?.DNSRecordHostProviderURL! : _emailSettingsOptions?.DNSRecordHostProviderName!;
@@ -352,19 +352,19 @@ namespace ISPAdressChecker.Services
 
             string emailBody = CreateEmail(message);
 
-            _logger.LogInformation("SendISPAdressChangedEmail -> Sending: ISPAdressChangedEmail");
-            await _loghub.SendLogInfoAsync(serviceName, $"SendISPAdressChangedEmail -> Sending: ISPAdressChangedEmail");
+            _logger.LogInformation("SendISPAddressChangedEmail -> Sending: ISPAddressChangedEmail");
+            await _loghub.SendLogInfoAsync(serviceName, $"SendISPAddressChangedEmail -> Sending: ISPAddressChangedEmail");
 
             return await SendEmail(_emailSettingsOptions?.EmailSubject!, sendEmailDetails, emailBody);
         }
 
-        public async Task SendDifferendISPAdressValuesEmail(Dictionary<string, string> externalISPAdressChecks, string oldISPAddress, IISPAdressCounterService counterService, double interval)
+        public async Task SendDifferendISPAddressValuesEmail(Dictionary<string, string> externalISPAddressChecks, string oldISPAddress, IISPAddressCounterService counterService, double interval)
         {
             string message = $@"<p><strong> Multiple </strong> ISP adresses returned</p>";
 
-            foreach (KeyValuePair<string, string> ISPAdressCheck in externalISPAdressChecks!)
+            foreach (KeyValuePair<string, string> ISPAddressCheck in externalISPAddressChecks!)
             {
-                string ispReport = $"<p><a href = '{ISPAdressCheck.Key}'>{ISPAdressCheck.Key}</a> - <strong>{ISPAdressCheck.Value}</strong></p>";
+                string ispReport = $"<p><a href = '{ISPAddressCheck.Key}'>{ISPAddressCheck.Key}</a> - <strong>{ISPAddressCheck.Value}</strong></p>";
                 message = $"{message} {ispReport}";
             }
 
@@ -384,13 +384,13 @@ namespace ISPAdressChecker.Services
 
             string emailBody = CreateEmail(message);
 
-            _logger.LogInformation("SendDifferendISPAdressValuesEmail -> Sending: DifferendISPAdressValuesEmail");
-            await _loghub.SendLogInfoAsync(serviceName, $"SendDifferendISPAdressValuesEmail -> Sending: DifferendISPAdressValuesEmail");
+            _logger.LogInformation("SendDifferendISPAddressValuesEmail -> Sending: DifferendISPAddressValuesEmail");
+            await _loghub.SendLogInfoAsync(serviceName, $"SendDifferendISPAddressValuesEmail -> Sending: DifferendISPAddressValuesEmail");
 
-            await SendEmail("ISPAdressChecker: multiple ISP adresses were returned", APIEmailDetails, emailBody);
+            await SendEmail("ISPAddressChecker: multiple ISP adresses were returned", APIEmailDetails, emailBody);
         }
 
-        public async Task SendNoISPAdressReturnedEmail(string oldISPAddress, IISPAdressCounterService counterService, double interval)
+        public async Task SendNoISPAddressReturnedEmail(string oldISPAddress, IISPAddressCounterService counterService, double interval)
         {
 
             string message = @$"<p>No adresses were returned are there any exceptions?</p>"
@@ -409,26 +409,26 @@ namespace ISPAdressChecker.Services
 
             string emailBody = CreateEmail(message);
 
-            _logger.LogInformation("SendNoISPAdressReturnedEmail -> Sending: NoISPAdressReturnedEmail");
-            await _loghub.SendLogInfoAsync(serviceName, $"SendNoISPAdressReturnedEmail -> Sending: NoISPAdressReturnedEmail");
+            _logger.LogInformation("SendNoISPAddressReturnedEmail -> Sending: NoISPAddressReturnedEmail");
+            await _loghub.SendLogInfoAsync(serviceName, $"SendNoISPAddressReturnedEmail -> Sending: NoISPAddressReturnedEmail");
 
-            await SendEmail("ISPAdressChecker: No ISP adresses were returned", APIEmailDetails, emailBody);
+            await SendEmail("ISPAddressChecker: No ISP adresses were returned", APIEmailDetails, emailBody);
         }
 
         private SendEmailModel CreateInternalSendEmail()
         {
             SendEmailModel output = new();
 
-            if (Helpers.ConfigHelpers.EmailAddressIsValid(_emailSettingsOptions?.EmailToAdress))
+            if (Helpers.ConfigHelpers.EmailAddressIsValid(_emailSettingsOptions?.EmailToAddress))
             {
                 output.EmailValidated = true;
-                output.EmailAddress = _emailSettingsOptions!.EmailToAdress!;
+                output.EmailAddress = _emailSettingsOptions!.EmailToAddress!;
                 output.EmailType = SendEmailTypeEnum.Internal;
             }
             else
             {
-                _logger.LogError("CreateInternalSendEmail -> EmailToAddress not valid, E-mail: {email}", _emailSettingsOptions?.EmailToAdress);
-                throw new Exception($"CreateInternalSendEmail -> EmailToAddress not valid, E-mail: {_emailSettingsOptions?.EmailToAdress}");
+                _logger.LogError("CreateInternalSendEmail -> EmailToAddress not valid, E-mail: {email}", _emailSettingsOptions?.EmailToAddress);
+                throw new Exception($"CreateInternalSendEmail -> EmailToAddress not valid, E-mail: {_emailSettingsOptions?.EmailToAddress}");
             }
 
             return output;

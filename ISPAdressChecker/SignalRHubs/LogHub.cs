@@ -1,10 +1,10 @@
-﻿using ISPAdressChecker.Models;
-using ISPAdressChecker.Models.Enums;
-using ISPAdressChecker.SignalRHubs.Interfaces;
+﻿using ISPAddressChecker.Models;
+using ISPAddressChecker.Models.Enums;
+using ISPAddressChecker.SignalRHubs.Interfaces;
 using Microsoft.AspNetCore.SignalR;
-using static ISPAdressChecker.Models.Enums.Constants;
+using static ISPAddressChecker.Models.Enums.Constants;
 
-namespace ISPAdressChecker.SignalRHubs
+namespace ISPAddressChecker.SignalRHubs
 {
     public class LogHub : Hub<ILogHub>
     {
@@ -18,7 +18,7 @@ namespace ISPAdressChecker.SignalRHubs
         // Todo Check if this is needed
         public async Task SendLogToClients(LogEntryModel logEntry)
         {
-            _logger.LogInformation("ISPAdressChecker.SignalRHubs -> {method} -> called", LogHubMethods.SendLogToClients);
+            _logger.LogInformation("ISPAddressChecker.SignalRHubs -> {method} -> called", LogHubMethods.SendLogToClients);
             await Clients.All.SendLogToClients(logEntry);
         }
 

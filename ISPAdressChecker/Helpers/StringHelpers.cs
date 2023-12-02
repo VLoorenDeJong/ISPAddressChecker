@@ -1,16 +1,16 @@
 ﻿using System.Text;
 
-namespace ISPAdressChecker.Helpers
+namespace ISPAddressChecker.Helpers
 {
     public static class StringHelpers
     {
-        public static string MakeISPAddressLogReady(string ISPAdress)
+        public static string MakeISPAddressLogReady(string ISPAddress)
         {
             string output = string.Empty;
-            if (!string.IsNullOrWhiteSpace(ISPAdress))
+            if (!string.IsNullOrWhiteSpace(ISPAddress))
             {
 
-                string[] octets = ISPAdress.Split('.');
+                string[] octets = ISPAddress.Split('.');
                 int secondOctetInt = int.Parse(octets[1]);
                 string secondOctetString = secondOctetInt.ToString().PadRight(3, '0');
                 string secondOctet = secondOctetString.Substring(0, secondOctetString.Length - 2);

@@ -1,11 +1,11 @@
-﻿using ISPAdressChecker.Services.Interfaces;
+﻿using ISPAddressChecker.Services.Interfaces;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace ISPAdressChecker.Services
+namespace ISPAddressChecker.Services
 {
-    public class ISPAdressCounterService : IISPAdressCounterService
+    public class ISPAddressCounterService : IISPAddressCounterService
     {
-        public ISPAdressCounterService()
+        public ISPAddressCounterService()
         {
             ISPEndpointRequests = 0;
             ServiceRequestCounter = 0;

@@ -1,9 +1,9 @@
-﻿using ISPAdressChecker.SignalRHubs.Interfaces;
+﻿using ISPAddressChecker.SignalRHubs.Interfaces;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.VisualBasic;
 using MyApplication;
 
-namespace ISPAdressCheckerStatusDashboard.Services
+namespace ISPAddressCheckerStatusDashboard.Services
 {
     public partial class ClockHubClient : IClock, IHostedService
     {

@@ -1,13 +1,13 @@
-using ISPAdressChecker.Options;
-using ISPAdressChecker.Services;
-using ISPAdressChecker.Services.Interfaces;
-using ISPAdressChecker.SignalRHubs;
-using ISPAdressChecker.SignalRHubs.Interfaces;
+using ISPAddressChecker.Options;
+using ISPAddressChecker.Services;
+using ISPAddressChecker.Services.Interfaces;
+using ISPAddressChecker.SignalRHubs;
+using ISPAddressChecker.SignalRHubs.Interfaces;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.SignalR;
 using MyApplication;
-using static ISPAdressChecker.Models.Enums.Constants;
-using static ISPAdressChecker.Options.ApplicationSettingsOptions;
+using static ISPAddressChecker.Models.Enums.Constants;
+using static ISPAddressChecker.Options.ApplicationSettingsOptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +24,7 @@ builder.Services.AddHostedService<ClockWorker>();
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IISPAddressService, ISPAddressService>();
 builder.Services.AddSingleton<ITimerService, TimerService>();
-builder.Services.AddSingleton<IISPAdressCounterService, ISPAdressCounterService>();
+builder.Services.AddSingleton<IISPAddressCounterService, ISPAddressCounterService>();
 builder.Services.AddSingleton<IStatusCounterService, StatusCounterService>();
 builder.Services.AddSingleton<IApplicationService, ApplicationService>();
 builder.Services.AddSingleton<IActionContextAccessor,  ActionContextAccessor>();

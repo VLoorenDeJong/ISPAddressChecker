@@ -1,6 +1,6 @@
-﻿using ISPAdressChecker.Models.Enums;
+﻿using ISPAddressChecker.Models.Enums;
 
-namespace ISPAdressChecker.Models
+namespace ISPAddressChecker.Models
 {
     public class ActionReportModel
     {

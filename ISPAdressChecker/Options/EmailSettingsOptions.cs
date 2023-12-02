@@ -1,9 +1,9 @@
-﻿namespace ISPAdressChecker.Options
+﻿namespace ISPAddressChecker.Options
 {
     public class EmailSettingsOptions
     {
-        public string? EmailFromAdress { get; set; }
-        public string? EmailToAdress { get; set; }
+        public string? EmailFromAddress { get; set; }
+        public string? EmailToAddress { get; set; }
         public string? EmailSubject { get; set; }
         public string? MailServer { get; set; }
         public string? UserName { get; set; }

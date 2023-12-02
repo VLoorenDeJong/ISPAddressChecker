@@ -1,7 +1,7 @@
-﻿using ISPAdressChecker.SignalRHubs.Interfaces;
+﻿using ISPAddressChecker.SignalRHubs.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 
-namespace ISPAdressChecker.SignalRHubs
+namespace ISPAddressChecker.SignalRHubs
 {
     public class ClockHub : Hub<IClock>
     {

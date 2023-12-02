@@ -1,4 +1,4 @@
-﻿@using ISPAdressCheckerStatusDashboard.Services.Interfaces;
+﻿@using ISPAddressCheckerStatusDashboard.Services.Interfaces;
 
 @inject IRequestEmailService _emailService;
 @inject ICounterService counterService;
@@ -108,7 +108,7 @@
         // Trim spaces
         if (!string.IsNullOrWhiteSpace(emailRequest.EmailAddress)) emailRequest.EmailAddress = emailRequest.EmailAddress.Replace(" ", "");
 
-        if (ISPAdressChecker.Helpers.ConfigHelpers.EmailAddressIsValid(emailRequest.EmailAddress))
+        if (ISPAddressChecker.Helpers.ConfigHelpers.EmailAddressIsValid(emailRequest.EmailAddress))
         {
             switch (EmailType)
             {

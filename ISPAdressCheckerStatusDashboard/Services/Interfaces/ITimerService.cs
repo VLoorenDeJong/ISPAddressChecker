@@ -1,4 +1,4 @@
-﻿namespace ISPAdressCheckerStatusDashboard.Services.Interfaces
+﻿namespace ISPAddressCheckerStatusDashboard.Services.Interfaces
 {
     public interface ITimerService
     {

@@ -1,4 +1,4 @@
-﻿using ISPAdressChecker.Helpers;
+﻿using ISPAddressChecker.Helpers;
 using Microsoft.AspNetCore.Routing;
 using System;
 using System.Collections.Generic;

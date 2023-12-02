@@ -13,7 +13,7 @@
 #pragma warning disable 3016 // Disable "CS3016 Arrays as attribute arguments is not CLS-compliant"
 #pragma warning disable 8603 // Disable "CS8603 Possible null reference return"
 
-namespace ISPAdressCheckerStatusDashboard
+namespace ISPAddressCheckerStatusDashboard
 {
     using System = global::System;
 
@@ -22,12 +22,12 @@ namespace ISPAdressCheckerStatusDashboard
     {
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<string> MyISPAdressAsync();
+        System.Threading.Tasks.Task<string> MyISPAddressAsync();
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<string> MyISPAdressAsync(System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<string> MyISPAddressAsync(System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -128,18 +128,18 @@ namespace ISPAdressCheckerStatusDashboard
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<string> MyISPAdressAsync()
+        public virtual System.Threading.Tasks.Task<string> MyISPAddressAsync()
         {
-            return MyISPAdressAsync(System.Threading.CancellationToken.None);
+            return MyISPAddressAsync(System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<string> MyISPAdressAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<string> MyISPAddressAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/HTTP/MyISPAdress");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/HTTP/MyISPAddress");
 
             var client_ = new System.Net.Http.HttpClient();
             var disposeClient_ = true;

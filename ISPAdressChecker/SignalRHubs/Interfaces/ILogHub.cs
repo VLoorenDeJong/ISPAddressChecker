@@ -1,6 +1,6 @@
-﻿using ISPAdressChecker.Models;
+﻿using ISPAddressChecker.Models;
 
-namespace ISPAdressChecker.SignalRHubs.Interfaces
+namespace ISPAddressChecker.SignalRHubs.Interfaces
 {
     public interface ILogHub
     {

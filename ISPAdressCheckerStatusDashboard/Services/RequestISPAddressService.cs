@@ -1,7 +1,7 @@
-﻿using ISPAdressChecker.Helpers;
-using ISPAdressCheckerStatusDashboard.Services.Interfaces;
+﻿using ISPAddressChecker.Helpers;
+using ISPAddressCheckerStatusDashboard.Services.Interfaces;
 
-namespace ISPAdressCheckerStatusDashboard.Services
+namespace ISPAddressCheckerStatusDashboard.Services
 {
     public class RequestISPAddressService : IRequestISPAddressService
     {

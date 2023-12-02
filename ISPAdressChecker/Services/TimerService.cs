@@ -1,52 +1,52 @@
-﻿using ISPAdressChecker.Services.Interfaces;
+﻿using ISPAddressChecker.Services.Interfaces;
 using Microsoft.Extensions.Options;
-using ISPAdressChecker.Helpers;
-using ISPAdressChecker.Options;
-using ISPAdressChecker.Models;
+using ISPAddressChecker.Helpers;
+using ISPAddressChecker.Options;
+using ISPAddressChecker.Models;
 using System.Diagnostics;
 
-namespace ISPAdressChecker.Services
+namespace ISPAddressChecker.Services
 {
     public class TimerService : ITimerService
     {
         private readonly ApplicationSettingsOptions _applicationSettingsOptions;
         private readonly EmailSettingsOptions _emailSettingsOptions;
-        private readonly ICheckISPAddressService _ISPAdressService;
-        private readonly IISPAdressCounterService _counterService;
+        private readonly ICheckISPAddressService _ISPAddressService;
+        private readonly IISPAddressCounterService _counterService;
         private readonly ILogger _logger;
 
         private DateTimeOffset StartDateTime = DateTimeOffset.UtcNow;
-        private Timer? controlISPAdressCheckTimer;
-        private Timer? ISPAdressCheckTimer;
+        private Timer? controlISPAddressCheckTimer;
+        private Timer? ISPAddressCheckTimer;
         private Timer? HeartbeatemailTimer;
 
         private Stopwatch UpTime = new Stopwatch();
 
-        private double ISPAdressCHeckInterval;
+        private double ISPAddressCHeckInterval;
 
-        public TimerService(ILogger<CheckISPAddressService> logger, IOptions<ApplicationSettingsOptions> applicationSettingsOptions, IISPAdressCounterService counterService, ICheckISPAddressService ISPAdressService, IOptions<EmailSettingsOptions> emailSettingsOptions)
+        public TimerService(ILogger<CheckISPAddressService> logger, IOptions<ApplicationSettingsOptions> applicationSettingsOptions, IISPAddressCounterService counterService, ICheckISPAddressService ISPAddressService, IOptions<EmailSettingsOptions> emailSettingsOptions)
         {
             _logger = logger;
             _applicationSettingsOptions = applicationSettingsOptions?.Value!;
 
             _emailSettingsOptions = emailSettingsOptions!.Value;
             _counterService = counterService;
-            _ISPAdressService = ISPAdressService;
+            _ISPAddressService = ISPAddressService;
         }
 
         public void StartISPCheckTimers()
         {
             _logger.LogInformation("StartISPCheckTimers -> start");
-            ISPAdressCHeckInterval = (_applicationSettingsOptions.TimeIntervalInMinutes == 0) ? 60 : _applicationSettingsOptions.TimeIntervalInMinutes;
+            ISPAddressCHeckInterval = (_applicationSettingsOptions.TimeIntervalInMinutes == 0) ? 60 : _applicationSettingsOptions.TimeIntervalInMinutes;
 
-            _logger.LogInformation("ISPAdressCHeckInterval: {inter}(minutes), configured:{confInter}(minutes)", ISPAdressCHeckInterval, _applicationSettingsOptions.TimeIntervalInMinutes);
+            _logger.LogInformation("ISPAddressCHeckInterval: {inter}(minutes), configured:{confInter}(minutes)", ISPAddressCHeckInterval, _applicationSettingsOptions.TimeIntervalInMinutes);
 
 
-            ISPAdressCheckTimer = new Timer(async (state) => await _ISPAdressService.GetISPAddressAsync(), null, TimeSpan.Zero, TimeSpan.FromMinutes(ISPAdressCHeckInterval));
-            _logger.LogInformation("ISPAdressCheckTimer interval: {inter}(minutes), configured:{confInter}(minutes)", ISPAdressCHeckInterval, _applicationSettingsOptions.TimeIntervalInMinutes);
+            ISPAddressCheckTimer = new Timer(async (state) => await _ISPAddressService.GetISPAddressAsync(), null, TimeSpan.Zero, TimeSpan.FromMinutes(ISPAddressCHeckInterval));
+            _logger.LogInformation("ISPAddressCheckTimer interval: {inter}(minutes), configured:{confInter}(minutes)", ISPAddressCHeckInterval, _applicationSettingsOptions.TimeIntervalInMinutes);
 
-            controlISPAdressCheckTimer = new Timer(state => { _counterService.AddServiceCheckCounter(); }, null, TimeSpan.FromMinutes(ISPAdressCHeckInterval), TimeSpan.FromMinutes(ISPAdressCHeckInterval));
-            _logger.LogInformation("ControlISPAdressCheckTimer interval: {inter}(minutes), configured:{confInter}(minutes)", ISPAdressCHeckInterval, _applicationSettingsOptions.TimeIntervalInMinutes);
+            controlISPAddressCheckTimer = new Timer(state => { _counterService.AddServiceCheckCounter(); }, null, TimeSpan.FromMinutes(ISPAddressCHeckInterval), TimeSpan.FromMinutes(ISPAddressCHeckInterval));
+            _logger.LogInformation("ControlISPAddressCheckTimer interval: {inter}(minutes), configured:{confInter}(minutes)", ISPAddressCHeckInterval, _applicationSettingsOptions.TimeIntervalInMinutes);
             SetupHeartbeatTimer();
             UpTime.Start();
         }
@@ -72,7 +72,7 @@ namespace ISPAdressChecker.Services
 
             HeartbeatemailTimer = new Timer(async (state) =>
             {
-                await _ISPAdressService.HeartBeatCheck();
+                await _ISPAddressService.HeartBeatCheck();
             }, null, (int)(nextOccurrence - now).TotalMilliseconds, (int)heartBeatInterval.TotalMilliseconds);
         }
 
@@ -90,8 +90,8 @@ namespace ISPAdressChecker.Services
         public void Dispose()
         {
             _logger.LogInformation("Dispose: {time} ", DateTime.UtcNow);
-            if (ISPAdressCheckTimer is not null) ISPAdressCheckTimer!.Dispose();
-            if (controlISPAdressCheckTimer is not null) controlISPAdressCheckTimer!.Dispose();
+            if (ISPAddressCheckTimer is not null) ISPAddressCheckTimer!.Dispose();
+            if (controlISPAddressCheckTimer is not null) controlISPAddressCheckTimer!.Dispose();
             if (HeartbeatemailTimer is not null) HeartbeatemailTimer!.Dispose();
         }
     }

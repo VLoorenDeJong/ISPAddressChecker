@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ISPAdressChecker\ISPAdressChecker.csproj" />
+    <ProjectReference Include="..\ISPAdressChecker\ISPAddressCheckerAPI.csproj" />
   </ItemGroup>
 
 </Project>

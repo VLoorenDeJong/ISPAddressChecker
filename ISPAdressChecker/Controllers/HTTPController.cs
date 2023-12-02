@@ -1,15 +1,15 @@
-﻿using ISPAdressChecker.Services.Interfaces;
-using ISPAdressChecker.Helpers;
+﻿using ISPAddressChecker.Services.Interfaces;
+using ISPAddressChecker.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ISPAdressChecker.Controllers
+namespace ISPAddressChecker.Controllers
 {
 
     [ApiController]
     [Route("[controller]")]
     public class HTTPController : ControllerBase
     {
-        private readonly IISPAdressCounterService _counterService;
+        private readonly IISPAddressCounterService _counterService;
         private readonly ILogger<HTTPController> _logger;
         private readonly IISPAddressService _iSPAddressService;
         private readonly ILogHubService _loghub;
@@ -17,7 +17,7 @@ namespace ISPAdressChecker.Controllers
         private readonly string serviceName = nameof(HTTPController);
 
 
-        public HTTPController(ILogger<HTTPController> logger, IISPAdressCounterService counterService, IISPAddressService iSPAddressService, ILogHubService loghub)
+        public HTTPController(ILogger<HTTPController> logger, IISPAddressCounterService counterService, IISPAddressService iSPAddressService, ILogHubService loghub)
         {
             _counterService = counterService;
             _logger = logger;
@@ -26,11 +26,11 @@ namespace ISPAdressChecker.Controllers
 
         }
 
-        [HttpGet("MyISPAdress", Name = "MyISPAdress")]
+        [HttpGet("MyISPAddress", Name = "MyISPAddress")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<string>> GetIpAddress()
-        {
+       {
             _logger.LogInformation("ISP address has been requested");
             await _loghub.SendLogInfoAsync(serviceName, "ISP address has been requested");
 
@@ -81,8 +81,8 @@ namespace ISPAdressChecker.Controllers
                 {
                     logInfo = outputString;
                 }
-                _logger.LogInformation("Success adres returned:{logInfo}", logInfo);
-                await _loghub.SendLogInfoAsync(serviceName, $"Success adres returned:{logInfo}");
+                _logger.LogInformation("Success addres returned:{logInfo}", logInfo);
+                await _loghub.SendLogInfoAsync(serviceName, $"Success addres returned:{logInfo}");
 
                 return outputString;
             }

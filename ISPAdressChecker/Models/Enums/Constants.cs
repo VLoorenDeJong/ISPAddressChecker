@@ -1,4 +1,4 @@
-﻿namespace ISPAdressChecker.Models.Enums
+﻿namespace ISPAddressChecker.Models.Enums
 {
     public class Constants
     {

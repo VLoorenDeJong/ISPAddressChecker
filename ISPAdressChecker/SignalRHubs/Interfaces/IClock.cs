@@ -1,4 +1,4 @@
-﻿namespace ISPAdressChecker.SignalRHubs.Interfaces
+﻿namespace ISPAddressChecker.SignalRHubs.Interfaces
 {
     public interface IClock
     {

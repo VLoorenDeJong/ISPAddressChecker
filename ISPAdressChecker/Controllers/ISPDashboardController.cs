@@ -1,23 +1,23 @@
-﻿using ISPAdressChecker.Services.Interfaces;
+﻿using ISPAddressChecker.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Http;
-using ISPAdressChecker.Options;
+using ISPAddressChecker.Options;
 using Microsoft.AspNetCore.Mvc;
-using ISPAdressChecker.Models;
+using ISPAddressChecker.Models;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using static ISPAdressChecker.Models.Enums.Constants;
-using ISPAdressChecker.Helpers;
+using static ISPAddressChecker.Models.Enums.Constants;
+using ISPAddressChecker.Helpers;
 
-namespace ISPAdressChecker.Controllers
+namespace ISPAddressChecker.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class ISPAddressCheckerStatusController : ControllerBase
     {
         private readonly ITimerService _timerService;
-        private readonly IISPAdressCounterService _ISPAddressCounterService;
+        private readonly IISPAddressCounterService _ISPAddressCounterService;
         private readonly IStatusCounterService _statusCounterService;
         private readonly IISPAddressService _iSPAddressService;
         private readonly IEmailService _emailService;
@@ -29,7 +29,7 @@ namespace ISPAdressChecker.Controllers
 
         public ISPAddressCheckerStatusController(
             ITimerService timerService,
-            IISPAdressCounterService ISPAddressCounterService,
+            IISPAddressCounterService ISPAddressCounterService,
             IStatusCounterService statusCounterService,
             IISPAddressService iSPAddressService,
             IEmailService emailService,

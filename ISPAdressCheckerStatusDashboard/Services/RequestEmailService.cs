@@ -1,8 +1,8 @@
-﻿using ISPAdressChecker.Helpers;
-using ISPAdressCheckerStatusDashboard.Services.Interfaces;
+﻿using ISPAddressChecker.Helpers;
+using ISPAddressCheckerStatusDashboard.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 
-namespace ISPAdressCheckerStatusDashboard.Services
+namespace ISPAddressCheckerStatusDashboard.Services
 {
     public class RequestEmailService : IRequestEmailService
     {

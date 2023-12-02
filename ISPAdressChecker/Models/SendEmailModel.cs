@@ -1,7 +1,7 @@
-﻿using ISPAdressChecker.Models.Enums;
+﻿using ISPAddressChecker.Models.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace ISPAdressChecker.Models
+namespace ISPAddressChecker.Models
 {
     public class SendEmailModel
     {

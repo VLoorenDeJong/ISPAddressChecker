@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
-using ISPAdressCheckerStatusDashboard.Services.Interfaces;
+using ISPAddressCheckerStatusDashboard.Services.Interfaces;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace ISPAdressCheckerStatusDashboard.Services
+namespace ISPAddressCheckerStatusDashboard.Services
 {
 
     public class TimerService : ITimerService

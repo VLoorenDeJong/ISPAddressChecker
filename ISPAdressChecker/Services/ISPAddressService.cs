@@ -1,6 +1,6 @@
-﻿using ISPAdressChecker.Services.Interfaces;
+﻿using ISPAddressChecker.Services.Interfaces;
 
-namespace ISPAdressChecker.Services
+namespace ISPAddressChecker.Services
 {
     public class ISPAddressService : IISPAddressService
     {

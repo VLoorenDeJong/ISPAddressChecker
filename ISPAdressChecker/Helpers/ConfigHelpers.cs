@@ -1,12 +1,12 @@
-﻿using ISPAdressChecker.Models;
-using ISPAdressChecker.Options;
+﻿using ISPAddressChecker.Models;
+using ISPAddressChecker.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Text.RegularExpressions;
 using System.Threading.Channels;
-using static ISPAdressChecker.Options.ApplicationSettingsOptions;
+using static ISPAddressChecker.Options.ApplicationSettingsOptions;
 
-namespace ISPAdressChecker.Helpers
+namespace ISPAddressChecker.Helpers
 {
     public static class ConfigHelpers
     {
@@ -42,19 +42,19 @@ namespace ISPAdressChecker.Helpers
             }
 
 
-            if (string.Equals(emailSettingsOptions?.EmailToAdress, StandardAppsettingsValues.EmailToAdress, StringComparison.CurrentCultureIgnoreCase) || !EmailAddressIsValid(emailSettingsOptions?.EmailToAdress))
+            if (string.Equals(emailSettingsOptions?.EmailToAddress, StandardAppsettingsValues.EmailToAddress, StringComparison.CurrentCultureIgnoreCase) || !EmailAddressIsValid(emailSettingsOptions?.EmailToAddress))
             {
                 MandatoryConfigurationPassed = false;
-                string errorMessage = $"appsettings: EmailToAdress: {emailSettingsOptions?.EmailToAdress} in appsettings not confugured correctly";
+                string errorMessage = $"appsettings: EmailToAddress: {emailSettingsOptions?.EmailToAddress} in appsettings not confugured correctly";
 
                 ThrowEmailConfigError(errorMessage, logger);
             }
 
 
-            if (string.Equals(emailSettingsOptions?.EmailFromAdress, StandardAppsettingsValues.EmailFromAdress, StringComparison.CurrentCultureIgnoreCase) || !EmailAddressIsValid(emailSettingsOptions?.EmailFromAdress))
+            if (string.Equals(emailSettingsOptions?.EmailFromAddress, StandardAppsettingsValues.EmailFromAddress, StringComparison.CurrentCultureIgnoreCase) || !EmailAddressIsValid(emailSettingsOptions?.EmailFromAddress))
             {
                 MandatoryConfigurationPassed = false;
-                string errorMessage = $"appsettings: EmailFromAdress: {emailSettingsOptions?.EmailFromAdress} in appsettings not confugured correctly";
+                string errorMessage = $"appsettings: EmailFromAddress: {emailSettingsOptions?.EmailFromAddress} in appsettings not confugured correctly";
 
                 ThrowEmailConfigError(errorMessage, logger);
             }
@@ -71,13 +71,13 @@ namespace ISPAdressChecker.Helpers
             return MandatoryConfigurationPassed;
         }
 
-        public static bool EmailAddressIsValid(string? emailAdressToValidate)
+        public static bool EmailAddressIsValid(string? emailAddressToValidate)
         {
             bool isVallid = true;
 
-            if (!string.IsNullOrWhiteSpace(emailAdressToValidate))
+            if (!string.IsNullOrWhiteSpace(emailAddressToValidate))
             {
-                isVallid = Regex.IsMatch(emailAdressToValidate!, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+                isVallid = Regex.IsMatch(emailAddressToValidate!, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
             }
             
             // ToDo: Check validation it fails correct emailadresses

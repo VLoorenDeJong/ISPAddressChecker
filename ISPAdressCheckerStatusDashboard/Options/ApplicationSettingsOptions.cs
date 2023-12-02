@@ -1,4 +1,4 @@
-﻿namespace ISPAdressCheckerStatusDashboard.Options
+﻿namespace ISPAddressCheckerStatusDashboard.Options
 {
     public class ApplicationSettingsOptions
     {

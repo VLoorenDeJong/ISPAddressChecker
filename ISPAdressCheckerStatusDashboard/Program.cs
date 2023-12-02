@@ -1,8 +1,8 @@
-using static ISPAdressCheckerStatusDashboard.Options.ApplicationSettingsOptions;
-using ISPAdressCheckerStatusDashboard.Services.Interfaces;
-using ISPAdressCheckerStatusDashboard.Services;
-using ISPAdressCheckerStatusDashboard.Options;
-using ISPAdressCheckerStatusDashboard;
+using static ISPAddressCheckerStatusDashboard.Options.ApplicationSettingsOptions;
+using ISPAddressCheckerStatusDashboard.Services.Interfaces;
+using ISPAddressCheckerStatusDashboard.Services;
+using ISPAddressCheckerStatusDashboard.Options;
+using ISPAddressCheckerStatusDashboard;
 
 var builder = WebApplication.CreateBuilder(args);
 

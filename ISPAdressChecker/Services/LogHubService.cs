@@ -1,11 +1,11 @@
-﻿using ISPAdressChecker.SignalRHubs.Interfaces;
-using ISPAdressChecker.SignalRHubs;
+﻿using ISPAddressChecker.SignalRHubs.Interfaces;
+using ISPAddressChecker.SignalRHubs;
 using Microsoft.AspNetCore.SignalR;
-using ISPAdressChecker.Models;
-using ISPAdressChecker.Models.Enums;
-using ISPAdressChecker.Services.Interfaces;
+using ISPAddressChecker.Models;
+using ISPAddressChecker.Models.Enums;
+using ISPAddressChecker.Services.Interfaces;
 
-namespace ISPAdressChecker.Services
+namespace ISPAddressChecker.Services
 {
     public class LogHubService : ILogHubService
     {

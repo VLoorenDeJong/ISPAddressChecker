@@ -1,6 +1,6 @@
-﻿namespace ISPAdressChecker.Services.Interfaces
+﻿namespace ISPAddressChecker.Services.Interfaces
 {
-    public interface IISPAdressCounterService
+    public interface IISPAddressCounterService
     {
         void AddExternalISPCheckCounter();
         void AddExternalServiceUseCounter();
