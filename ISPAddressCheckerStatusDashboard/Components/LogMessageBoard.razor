@@ -1,21 +1,26 @@
 ﻿@using ISPAddressChecker.Models;
 @using ISPAddressChecker.Models.Enums;
+@using ISPAddressCheckerStatusDashboard.Options
 @using ISPAddressCheckerStatusDashboard.Services.Interfaces
 @using Microsoft.AspNetCore.SignalR.Client;
+@using Microsoft.Extensions.Options
 @using static ISPAddressChecker.Models.Enums.Constants
 
 @implements IAsyncDisposable
 @inject ILogger<Index> logger
 @inject IRequestISPAddressService requestISPAddressService;
+@inject IOptions<ApplicationSettingsOptions> appSettings;
 
 <div class="log-section">
     <div class="log-message-board">
         <div class="log-message-board_title">ISP checker log message board</div>
         <div class="log-messages">
-
-        @*     <div class="log-messages_test-time">
-                @_time
-            </div> *@
+            @if (appSettings.Value.ShowSignalRTestClock)
+            {
+                <div class="log-messages_test-time">
+                    @_time
+                </div>
+            }
             <table>
                 <tbody>
 
@@ -58,7 +63,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await instatiateClockHub();
+        if (appSettings.Value.ShowSignalRTestClock)
+        {
+            await instatiateClockHub();
+
+        }
         await InstatiateLogHub();
     }
 
@@ -104,23 +113,23 @@
         {
             await logHubConnection.StartAsync();
             logEntries.Add(new LogEntryModel
-            {
-                LogType = LogType.Information,
-                Message = "Hub connection established.",
-                Service = "LogHub",
-                Time = DateTime.UtcNow
-            });
+                {
+                    LogType = LogType.Information,
+                    Message = "Hub connection established.",
+                    Service = "LogHub",
+                    Time = DateTime.UtcNow
+                });
             logger.LogInformation("Hub connection established.");
         }
         catch (Exception ex)
         {
             logEntries.Add(new LogEntryModel
-            {
-                LogType = LogType.Error,
-                Message = $"Error establishing hub connection: {ex.Message}",
-                Service = "LogHub",
-                Time = DateTime.UtcNow
-            });
+                {
+                    LogType = LogType.Error,
+                    Message = $"Error establishing hub connection: {ex.Message}",
+                    Service = "LogHub",
+                    Time = DateTime.UtcNow
+                });
             logger.LogInformation($"Error establishing hub connection: {ex.Message}");
         }
     }
@@ -154,23 +163,23 @@
             await clockHubConnection.StartAsync();
             logger.LogInformation("Hub connection established.");
             logEntries.Add(new LogEntryModel
-            {
-                LogType = LogType.Information,
-                Message = "Hub connection established.",
-                Service = "ClockHub",
-                Time = DateTime.UtcNow
-            });
+                {
+                    LogType = LogType.Information,
+                    Message = "Hub connection established.",
+                    Service = "ClockHub",
+                    Time = DateTime.UtcNow
+                });
         }
         catch (Exception ex)
         {
             logger.LogInformation($"Error establishing hub connection: {ex.Message}");
             logEntries.Add(new LogEntryModel
-            {
-                LogType = LogType.Error,
-                Message = $"Error establishing hub connection: {ex.Message}",
-                Service = "ClockHub",
-                Time = DateTime.UtcNow
-            });
+                {
+                    LogType = LogType.Error,
+                    Message = $"Error establishing hub connection: {ex.Message}",
+                    Service = "ClockHub",
+                    Time = DateTime.UtcNow
+                });
         }
     }
 }

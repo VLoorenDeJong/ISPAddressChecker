@@ -51,8 +51,6 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-// ToDo make loghub URL configurable via appsettings.json
-// ToDo: make the url available via a endpoint
 // ToDo Add uptime to the heartbeat email
 // ToDo: Switch on hubs only when dashboard is active
 app.MapHub<ClockHub>(SignalRHubUrls.ClockHubURL);

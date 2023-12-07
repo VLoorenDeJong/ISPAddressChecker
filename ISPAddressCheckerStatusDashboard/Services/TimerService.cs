@@ -1,5 +1,8 @@
 ﻿using System.Diagnostics;
+using ISPAddressChecker.Services;
+using ISPAddressCheckerStatusDashboard.Options;
 using ISPAddressCheckerStatusDashboard.Services.Interfaces;
+using Microsoft.Extensions.Options;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ISPAddressCheckerStatusDashboard.Services
@@ -14,7 +17,7 @@ namespace ISPAddressCheckerStatusDashboard.Services
 
         private Timer? ISPStatusUpdateTimer;
         private Timer? upTimeCalculatorTimer;
-
+        private readonly ApplicationSettingsOptions _appSettings;
 
         private TimeSpan APIUpTime { get; set; }
         public DateTimeOffset APIStartDateTime { get; private set; }
@@ -25,14 +28,14 @@ namespace ISPAddressCheckerStatusDashboard.Services
 
         bool timersStarted = false;
 
-
-        public TimerService(IOpenAPIClient aPIClient, ILogger<TimerService> logger, IStatusService statusService, ICounterService counterservice)
+        public TimerService(IOpenAPIClient aPIClient, ILogger<TimerService> logger, IStatusService statusService, ICounterService counterservice, IOptions<ApplicationSettingsOptions> appsettings)
         {
             _apiClient = aPIClient;
             _logger = logger;
             _statusService = statusService;
             _counterService = counterservice;
             upTimeCalculatorTimer = new Timer(state => HandleUptimeCalculation(), null, 0, 1000);
+            _appSettings = appsettings.Value;
         }
 
         public async Task StartTimers()
@@ -40,7 +43,7 @@ namespace ISPAddressCheckerStatusDashboard.Services
             timersStarted = true;
             APIStartDateTime = await GetApiUptimeAsync();
             await StartStatusUpdateTimer();
-            StartCounterResetTimer();
+            StartEmailCounterResetTimer();
         }
 
         private async Task<DateTimeOffset> GetApiUptimeAsync()
@@ -55,6 +58,8 @@ namespace ISPAddressCheckerStatusDashboard.Services
             {
                 _logger.LogError("GetApiUptimeAsync -> Error fetching start date time, message: {message}", ex.Message);
             }
+
+            _logger.LogInformation("GetApiUptimeAsync -> start date time: {time}", output);
 
             return output;
         }
@@ -95,7 +100,7 @@ namespace ISPAddressCheckerStatusDashboard.Services
             }, null, (int)(nextOccurrence - now).TotalMilliseconds + 5000, (int)statusUpdateInterval.TotalMilliseconds);
         }
 
-        private void StartCounterResetTimer()
+        private void StartEmailCounterResetTimer()
         {
             // Set the start time to 12 o'clock today
             DateTime startTime = DateTime.Today.AddHours(12);
@@ -107,9 +112,10 @@ namespace ISPAddressCheckerStatusDashboard.Services
             Timer timer = new Timer(async (state) =>
             {
                 await Task.Run(() => _counterService.ResetEmailCounters());
-            }, null, timeUntilNextOccurrence, TimeSpan.FromHours(24));
-            // ToDo make email counter reset configurable via Appsettings.json
+            }, null, timeUntilNextOccurrence, TimeSpan.FromHours(_appSettings.EmailCounterResetTimeInHours));
 
+            _logger.LogInformation("StartEmailCounterResetTimer -> {interval}(minutes)", timeUntilNextOccurrence);
+            _logger.LogInformation("StartEmailCounterResetTimer -> timer set for {hours}(hours)", _appSettings.EmailCounterResetTimeInHours);
 
             // Testing code
             // TimeSpan timeUntilNextOccurrence =TimeSpan.FromSeconds(30);
@@ -123,6 +129,8 @@ namespace ISPAddressCheckerStatusDashboard.Services
         public void ClearStatusUpdateTimer()
         {
             ISPStatusUpdateTimer = null;
+
+            _logger.LogInformation("ClearStatusUpdateTimer -> timer cleared");
         }
 
         private void HandleUptimeCalculation()
@@ -133,6 +141,7 @@ namespace ISPAddressCheckerStatusDashboard.Services
                 UptimeDays = string.Format("{0:%d} days", APIUpTime);
                 UptimeClockString = string.Format("{0:hh\\:mm\\:ss}", APIUpTime);
             }
+            _logger.LogInformation("HandleUptimeCalculation -> APIUpTime: {time}", APIUpTime);
         }
 
         private TimeSpan CalculateUptime(DateTimeOffset startDateTime)

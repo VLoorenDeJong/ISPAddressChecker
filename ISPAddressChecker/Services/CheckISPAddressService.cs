@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.SignalR;
 using ISPAddressChecker.Models;
 using ISPAddressChecker.Models.Enums;
 using static ISPAddressChecker.Models.Enums.Constants;
+using ISPAddressChecker.Services;
 
 public class CheckISPAddressService : ICheckISPAddressService
 {
@@ -22,10 +23,13 @@ public class CheckISPAddressService : ICheckISPAddressService
     private readonly IEmailService _emailService;
     private readonly ILogger<CheckISPAddressService> _logger;
     private readonly ILogHubService _logHub;
-
     private Dictionary<string, string> ISPAddressChecks = new();
 
-    public CheckISPAddressService(ILogger<CheckISPAddressService> logger, IOptions<ApplicationSettingsOptions> applicationSettingsOptions, IEmailService emailService, IISPAddressCounterService counterService, IISPAddressService ISPAddressService, ILogHubService logHub)
+    public CheckISPAddressService(ILogger<CheckISPAddressService> logger, 
+                                  IOptions<ApplicationSettingsOptions> applicationSettingsOptions, 
+                                  IEmailService emailService, IISPAddressCounterService counterService, 
+                                  IISPAddressService ISPAddressService, ILogHubService logHub
+                                  )
     {
         _logger = logger;
         _applicationSettingsOptions = applicationSettingsOptions?.Value!;
@@ -39,7 +43,11 @@ public class CheckISPAddressService : ICheckISPAddressService
     {
         _logger.LogInformation("HeartBeatCheck -> start");
         await GetISPAddressFromBackupAPIs(true);
-        await _emailService.SendHeartBeatEmail(_counterService, _iSPAddressService.GetOldISPAddress(), _iSPAddressService.GetCurrentISPAddress(), _iSPAddressService.GetNewISPAddress(), ISPAddressChecks, _emailService.APIEmailDetails);
+        await _emailService.SendHeartBeatEmail(_counterService, _iSPAddressService.GetOldISPAddress(),
+                                               _iSPAddressService.GetCurrentISPAddress(), 
+                                               _iSPAddressService.GetNewISPAddress(), 
+                                               ISPAddressChecks, _emailService.APIEmailDetails
+                                               );
         ISPAddressChecks.Clear();
     }
 

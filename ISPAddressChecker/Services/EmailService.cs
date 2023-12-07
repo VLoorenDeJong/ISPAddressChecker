@@ -17,6 +17,7 @@ namespace ISPAddressChecker.Services
     {
         private readonly ILogger _logger;
         private readonly EmailSettingsOptions _emailSettingsOptions;
+
         private readonly ApplicationSettingsOptions _applicationSettingsOptions;
 
         private MailMessage message = new MailMessage();
@@ -25,7 +26,12 @@ namespace ISPAddressChecker.Services
         private readonly ILogHubService _loghub;
         private readonly string serviceName = nameof(EmailService);
 
-        public EmailService(ILogger<CheckISPAddressService> logger, IOptions<ApplicationSettingsOptions> applicationSettingsOptions, IOptions<EmailSettingsOptions> emailSettingsOptions, ILogHubService loghub)
+        public EmailService(
+                              ILogger<CheckISPAddressService> logger
+                            , IOptions<ApplicationSettingsOptions> applicationSettingsOptions
+                            , IOptions<EmailSettingsOptions> emailSettingsOptions
+                            , ILogHubService loghub
+                           )
         {
             _logger = logger;
             _applicationSettingsOptions = applicationSettingsOptions?.Value!;
@@ -92,7 +98,7 @@ namespace ISPAddressChecker.Services
                     {
                         // Send the email message
                         // ToDo: enable sending emails
-                        //client.Send(message);
+                        client.Send(message);
 
 
                         _logger.LogInformation("SendEmail -> Request Id: {id}, Sending: {subj}", sendEmailDetails.Id, subject);
@@ -127,6 +133,7 @@ namespace ISPAddressChecker.Services
 
         public async Task<ActionReportModel> SendHeartBeatEmail(IISPAddressCounterService counterService, string oldISPAddress, string currentISPAddress, string newISPAddress, Dictionary<string, string> externalISPCheckResults, SendEmailModel sendEmailDetails)
         {
+
             string message = $@"<p><strong>This was fun! </strong></p>"
                                  + $"<p>API calls:<strong> {counterService.GetServiceRequestCounter()}</strong></p>"
                                  + $"<p>API call check: <strong>{counterService.GetServiceCheckCounter()}</strong></p>"
@@ -143,7 +150,9 @@ namespace ISPAddressChecker.Services
                       + $"<p>API endpoint URL:<a href = '{_applicationSettingsOptions?.APIEndpointURL}'> <strong>{_applicationSettingsOptions?.APIEndpointURL}</strong></a></p>"
                       + $@"<p>Old ISP: <strong> {oldISPAddress}</strong></p>"
                       + $@"<p>New ISP: <strong> {newISPAddress}</strong></p>"
-                      + $"<p>See you in {_emailSettingsOptions?.HeatbeatEmailIntervalDays} days ;)</p>";
+                      + $"<p>See you in {_emailSettingsOptions?.HeatbeatEmailIntervalDays} days ;)</p>"
+                      + $"<p></p>"
+                      + $"<p>I wish you a splendid rest of your day!</p>";
 
             string emailBody = CreateEmail(message);
 
