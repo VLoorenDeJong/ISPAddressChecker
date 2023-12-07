@@ -8,7 +8,6 @@ namespace ISPAddressCheckerStatusDashboard.Services
     public class TimerService : ITimerService
     {
         private readonly IStatusService _statusService;
-        private readonly IApplicationService _applicationService;
         private readonly ICounterService _counterService;
         private IOpenAPIClient _apiClient;
         private readonly ILogger<TimerService> _logger;
@@ -19,23 +18,19 @@ namespace ISPAddressCheckerStatusDashboard.Services
 
         private TimeSpan APIUpTime { get; set; }
         public DateTimeOffset APIStartDateTime { get; private set; }
-        public string UptimeDays { get; private set; }
-        public string UptimeClockString { get; private set; }
+        public string? UptimeDays { get; private set; }
+        public string? UptimeClockString { get; private set; }
 
         private double minutesInterval = 61;
+
         bool timersStarted = false;
 
-        public TimerService()
-        {
 
-        }
-
-        public TimerService(IOpenAPIClient aPIClient, ILogger<TimerService> logger, IStatusService statusService, IApplicationService applicationService, ICounterService counterservice)
+        public TimerService(IOpenAPIClient aPIClient, ILogger<TimerService> logger, IStatusService statusService, ICounterService counterservice)
         {
             _apiClient = aPIClient;
             _logger = logger;
             _statusService = statusService;
-            _applicationService = applicationService;
             _counterService = counterservice;
             upTimeCalculatorTimer = new Timer(state => HandleUptimeCalculation(), null, 0, 1000);
         }
@@ -111,8 +106,10 @@ namespace ISPAddressCheckerStatusDashboard.Services
             // Create a timer that triggers the method after 24 hours
             Timer timer = new Timer(async (state) =>
             {
-                _counterService.ResetEmailCounters();
+                await Task.Run(() => _counterService.ResetEmailCounters());
             }, null, timeUntilNextOccurrence, TimeSpan.FromHours(24));
+            // ToDo make email counter reset configurable via Appsettings.json
+
 
             // Testing code
             // TimeSpan timeUntilNextOccurrence =TimeSpan.FromSeconds(30);

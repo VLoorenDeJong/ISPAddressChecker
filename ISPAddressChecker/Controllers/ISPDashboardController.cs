@@ -49,7 +49,7 @@ namespace ISPAddressChecker.Controllers
             _logger = logger;
             _loghub = loghub;
 
-            _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
+            _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext!);
         }
 
         [HttpGet("status", Name = "GetStatusUpdate")]
@@ -148,7 +148,7 @@ namespace ISPAddressChecker.Controllers
 
                             Dictionary<string, string> mocValues = new Dictionary<string, string>();
 
-                            foreach (string externalAPI in _applicationSettingsOptions.BackupAPIS!)
+                            foreach (string? externalAPI in _applicationSettingsOptions.BackupAPIS!)
                             {
                                 mocValues.Add($"{externalAPI}", "Value will be put here");
                             }

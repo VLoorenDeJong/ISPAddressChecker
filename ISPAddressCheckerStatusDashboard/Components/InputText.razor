@@ -3,8 +3,8 @@
 </div>
 
 @code {
-    private string inputValue;
-    private string validationCss;
+    private string? inputValue;
+    private string? validationCss;
 
     private bool componentLocalBool;
 
@@ -14,7 +14,7 @@
     public bool ShowValidation { get; set; }
 
     [Parameter]
-    public string StringValue
+    public string? StringValue
     {
         get => inputValue;
         set

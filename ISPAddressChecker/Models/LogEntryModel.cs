@@ -19,8 +19,8 @@ namespace ISPAddressChecker.Models
 
         public LogType  LogType { get; set; }
         public DateTimeOffset Time { get; set; } 
-        public string Service { get; set; }
-        public string Message { get; set; }
-        public string Id { get; set; }
+        public string? Service { get; set; }
+        public string? Message { get; set; }
+        public string? Id { get; set; }
     }
 }
