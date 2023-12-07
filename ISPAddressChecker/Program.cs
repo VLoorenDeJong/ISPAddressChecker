@@ -15,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(); 
+builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
 builder.Services.AddHostedService<ClockWorker>();
 //builder.Services.AddHostedService<LogWorker>();
@@ -27,7 +27,7 @@ builder.Services.AddSingleton<ITimerService, TimerService>();
 builder.Services.AddSingleton<IISPAddressCounterService, ISPAddressCounterService>();
 builder.Services.AddSingleton<IStatusCounterService, StatusCounterService>();
 builder.Services.AddSingleton<IApplicationService, ApplicationService>();
-builder.Services.AddSingleton<IActionContextAccessor,  ActionContextAccessor>();
+builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
 builder.Services.AddTransient<ICheckISPAddressService, CheckISPAddressService>();
 builder.Services.AddTransient<IEmailService, EmailService>();
@@ -51,9 +51,17 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-// ToDo Add uptime to the heartbeat email
+// ToDo: Add uptime to the heartbeat email
 // ToDo: Switch on hubs only when dashboard is active
-app.MapHub<ClockHub>(SignalRHubUrls.ClockHubURL);
-app.MapHub<LogHub>(SignalRHubUrls.LogHubURL);
+
+
+bool dashboardActive = true;
+                     ;
+if (dashboardActive)
+{
+    app.MapHub<ClockHub>(SignalRHubUrls.ClockHubURL);
+    app.MapHub<LogHub>(SignalRHubUrls.LogHubURL);
+}
 app.MapControllers();
 app.Run();
+

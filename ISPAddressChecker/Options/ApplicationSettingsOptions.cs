@@ -10,6 +10,9 @@ namespace ISPAddressChecker.Options
         public string? DateTimeFormat { get; set; }
         public bool EnableDashboardAccess { get; set; }
 
+        public double AppsettingsVersion { get; set; }
+        public double ExpectedAppsettingsVersion  = 1.0;
+
         public class AppsettingsSections
         {
             public const string ApplicationSettings = "ApplicationSettings";
@@ -28,5 +31,7 @@ namespace ISPAddressChecker.Options
             public const string UserName = "UserName";
             public const string Password = "Pa$$w0rd";
         }
+
+       
     }
 }

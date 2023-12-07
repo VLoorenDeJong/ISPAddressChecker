@@ -3,6 +3,7 @@ using ISPAddressCheckerStatusDashboard.Services.Interfaces;
 using ISPAddressCheckerStatusDashboard.Services;
 using ISPAddressCheckerStatusDashboard.Options;
 using ISPAddressCheckerStatusDashboard;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,15 +22,24 @@ builder.Services.AddScoped<ITimerService, TimerService>();
 builder.Services.AddTransient<IOpenAPIClient, OpenAPIClient>();
 builder.Services.AddTransient<IRequestEmailService, RequestEmailService>();
 builder.Services.AddTransient<IRequestISPAddressService, RequestISPAddressService>();
+builder.Services.AddTransient<IApplicationConfigCheckService, ApplicationConfigCheckService>();
 builder.Services.AddTransient<IISPAddressCheckerStatusService, ISPAddressCheckerStatusService>();
+
 
 //ToDo Email text box input changed after sending. Sends email to old address? (Email adress not updated after input second email address)
 // ToDo Enpoint URL removal from appsettings
 
 var app = builder.Build();
 
-//Start the application
-//app.Services.GetService<IApplicationService>()!.StartAsync(default).GetAwaiter().GetResult();
+
+// Checking the configuration of the application:
+
+    // Get the application settings from the service provider
+    var applicationSettingsOptions = app.Services.GetRequiredService<IOptions<ApplicationSettingsOptions>>();
+    // Get the service from the service provider
+    var applicationConfigCheckService = app.Services.GetRequiredService<IApplicationConfigCheckService>();
+    // Call the method to check the application settings
+    applicationConfigCheckService.CheckApplicationConfig(applicationSettingsOptions);
 
 if (!app.Environment.IsDevelopment())
 {
