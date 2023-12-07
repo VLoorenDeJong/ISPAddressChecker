@@ -12,6 +12,7 @@
         public class AppsettingsSections
         {
             public const string ApplicationSettings = "ApplicationSettings";
+            public const string EmailSettings = "EmailSettings";
         }
     }
 }

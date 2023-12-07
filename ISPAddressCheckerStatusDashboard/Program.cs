@@ -13,6 +13,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
 builder.Services.Configure<ApplicationSettingsOptions>(builder.Configuration.GetSection(AppsettingsSections.ApplicationSettings));
+builder.Services.Configure<EmailSettingsOptions>(builder.Configuration.GetSection(AppsettingsSections.EmailSettings));
 
 builder.Services.AddScoped<IStatusService, StatusService>();
 builder.Services.AddSingleton<ICounterService, CounterService>();
@@ -24,6 +25,7 @@ builder.Services.AddTransient<IRequestEmailService, RequestEmailService>();
 builder.Services.AddTransient<IRequestISPAddressService, RequestISPAddressService>();
 builder.Services.AddTransient<IApplicationConfigCheckService, ApplicationConfigCheckService>();
 builder.Services.AddTransient<IISPAddressCheckerStatusService, ISPAddressCheckerStatusService>();
+builder.Services.AddTransient<ISPAddressCheckerStatusDashboard.Services.Interfaces.IEmailService, ISPAddressCheckerStatusDashboard.Services.EmailService>();
 
 
 //ToDo Email text box input changed after sending. Sends email to old address? (Email adress not updated after input second email address)
@@ -35,10 +37,15 @@ var app = builder.Build();
 // Checking the configuration of the application:
     // Get the application settings from the service provider
     var applicationSettingsOptions = app.Services.GetRequiredService<IOptions<ApplicationSettingsOptions>>();
-    // Get the service from the service provider
-    var applicationConfigCheckService = app.Services.GetRequiredService<IApplicationConfigCheckService>();
+    var emailSettingsOptions = app.Services.GetRequiredService<IOptions<EmailSettingsOptions>>();
+// Get the service from the service provider
+var applicationConfigCheckService = app.Services.GetRequiredService<IApplicationConfigCheckService>();
     // Call the method to check the application settings
-    applicationConfigCheckService.CheckApplicationConfig(applicationSettingsOptions);
+    applicationConfigCheckService.CheckApplicationConfig(applicationSettingsOptions, emailSettingsOptions);
+
+// ToDo: Add emailconfig checks
+// ToDo: Add send applicationRunning 
+
 
 if (!app.Environment.IsDevelopment())
 {

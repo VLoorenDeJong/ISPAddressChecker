@@ -158,7 +158,7 @@ namespace ISPAddressChecker.Services
 
             _logger.LogInformation("SendHeartBeatEmail -> Sending: SendHeartBeatEmail");
 
-            return await SendEmail("ISP address checker update", sendEmailDetails, emailBody);
+            return await SendEmail("ISPAddressCheckerAPI update", sendEmailDetails, emailBody);
         }
 
         public async Task SendCounterDifferenceEmail(IISPAddressCounterService counterService)
@@ -171,7 +171,7 @@ namespace ISPAddressChecker.Services
 
             _logger.LogInformation("SendCounterDifferenceEmail -> Sending: CounterDifferenceEmail");
 
-            await SendEmail("CheckISPAddress: counter difference", APIEmailDetails, emailBody);
+            await SendEmail("ISPAddressCheckerAPI: counter difference", APIEmailDetails, emailBody);
         }
 
         public async Task SendConfigErrorMail(string errorMessage)
@@ -182,12 +182,12 @@ namespace ISPAddressChecker.Services
             _logger.LogError("SendConfigErrorMail -> Sending: ConfigErrorMail");
             await _loghub.SendLogErrorAsync(serviceName, $"SendConfigErrorMail -> Sending: ConfigErrorMail");
 
-            await SendEmail("CheckISPAddress: configuration error", APIEmailDetails, emailBody);
+            await SendEmail("ISPAddressCheckerAPI: configuration error", APIEmailDetails, emailBody);
         }
 
         public async Task SendConfigSuccessMail(IISPAddressCounterService counterService)
         {
-            string message = $@"<p>You have succesfully configured this application.</p>"
+            string message = $@"<p>You have succesfully configured the ISPAddressAPI.</p>"
                                   + "<p><strong>This was fun! </strong></p>"
                                   + $"<p>I wish you a splendid rest of your day!</p>"
                                   + $@"<br />"
@@ -231,7 +231,7 @@ namespace ISPAddressChecker.Services
             _logger.LogInformation("SendConfigSuccessMail -> Sending: ConfigSuccessMail");
             await _loghub.SendLogInfoAsync(serviceName, $"SendConfigSuccessMail -> Sending: ConfigSuccessMail");
 
-            await SendEmail("ISPAddressChecker: Congratulations configuration succes!!", APIEmailDetails, emailBody);
+            await SendEmail("ISPAddressCheckerAPI: Congratulations configuration succes!!", APIEmailDetails, emailBody);
         }
 
         public async Task SendConnectionReestablishedEmail(string newISPAddress, string oldISPAddress, IISPAddressCounterService counterService, double interval)
@@ -258,7 +258,7 @@ namespace ISPAddressChecker.Services
             _logger.LogInformation("SendConnectionReestablishedEmail -> Sending: ConnectionReestablishedEmail");
             await _loghub.SendLogInfoAsync(serviceName, $"SendConnectionReestablishedEmail -> Sending: ConnectionReestablishedEmail");
 
-            await SendEmail("ISPAddressChecker:I found my self", APIEmailDetails, emailBody);
+            await SendEmail("ISPAddressCheckerAPI:I found my self", APIEmailDetails, emailBody);
         }
 
         public async Task SendISPAPIHTTPExceptionEmail(string exceptionType, string exceptionMessage)
@@ -275,7 +275,7 @@ namespace ISPAddressChecker.Services
             _logger.LogInformation("SendISPAPIHTTPExceptionEmail -> Sending: ISPAPIHTTPExceptionEmail");
             await _loghub.SendLogInfoAsync(serviceName, $"SendISPAPIHTTPExceptionEmail -> Sending: ISPAPIHTTPExceptionEmail");
 
-            await SendEmail("CheckISPAddress: API endpoint HTTP exception", APIEmailDetails, emailBody);
+            await SendEmail("ISPAddressCheckerAPI: API endpoint HTTP exception", APIEmailDetails, emailBody);
         }
 
         public async Task SendISPAPIExceptionEmail(string exceptionType, string exceptionMessage)
@@ -295,7 +295,7 @@ namespace ISPAddressChecker.Services
             _logger.LogInformation("SendISPAPIExceptionEmail -> Sending: ISPAPIExceptionEmail");
             await _loghub.SendLogInfoAsync(serviceName, $"SendISPAPIExceptionEmail -> Sending: ISPAPIExceptionEmail");
 
-            await SendEmail("CheckISPAddress: API Call error", APIEmailDetails, emailBody);
+            await SendEmail("ISPAddressCheckerAPI: API Call error", APIEmailDetails, emailBody);
         }
 
         public async Task SendExternalAPIHTTPExceptionEmail(string APIUrl, string exceptionType, string exceptionMessage)
@@ -313,7 +313,7 @@ namespace ISPAddressChecker.Services
             _logger.LogInformation("SendExternalAPIHTTPExceptionEmail -> Sending: ExternalAPIHTTPExceptionEmail");
             await _loghub.SendLogInfoAsync(serviceName, $"SendExternalAPIHTTPExceptionEmail -> Sending: ExternalAPIHTTPExceptionEmail");
 
-            await SendEmail("CheckISPAddress: Backup API HTTP exception", APIEmailDetails, emailBody);
+            await SendEmail("ISPAddressCheckerAPI: Backup API HTTP exception", APIEmailDetails, emailBody);
         }
 
         public async Task SendExternalAPIExceptionEmail(string APIUrl, string exceptionType, string exceptionMessage)
@@ -330,7 +330,7 @@ namespace ISPAddressChecker.Services
             _logger.LogInformation("SendExternalAPIExceptionEmail -> Sending: ExternalAPIExceptionEmail");
             await _loghub.SendLogInfoAsync(serviceName, $"SendExternalAPIExceptionEmail -> Sending: ExternalAPIExceptionEmail");
 
-            await SendEmail("CheckISPAddress: API Call error", APIEmailDetails, emailBody);
+            await SendEmail("ISPAddressCheckerAPI: API Call error", APIEmailDetails, emailBody);
         }
 
         public async Task<ActionReportModel> SendISPAddressChangedEmail(string externalISPAddress, string oldISPAddress, IISPAddressCounterService counterService, double interval, SendEmailModel sendEmailDetails)
@@ -396,7 +396,7 @@ namespace ISPAddressChecker.Services
             _logger.LogInformation("SendDifferendISPAddressValuesEmail -> Sending: DifferendISPAddressValuesEmail");
             await _loghub.SendLogInfoAsync(serviceName, $"SendDifferendISPAddressValuesEmail -> Sending: DifferendISPAddressValuesEmail");
 
-            await SendEmail("ISPAddressChecker: multiple ISP adresses were returned", APIEmailDetails, emailBody);
+            await SendEmail("ISPAddressCheckerAPI: multiple ISP adresses were returned", APIEmailDetails, emailBody);
         }
 
         public async Task SendNoISPAddressReturnedEmail(string oldISPAddress, IISPAddressCounterService counterService, double interval)
@@ -421,7 +421,7 @@ namespace ISPAddressChecker.Services
             _logger.LogInformation("SendNoISPAddressReturnedEmail -> Sending: NoISPAddressReturnedEmail");
             await _loghub.SendLogInfoAsync(serviceName, $"SendNoISPAddressReturnedEmail -> Sending: NoISPAddressReturnedEmail");
 
-            await SendEmail("ISPAddressChecker: No ISP adresses were returned", APIEmailDetails, emailBody);
+            await SendEmail("ISPAddressCheckerAPI: No ISP adresses were returned", APIEmailDetails, emailBody);
         }
 
         private SendEmailModel CreateInternalSendEmail()
