@@ -61,8 +61,8 @@ body {
   text-align: center;
   width: 90%;
   max-width: 550px;
-  padding-left: 2px;
-  padding-right: 2px;
+  padding-left: 5px;
+  padding-right: 5px;
   padding-bottom: 10px;
 }
 .main-layout .health-indicator .uptime-indicator {
@@ -133,6 +133,7 @@ $secondary-font: $tahoma;
 $tertiary-font: $yu-gothic-ui;*/
 input[type=text] {
   color: #10232B;
+  padding: 5px;
 }
 input[type=text]:focus {
   border-radius: 5px;
@@ -335,6 +336,7 @@ input[type=text].text-valid {
   border-radius: 5px;
   height: 20px;
   margin-top: 30px;
+  margin-left: 1px;
   padding: 5px;
 }
 .stats-section .color1 {
@@ -436,7 +438,7 @@ body .message--success {
   background-color: #547884;
   color: #ecfcff;
   border-radius: 5px;
-  max-width: 60%;
+  max-width: 30%;
   margin: auto;
   padding: 5px;
   font-family: "Segoe UI";
@@ -446,11 +448,11 @@ body .message--warning {
   background-color: #EB8C45;
   color: #FFFFFF;
   border-radius: 5px;
-  max-width: 60%;
+  max-width: 30%;
   margin: auto;
   padding: 5px;
   font-family: "Segoe UI";
   text-align: center;
 }
 
-/*# sourceMappingURL=data:application/json;charset=utf-8,%7B%22version%22:3,%22sourceRoot%22:%22%22,%22sources%22:%5B%22file:///C:/Users/Victor/source/repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/bootstrap-overrides/_bootstrap-overrides.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/layout/_main-layout.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/partials/_variables.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/components/_health-indicator.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/components/_linear-gauge.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/components/_InputText.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/components/_request-email.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/components/_request-division.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/components/_log-message-board.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/components/_display-messages.scss%22%5D,%22names%22:%5B%5D,%22mappings%22:%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%22%7D */
+/*# sourceMappingURL=data:application/json;charset=utf-8,%7B%22version%22:3,%22sourceRoot%22:%22%22,%22sources%22:%5B%22file:///C:/Users/Victor/Source/Repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/bootstrap-overrides/_bootstrap-overrides.scss%22,%22file:///C:/Users/Victor/Source/Repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/layout/_main-layout.scss%22,%22file:///C:/Users/Victor/Source/Repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/partials/_variables.scss%22,%22file:///C:/Users/Victor/Source/Repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/components/_health-indicator.scss%22,%22file:///C:/Users/Victor/Source/Repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/components/_linear-gauge.scss%22,%22file:///C:/Users/Victor/Source/Repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/components/_InputText.scss%22,%22file:///C:/Users/Victor/Source/Repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/components/_request-email.scss%22,%22file:///C:/Users/Victor/Source/Repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/components/_request-division.scss%22,%22file:///C:/Users/Victor/Source/Repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/components/_log-message-board.scss%22,%22file:///C:/Users/Victor/Source/Repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/components/_display-messages.scss%22%5D,%22names%22:%5B%5D,%22mappings%22:%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%22%7D */
