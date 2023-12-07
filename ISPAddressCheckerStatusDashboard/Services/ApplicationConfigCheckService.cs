@@ -11,11 +11,6 @@ namespace ISPAddressCheckerStatusDashboard.Services
             CheckAppsettingsVersionMatch(appSettings);
         }
 
-        public void CheckApplicationConfig(IOptions<ISPAddressChecker.Options.ApplicationSettingsOptions> appSettings)
-        {
-            throw new NotImplementedException();
-        }
-
         private void CheckAppsettingsVersionMatch(IOptions<ApplicationSettingsOptions> appSettings)
         {
             if (appSettings.Value.AppsettingsVersion == appSettings.Value.ExpectedAppsettingsVersion)

@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.SignalR;
 using ISPAddressChecker.Models;
 using ISPAddressChecker.Models.Enums;
 using ISPAddressChecker.Services.Interfaces;
+using Microsoft.Extensions.Options;
+using ISPAddressChecker.Options;
 
 namespace ISPAddressChecker.Services
 {
@@ -11,45 +13,59 @@ namespace ISPAddressChecker.Services
     {
 
         private readonly IHubContext<LogHub, ILogHub> _logHub;
-        public LogHubService(IHubContext<LogHub, ILogHub> logHub)
+        private readonly ApplicationSettingsOptions _appSettings;
+
+        public LogHubService(
+                             IHubContext<LogHub, ILogHub> logHub
+                             , IOptions<ApplicationSettingsOptions> appsettings
+                            )
         {
             _logHub = logHub;
+            _appSettings = appsettings.Value;
         }
 
         public async Task SendLogInfoAsync(string serviceName, string message)
         {
-
-            var logEntry = new LogEntryModel(LogType.Information,
+            if (_appSettings.EnableDashboardAccess)
+            {
+                var logEntry = new LogEntryModel(LogType.Information,
                                              serviceName,
                                              message);
-            await _logHub.Clients.All.SendLogToClients(logEntry);
+                await _logHub.Clients.All.SendLogToClients(logEntry);
+            }
         }
 
         public async Task SendLogWarningAsync(string serviceName, string message)
         {
-
-            var logEntry = new LogEntryModel(LogType.Warning,
+            if (_appSettings.EnableDashboardAccess)
+            {
+                var logEntry = new LogEntryModel(LogType.Warning,
                                             serviceName,
                                             message);
-            await _logHub.Clients.All.SendLogToClients(logEntry);
+                await _logHub.Clients.All.SendLogToClients(logEntry);
+            }
         }
 
         public async Task SendLogDebugAsync(string serviceName, string message)
         {
-
-            var logEntry = new LogEntryModel(LogType.Debug,
+            if (_appSettings.EnableDashboardAccess)
+            {
+                var logEntry = new LogEntryModel(LogType.Debug,
                                              serviceName,
                                              message);
-            await _logHub.Clients.All.SendLogToClients(logEntry);
+                await _logHub.Clients.All.SendLogToClients(logEntry);
+            }
         }
 
         public async Task SendLogErrorAsync(string serviceName, string message)
         {
-
-            var logEntry = new LogEntryModel(LogType.Error,
+            if (_appSettings.EnableDashboardAccess)
+            {
+                var logEntry = new LogEntryModel(LogType.Error,
                                              serviceName,
                                              message);
-            await _logHub.Clients.All.SendLogToClients(logEntry);
+                await _logHub.Clients.All.SendLogToClients(logEntry);
+            }
         }
 
     }

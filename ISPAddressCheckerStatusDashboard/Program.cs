@@ -33,7 +33,6 @@ var app = builder.Build();
 
 
 // Checking the configuration of the application:
-
     // Get the application settings from the service provider
     var applicationSettingsOptions = app.Services.GetRequiredService<IOptions<ApplicationSettingsOptions>>();
     // Get the service from the service provider
