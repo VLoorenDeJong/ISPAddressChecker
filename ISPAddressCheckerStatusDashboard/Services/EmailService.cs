@@ -52,7 +52,7 @@ namespace ISPAddressCheckerStatusDashboard.Services
 
         public void SendConfigSuccessMail()
         {
-            string message = $@"<p>You have succesfully configured the ISPAddressAPI.</p>"
+            string message = $@"<p>You have succesfully configured the ISPAddressDashboard.</p>"
                                 + "<p><strong>This was fun! </strong></p>"
                                 + $@"<br />"
                                 + $@"<br />"
@@ -68,8 +68,6 @@ namespace ISPAddressCheckerStatusDashboard.Services
                                 + $@"<br />"
                                 + $@"<br />"
                                 + $"<p><strong>Email settings:</strong></p>"
-                                + $@"<br />"
-                                + $@"<br />"
                                 + $"<p>EmailFromAddress : <strong>{_emailSettingsOptions?.EmailFromAddress}</strong></p>"
                                 + $"<p>EmailToAddress : <strong>{_emailSettingsOptions?.EmailToAddress}</strong></p>"
                                 + $"<p>MailServer : <strong>{_emailSettingsOptions?.MailServer}</strong></p>"
