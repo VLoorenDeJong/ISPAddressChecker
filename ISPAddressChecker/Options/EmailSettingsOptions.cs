@@ -16,9 +16,9 @@
         public string? DNSRecordHostProviderURL { get; set; }
 
 
-        public TimeSpan HeatbeatEmailTimeOfDay { get; set; }
-        public DayOfWeek HeatbeatEmailDayOfWeek { get; set; }
-
-        public int HeatbeatEmailIntervalDays = 7;
+        public bool HeartbeatEmailEnabled { get; set; }
+        public TimeSpan HeartbeatEmailTimeOfDay { get; set; }
+        public DayOfWeek HeartbeatEmailDayOfWeek { get; set; }
+        public int HeartbeatEmailIntervalDays { get; set; } = 7;
     }
 }

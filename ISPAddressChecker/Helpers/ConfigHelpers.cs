@@ -148,12 +148,12 @@ namespace ISPAddressChecker.Helpers
                 report.ErrorMessage = report.ErrorMessage + errorMessage;
             }
                         
-            if (emailSettingsOptions?.HeatbeatEmailIntervalDays == 0)
+            if (emailSettingsOptions?.HeartbeatEmailIntervalDays == 0)
             {
                 report.ChecksPassed = false;
 
                 string errorMessage = $"<p><h5><strong>appsettings:</strong></h5></p>"
-                                    + $"<p>The <strong> HeatbeatEmailIntervalDays </strong> in appsettings is not set</p>";
+                                    + $"<p>The <strong> HeartbeatEmailIntervalDays </strong> in appsettings is not set</p>";
 
                 ReportConfigError(errorMessage, logger);
                 report.ErrorMessage = report.ErrorMessage + errorMessage;

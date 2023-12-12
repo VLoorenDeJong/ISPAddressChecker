@@ -6,12 +6,12 @@ namespace ISPAddressChecker.Options
     {
         public string? APIEndpointURL { get; set; }
         public List<string?>? BackupAPIS { get; set; }
-        public double TimeIntervalInMinutes { get; set; }
+        public double ISPAddressCheckFrequencyInMinutes { get; set; }
         public string? DateTimeFormat { get; set; }
         public bool EnableDashboardAccess { get; set; }
 
         public double AppsettingsVersion { get; set; }
-        public double ExpectedAppsettingsVersion  = 1.0;
+        public double ExpectedAppsettingsVersion  = 1.1;
 
         public class AppsettingsSections
         {

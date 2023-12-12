@@ -37,17 +37,19 @@ namespace ISPAddressChecker.Services
         public void StartISPCheckTimers()
         {
             _logger.LogInformation("StartISPCheckTimers -> start");
-            ISPAddressCHeckInterval = (_applicationSettingsOptions.TimeIntervalInMinutes == 0) ? 60 : _applicationSettingsOptions.TimeIntervalInMinutes;
+            ISPAddressCHeckInterval = (_applicationSettingsOptions.ISPAddressCheckFrequencyInMinutes == 0) ? 60 : _applicationSettingsOptions.ISPAddressCheckFrequencyInMinutes;
 
-            _logger.LogInformation("ISPAddressCHeckInterval: {inter}(minutes), configured:{confInter}(minutes)", ISPAddressCHeckInterval, _applicationSettingsOptions.TimeIntervalInMinutes);
+            _logger.LogInformation("ISPAddressCHeckInterval: {inter}(minutes), configured:{confInter}(minutes)", ISPAddressCHeckInterval, _applicationSettingsOptions.ISPAddressCheckFrequencyInMinutes);
 
 
             ISPAddressCheckTimer = new Timer(async (state) => await _ISPAddressService.GetISPAddressAsync(), null, TimeSpan.Zero, TimeSpan.FromMinutes(ISPAddressCHeckInterval));
-            _logger.LogInformation("ISPAddressCheckTimer interval: {inter}(minutes), configured:{confInter}(minutes)", ISPAddressCHeckInterval, _applicationSettingsOptions.TimeIntervalInMinutes);
+            _logger.LogInformation("ISPAddressCheckTimer interval: {inter}(minutes), configured:{confInter}(minutes)", ISPAddressCHeckInterval, _applicationSettingsOptions.ISPAddressCheckFrequencyInMinutes);
 
             controlISPAddressCheckTimer = new Timer(state => { _counterService.AddServiceCheckCounter(); }, null, TimeSpan.FromMinutes(ISPAddressCHeckInterval), TimeSpan.FromMinutes(ISPAddressCHeckInterval));
-            _logger.LogInformation("ControlISPAddressCheckTimer interval: {inter}(minutes), configured:{confInter}(minutes)", ISPAddressCHeckInterval, _applicationSettingsOptions.TimeIntervalInMinutes);
-            SetupHeartbeatTimer();
+            _logger.LogInformation("ControlISPAddressCheckTimer interval: {inter}(minutes), configured:{confInter}(minutes)", ISPAddressCHeckInterval, _applicationSettingsOptions.ISPAddressCheckFrequencyInMinutes);
+            
+            if(_emailSettingsOptions.HeartbeatEmailEnabled) SetupHeartbeatTimer();
+            
             UpTime.Start();
         }
 
@@ -57,16 +59,16 @@ namespace ISPAddressChecker.Services
             DateTime now = DateTime.Now;
 
             _logger.LogInformation("SetupHeartbeatTimer: {time}", DateTime.UtcNow);
-            DateTime nextOccurrence = now.AddDays(((int)_emailSettingsOptions.HeatbeatEmailDayOfWeek - (int)now.DayOfWeek + 7) % 7).Date.Add(_emailSettingsOptions.HeatbeatEmailTimeOfDay);
+            DateTime nextOccurrence = now.AddDays(((int)_emailSettingsOptions.HeartbeatEmailDayOfWeek - (int)now.DayOfWeek + 7) % 7).Date.Add(_emailSettingsOptions.HeartbeatEmailTimeOfDay);
 
             _logger.LogInformation("SetupHeartbeatTimer: nextOccurrence:{date}", nextOccurrence);
             if (nextOccurrence < now)
             {
-                nextOccurrence = nextOccurrence.AddDays(_emailSettingsOptions.HeatbeatEmailIntervalDays);
+                nextOccurrence = nextOccurrence.AddDays(_emailSettingsOptions.HeartbeatEmailIntervalDays);
                 _logger.LogInformation("SetupHeartbeatTimer: nextOccurrence + days:{date}", nextOccurrence);
             }
 
-            TimeSpan heartBeatInterval = TimeSpan.FromDays(_emailSettingsOptions.HeatbeatEmailIntervalDays);
+            TimeSpan heartBeatInterval = TimeSpan.FromDays(_emailSettingsOptions.HeartbeatEmailIntervalDays);
 
             _logger.LogInformation("HeartBeatInterval: {heartBeatInterval}(Days)", heartBeatInterval);
 

@@ -111,7 +111,7 @@ namespace ISPAddressChecker.Controllers
 
             _statusCounterService.AddISPAddressCheckIntervalRequested();
 
-            double output = _applicationSettingsOptions.TimeIntervalInMinutes;
+            double output = _applicationSettingsOptions.ISPAddressCheckFrequencyInMinutes;
             _logger.LogInformation("ISPAddressCheckIntervalInMinutes -> interval: {interval} (minutes)", output);
 
             return Ok(output);
@@ -166,7 +166,7 @@ namespace ISPAddressChecker.Controllers
                             break;
                         case Models.Enums.SendEmailTypeEnum.ISPAddressChanged:
 
-                            report = await _emailService.SendISPAddressChangedEmail(_iSPAddressService.GetExternalISPAddress(), _iSPAddressService.GetOldISPAddress(), _ISPAddressCounterService, _applicationSettingsOptions.TimeIntervalInMinutes, emailRequest);
+                            report = await _emailService.SendISPAddressChangedEmail(_iSPAddressService.GetExternalISPAddress(), _iSPAddressService.GetOldISPAddress(), _ISPAddressCounterService, _applicationSettingsOptions.ISPAddressCheckFrequencyInMinutes, emailRequest);
 
                             if (report.Success)
                             {

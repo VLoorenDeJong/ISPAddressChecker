@@ -146,11 +146,11 @@ namespace ISPAddressChecker.Services
                 string ispReport = $"<p>Backup API: <a href = '{ISPAddressCheck.Key}'> {ISPAddressCheck.Key} </a> -> <strong>{ISPAddressCheck.Value}</strong></p>";
                 message = $"{message} {ispReport}";
             }
-            message = $"{message} <p>TimeIntervalInMinutes: <strong>{_applicationSettingsOptions?.TimeIntervalInMinutes}</strong></p>"
+            message = $"{message} <p>ISPAddressCheckFrequencyInMinutes: <strong>{_applicationSettingsOptions?.ISPAddressCheckFrequencyInMinutes}</strong></p>"
                       + $"<p>API endpoint URL:<a href = '{_applicationSettingsOptions?.APIEndpointURL}'> <strong>{_applicationSettingsOptions?.APIEndpointURL}</strong></a></p>"
                       + $@"<p>Old ISP: <strong> {oldISPAddress}</strong></p>"
                       + $@"<p>New ISP: <strong> {newISPAddress}</strong></p>"
-                      + $"<p>See you in {_emailSettingsOptions?.HeatbeatEmailIntervalDays} days ;)</p>"
+                      + $"<p>See you in {_emailSettingsOptions?.HeartbeatEmailIntervalDays} days ;)</p>"
                       + $"<p></p>"
                       + $"<p>I wish you a splendid rest of your day!</p>";
 
@@ -187,15 +187,19 @@ namespace ISPAddressChecker.Services
 
         public async Task SendConfigSuccessMail(IISPAddressCounterService counterService)
         {
-            string message = $@"<p>You have succesfully configured the ISPAddressAPI.</p>"
+            string heartbeatMessage = _emailSettingsOptions.HeartbeatEmailEnabled ? $@"<p>Every week on <strong> {_emailSettingsOptions?.HeartbeatEmailDayOfWeek} </strong> at <strong> {_emailSettingsOptions?.HeartbeatEmailTimeOfDay} </strong> a status update E-mail will be send.</p>" : "<p>Heartbeat email: <strong> disabled</strong> </p>";
+
+                string message = $@"<p>You have succesfully configured the ISPAddressAPI.</p>"
                                   + "<p><strong>This was fun! </strong></p>"
                                   + $"<p>I wish you a splendid rest of your day!</p>"
                                   + $@"<br />"
                                   + $@"<br />"
                                   + $"<p><strong>The folowing things were configured:</strong></p>"
                                   + $"<p>API endpoint URL:<a href = '{_applicationSettingsOptions?.APIEndpointURL}'> <strong>{_applicationSettingsOptions?.APIEndpointURL}</strong></a></p>"
-                                  + $"<p>TimeIntervalInMinutes: <strong>{_applicationSettingsOptions?.TimeIntervalInMinutes}</strong></p>"
-                                  + $"<p>Every week on <strong> {_emailSettingsOptions?.HeatbeatEmailDayOfWeek} </strong> at <strong> {_emailSettingsOptions?.HeatbeatEmailTimeOfDay} </strong> a E-mail will be send</p>"
+                                  + $"<p>ISPAddressCheckFrequencyInMinutes: <strong>{_applicationSettingsOptions?.ISPAddressCheckFrequencyInMinutes}</strong></p>"                                  
+
+                                  + $"{heartbeatMessage}"                                  
+
                                   + $"<p>DNSRecordHostProviderName: <strong>{_emailSettingsOptions?.DNSRecordHostProviderName}</strong></p>"
                                   + $"<p>DNSRecordHostProviderURL : <strong>{_emailSettingsOptions?.DNSRecordHostProviderURL}</strong></p>"
                                   + $"<p>EmailFromAddress : <strong>{_emailSettingsOptions?.EmailFromAddress}</strong></p>"
@@ -224,7 +228,7 @@ namespace ISPAddressChecker.Services
                        + $"<p>Script runs: <strong> {counterService.GetServiceCheckCounter()} </strong></p>"
                        + $"<p>Failed attempts counter: <strong> {counterService.GetFailedISPRequestCounter()} </strong></p>"
                        + $"<p>Endpoint calls: <strong> {counterService.GetISPEndpointRequestsCounter()} </strong></p>"
-                       + $"<p>A call is made every <strong> {_applicationSettingsOptions!.TimeIntervalInMinutes} </strong>minutes</p>";
+                       + $"<p>A call is made every <strong> {_applicationSettingsOptions!.ISPAddressCheckFrequencyInMinutes} </strong>minutes</p>";
 
             string emailBody = CreateEmail(message);
 
