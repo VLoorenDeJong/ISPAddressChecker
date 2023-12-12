@@ -14,13 +14,16 @@ namespace ISPAddressCheckerStatusDashboard.Services
         private readonly ISPAddressCheckerStatusDashboard.Options.EmailSettingsOptions _emailSettingsOptions;
 
         private MailMessage message = new MailMessage();
+        private IRequestISPAddressService _ispService;
 
         public EmailService(
                               ILogger<CheckISPAddressService> logger
                             , IOptions<ISPAddressCheckerStatusDashboard.Options.ApplicationSettingsOptions> applicationSettingsOptions
                             , IOptions<ISPAddressCheckerStatusDashboard.Options.EmailSettingsOptions> emailSettingsOptions
+            , IRequestISPAddressService ispService
             )
         {
+            _ispService = ispService;
             _logger = logger;
             _applicationSettingsOptions = applicationSettingsOptions?.Value!;
             _emailSettingsOptions = emailSettingsOptions!.Value;
@@ -50,8 +53,11 @@ namespace ISPAddressCheckerStatusDashboard.Services
             return outputMessage;
         }
 
-        public void SendConfigSuccessMail()
+        public async Task SendConfigSuccessMail()
         {
+
+            string apiURL = await _ispService.GetCHeckISPAddressEndpointURLAsync();
+
             string message = $@"<p>You have succesfully configured the ISPAddressDashboard.</p>"
                                 + "<p><strong>This was fun! </strong></p>"
                                 + $@"<br />"
@@ -61,7 +67,7 @@ namespace ISPAddressCheckerStatusDashboard.Services
                                 + $@"<br />"
                                 + $"<p><strong>Application settings:</strong></p>"
                                 + $"<p>ShowSignalRTestClock: <strong>{_applicationSettingsOptions?.ShowSignalRTestClock}</strong></p>"
-                                + $"<p>APIUrl: <strong>{_applicationSettingsOptions?.APIUrl}</strong></p>"
+                                + $"<p>APIUrl: <strong>{apiURL}</strong></p>"
                                 + $"<p>EmailCounterResetTimeInHours: <strong>{_applicationSettingsOptions?.EmailCounterResetTimeInHours}</strong></p>"
                                 + $"<p>AppsettingsVersion: <strong>{_applicationSettingsOptions?.AppsettingsVersion}</strong></p>"
                                 + $"<p>ExpectedAppsettingsVersion: <strong>{_applicationSettingsOptions?.ExpectedAppsettingsVersion}</strong></p>"
@@ -84,8 +90,10 @@ namespace ISPAddressCheckerStatusDashboard.Services
 
             SendEmail("ISPAddressCheckerStatusDashboard - Configuration success!", emailBody);
         }
-        public void SendConfigFailMail()
+        public async Task SendConfigFailMail()
         {
+           string apiURL =  await _ispService.GetCHeckISPAddressEndpointURLAsync();
+
             string message = $@"<p>Something is wrong with your configuration please check the setting below!</p>"
                                 + "<p><strong>This was fun! </strong></p>"
                                 + $@"<br />"
@@ -95,7 +103,7 @@ namespace ISPAddressCheckerStatusDashboard.Services
                                 + $@"<br />"
                                 + $"<p><strong>Application settings:</strong></p>"
                                 + $"<p>ShowSignalRTestClock: <strong>{_applicationSettingsOptions?.ShowSignalRTestClock}</strong></p>"
-                                + $"<p>APIUrl: <strong>{_applicationSettingsOptions?.APIUrl}</strong></p>"
+                                + $"<p>APIUrl: <strong>{apiURL}</strong></p>"
                                 + $"<p>EmailCounterResetTimeInHours: <strong>{_applicationSettingsOptions?.EmailCounterResetTimeInHours}</strong></p>"
                                 + $"<p>AppsettingsVersion: <strong>{_applicationSettingsOptions?.AppsettingsVersion}</strong></p>"
                                 + $"<p>ExpectedAppsettingsVersion: <strong>{_applicationSettingsOptions?.ExpectedAppsettingsVersion}</strong></p>"
@@ -125,7 +133,7 @@ namespace ISPAddressCheckerStatusDashboard.Services
                     message.Body = emailBody;
                     message.IsBodyHtml = true;
 
-                    message.To.Add(new MailAddress(_emailSettingsOptions?.EmailToAddress));
+                    message.To.Add(new MailAddress(_emailSettingsOptions!.EmailToAddress));
 
                     try
                     {

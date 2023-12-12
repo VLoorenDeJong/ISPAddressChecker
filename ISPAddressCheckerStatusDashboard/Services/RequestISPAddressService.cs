@@ -22,9 +22,16 @@ namespace ISPAddressCheckerStatusDashboard.Services
                 _logger.LogInformation("GetCHeckISPAddressEndpointURLAsync -> Requesting URL for ISP address check");
                 url = await _apiClient!.ISPAddressCheckAPIWebEndpointURLAsync();
             }
+            catch (System.Net.Sockets.SocketException ex)
+            {
+                _logger.LogError("GetCHeckISPAddressEndpointURLAsync -> ISP address check URL Request Error:{message}", ex.Message);
+                _logger.LogError("GetCHeckISPAddressEndpointURLAsync -> ISP address check URL Request: Is the API running?");
+                url = $"Error: GetCHeckISPAddressEndpointURLAsync -> ISP address check URL Request Error:{ ex.Message}, is the API runn ";
+            }
             catch (Exception ex)
             {
                 _logger.LogError("GetCHeckISPAddressEndpointURLAsync -> ISP address check URL Request Error:{message}", ex.Message);
+                url = $"Error: GetCHeckISPAddressEndpointURLAsync -> ISP address check URL Request Error:{ ex.Message} ";
             }
 
             return url;

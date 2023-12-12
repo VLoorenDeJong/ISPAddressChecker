@@ -7,8 +7,6 @@ using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHostedService<ClockHubClient>();
-
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
@@ -35,13 +33,15 @@ var app = builder.Build();
 
 
 // Checking the configuration of the application:
-    // Get the application settings from the service provider
-    var applicationSettingsOptions = app.Services.GetRequiredService<IOptions<ApplicationSettingsOptions>>();
-    var emailSettingsOptions = app.Services.GetRequiredService<IOptions<EmailSettingsOptions>>();
+// Get the application settings from the service provider
+var applicationSettingsOptions = app.Services.GetRequiredService<IOptions<ApplicationSettingsOptions>>();
+var emailSettingsOptions = app.Services.GetRequiredService<IOptions<EmailSettingsOptions>>();
+
 // Get the service from the service provider
 var applicationConfigCheckService = app.Services.GetRequiredService<IApplicationConfigCheckService>();
-    // Call the method to check the application settings
-    applicationConfigCheckService.CheckApplicationConfig(applicationSettingsOptions, emailSettingsOptions);
+
+// Call the method to check the application settings
+await applicationConfigCheckService.CheckApplicationConfig(applicationSettingsOptions, emailSettingsOptions);
 
 // ToDo: Add emailconfig checks
 // ToDo: Add send applicationRunning 

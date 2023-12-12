@@ -1,11 +1,14 @@
 ﻿@page "/"
 
+@using ISPAddressCheckerStatusDashboard.Options
 @using ISPAddressCheckerStatusDashboard.Services.Interfaces;
 @using ISPAddressCheckerStatusDashboard.Components;
+@using Microsoft.Extensions.Options
 
 @inject ITimerService timerService;
 @inject IStatusService statusService;
 @inject ICounterService counterService;
+@inject IOptions<ApplicationSettingsOptions> appSettings;
 
 @implements IDisposable
 
@@ -15,20 +18,20 @@
     <HealthIndicator UptimeDays="@timerService?.UptimeDays" UptimeClockString="@timerService?.UptimeClockString" />
 
     <div class="row">
-        <RequestISPAddress HostISPAddress="@statusService?.CurrentStatus?.CurrentISPAddress" />
-        <RequestEmail ItemHeader="Heartbeat E-mail:" EmailType="SendEmailTypeEnum._1" />
-        <RequestEmail ItemHeader="ISP Address changed E-mail" EmailType="SendEmailTypeEnum._2" />
+         <RequestISPAddress HostISPAddress="@statusService?.CurrentStatus?.CurrentISPAddress" /> 
+         <RequestEmail ItemHeader="Heartbeat E-mail:" EmailType="SendEmailTypeEnum._1" /> 
+         <RequestEmail ItemHeader="ISP Address changed E-mail" EmailType="SendEmailTypeEnum._2" />
     </div>
 
-    <RequestDivision DashboardRequests="@value" ExternalISPCheckCounter="@(statusService!.CurrentStatus.InternalISPCheckCounter)" InternalISPCheckCounter="@(statusService.CurrentStatus.ExternalISPCheckCounter)" />
+     <RequestDivision DashboardRequests="@value" ExternalISPCheckCounter="@(statusService!.CurrentStatus.InternalISPCheckCounter)" InternalISPCheckCounter="@(statusService.CurrentStatus.ExternalISPCheckCounter)" /> 
 
-    <DisplayWarning Message="@(@"No personal details are being saved.")" />
-    <DisplayWarning Message="@currentTime" />
+     <DisplayWarning Message="@(@"No personal details are being saved.")" /> 
+     <DisplayWarning Message="@currentTime" /> 
 
-    <LogMessageBoard />
+     <LogMessageBoard /> 
 
 
-    <DisplaySuccess Message="@(@"E-mail: contact@victorloorendejong.nl")" />
+    <DisplaySuccess Message="@($"For questions email me @{appSettings?.Value?.CreatorEmail}")" />
 </div>
 
 @code {

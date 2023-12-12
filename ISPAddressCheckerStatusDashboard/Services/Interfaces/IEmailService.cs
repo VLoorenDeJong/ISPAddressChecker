@@ -2,7 +2,7 @@
 {
     public interface IEmailService
     {
-        void SendConfigFailMail();
-        void SendConfigSuccessMail();
+         Task SendConfigFailMail();
+         Task SendConfigSuccessMail();
     }
 }

@@ -6,7 +6,9 @@
         public string? APIUrl { get; set; }
         public int EmailCounterResetTimeInHours { get; set; }
         public double AppsettingsVersion { get; set; }
-        public double ExpectedAppsettingsVersion = 1.0;
+        public string? CreatorEmail { get; set; }
+
+        public double ExpectedAppsettingsVersion = 1.1;
 
 
         public class AppsettingsSections

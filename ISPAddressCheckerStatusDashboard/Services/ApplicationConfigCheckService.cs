@@ -18,10 +18,10 @@ namespace ISPAddressCheckerStatusDashboard.Services
             _emailService = emailService;
         }
 
-        public void CheckApplicationConfig(IOptions<Options.ApplicationSettingsOptions> appSettings, IOptions<Options.EmailSettingsOptions> emailSettings)
+        public async Task CheckApplicationConfig(IOptions<Options.ApplicationSettingsOptions> appSettings, IOptions<Options.EmailSettingsOptions> emailSettings)
         {
             CheckAppsettingsVersionMatch(appSettings);
-            if (CheckEmailSettings(emailSettings)) _emailService.SendConfigSuccessMail();
+            if (CheckEmailSettings(emailSettings)) await _emailService.SendConfigSuccessMail();
         }
 
         private void CheckAppsettingsVersionMatch(IOptions<Options.ApplicationSettingsOptions> appSettings)

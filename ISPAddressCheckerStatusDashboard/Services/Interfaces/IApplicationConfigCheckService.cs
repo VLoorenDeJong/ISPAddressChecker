@@ -5,6 +5,6 @@ namespace ISPAddressCheckerStatusDashboard.Services.Interfaces
 {
     public interface IApplicationConfigCheckService
     {
-        void CheckApplicationConfig(IOptions<Options.ApplicationSettingsOptions> appSettings, IOptions<Options.EmailSettingsOptions> emailSettings);
+        Task CheckApplicationConfig(IOptions<Options.ApplicationSettingsOptions> appSettings, IOptions<Options.EmailSettingsOptions> emailSettings);
     }
 }
