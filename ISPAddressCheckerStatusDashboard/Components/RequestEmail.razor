@@ -90,7 +90,6 @@
 
     protected override Task OnInitializedAsync()
     {
-        emailRequest.Id = Guid.NewGuid().ToString("N");
         emailRequest.EmailType = EmailType;
 
         return base.OnInitializedAsync();
@@ -104,6 +103,7 @@
 
     private async Task OnSendEmailButtonClicked()
     {
+        emailRequest.Id = Guid.NewGuid().ToString("N").Substring(0, 5);
         displayMessage = false;
         // Trim spaces
         if (!string.IsNullOrWhiteSpace(emailRequest.EmailAddress)) emailRequest.EmailAddress = emailRequest.EmailAddress.Replace(" ", "");

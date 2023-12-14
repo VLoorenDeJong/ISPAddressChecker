@@ -4,6 +4,7 @@ using ISPAddressCheckerStatusDashboard.Services;
 using ISPAddressCheckerStatusDashboard.Options;
 using ISPAddressCheckerStatusDashboard;
 using Microsoft.Extensions.Options;
+using ISPAddressChecker.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,10 +14,11 @@ builder.Services.AddServerSideBlazor();
 builder.Services.Configure<ApplicationSettingsOptions>(builder.Configuration.GetSection(AppsettingsSections.ApplicationSettings));
 builder.Services.Configure<EmailSettingsOptions>(builder.Configuration.GetSection(AppsettingsSections.EmailSettings));
 
-builder.Services.AddScoped<IStatusService, StatusService>();
 builder.Services.AddSingleton<ICounterService, CounterService>();
+builder.Services.AddSingleton<ISPAddressCheckerStatusDashboard.Services.Interfaces.ILogHubService, LogHubService>();
 
-builder.Services.AddScoped<ITimerService, TimerService>();
+builder.Services.AddScoped<ISPAddressCheckerStatusDashboard.Services.Interfaces.ITimerService, TimerService>();
+builder.Services.AddScoped<IStatusService, StatusService>();
 
 builder.Services.AddTransient<IOpenAPIClient, OpenAPIClient>();
 builder.Services.AddTransient<IRequestEmailService, RequestEmailService>();
@@ -31,7 +33,6 @@ builder.Services.AddTransient<ISPAddressCheckerStatusDashboard.Services.Interfac
 
 var app = builder.Build();
 
-
 // Checking the configuration of the application:
 // Get the application settings from the service provider
 var applicationSettingsOptions = app.Services.GetRequiredService<IOptions<ApplicationSettingsOptions>>();
@@ -43,6 +44,7 @@ var applicationConfigCheckService = app.Services.GetRequiredService<IApplication
 // Call the method to check the application settings
 await applicationConfigCheckService.CheckApplicationConfig(applicationSettingsOptions, emailSettingsOptions);
 
+//app.Services.GetService<ISPAddressCheckerStatusDashboard.Services.Interfaces.ILogHubService>()!.InstatiateLogHub().GetAwaiter().GetResult();
 // ToDo: Add emailconfig checks
 // ToDo: Add send applicationRunning 
 

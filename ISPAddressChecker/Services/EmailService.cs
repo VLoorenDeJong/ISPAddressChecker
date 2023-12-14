@@ -102,7 +102,7 @@ namespace ISPAddressChecker.Services
 
 
                         _logger.LogInformation("SendEmail -> Request Id: {id}, Sending: {subj}", sendEmailDetails.Id, subject);
-                        await _loghub.SendLogInfoAsync(serviceName, $"SendEmail -> Request Id: {sendEmailDetails.Id}, Sending: {subject}");
+                        await _loghub.SendLogInfoAsync(serviceName, $"RequestId: {sendEmailDetails.Id}, SendEmail -> Sending: {subject}");
 
                         report.Success = true;
                         report.Message = "E-mail has been send";
@@ -120,7 +120,7 @@ namespace ISPAddressChecker.Services
                     {
                         Type exceptionType = ex.GetType();
                         _logger.LogError("SendEmail -> Request Id: {id}, Something went wrong with sending the email. Exception type: {exceptionType} Message:{message}", sendEmailDetails.Id, exceptionType, ex.Message);
-                        await _loghub.SendLogErrorAsync(serviceName, $"SendEmail -> Request Id: {sendEmailDetails.Id}, Something went wrong with sending the email. Exception type: {exceptionType} Message:{ex.Message}");
+                        await _loghub.SendLogErrorAsync(serviceName, $"RequestId: {sendEmailDetails.Id}, SendEmail -> Something went wrong with sending the email. Exception type: {exceptionType} Message:{ex.Message}");
 
                         report.Success = false;
                         report.Message = $"Sending E-mail failed";
@@ -366,7 +366,7 @@ namespace ISPAddressChecker.Services
             string emailBody = CreateEmail(message);
 
             _logger.LogInformation("SendISPAddressChangedEmail -> Sending: ISPAddressChangedEmail");
-            await _loghub.SendLogInfoAsync(serviceName, $"SendISPAddressChangedEmail -> Sending: ISPAddressChangedEmail");
+            await _loghub.SendLogInfoAsync(serviceName, $"RequestId: {sendEmailDetails.Id}, SendISPAddressChangedEmail -> Sending: ISPAddressChangedEmail");
 
             return await SendEmail(_emailSettingsOptions?.EmailSubject!, sendEmailDetails, emailBody);
         }
