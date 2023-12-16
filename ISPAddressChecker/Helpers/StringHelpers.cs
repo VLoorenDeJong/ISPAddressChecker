@@ -1,7 +1,8 @@
-﻿using System.Text;
+﻿using ISPAddressChecker.Models.Enums;
+using System.Text;
 
 namespace ISPAddressChecker.Helpers
-{
+{   
     public static class StringHelpers
     {
         public static string MakeISPAddressLogReady(string ISPAddress)
@@ -73,6 +74,6 @@ namespace ISPAddressChecker.Helpers
             }
 
             return output;
-        }
+        }        
     }
 }

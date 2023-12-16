@@ -31,8 +31,8 @@ namespace ISPAddressChecker.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<string>> GetIpAddress()
        {
-            _logger.LogInformation("ISP address has been requested");
-            await _loghub.SendLogInfoAsync(serviceName, "ISP address has been requested");
+            _logger.LogInformation("GetIpAddress -> ISP address has been requested");
+            await _loghub.SendLogInfoAsync(serviceName, "HTTPController -> GetIpAddress -> ISP address has been requested");
 
             _counterService.AddISPEndpointRequests();
 
@@ -81,14 +81,14 @@ namespace ISPAddressChecker.Controllers
                 {
                     logInfo = outputString;
                 }
-                _logger.LogInformation("Success addres returned:{logInfo}", logInfo);
-                await _loghub.SendLogInfoAsync(serviceName, $"Success addres returned:{logInfo}");
+                _logger.LogInformation("HTTPController -> GetIpAddress -> Success addres returned:{logInfo}", logInfo);
+                await _loghub.SendLogInfoAsync(serviceName, $"GetIpAddress ->Success addres returned:{logInfo}");
 
                 return outputString;
             }
             else
             {
-                _logger.LogError("Something went wrong output was: {outputString}", outputString);
+                _logger.LogError("GetIpAddress -> Something went wrong output was: {outputString}", outputString);
                 await _loghub.SendLogErrorAsync(serviceName, $"Something went wrong output was: {outputString}");
 
                 return "What?!?";

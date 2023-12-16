@@ -15,7 +15,6 @@ builder.Services.Configure<ApplicationSettingsOptions>(builder.Configuration.Get
 builder.Services.Configure<EmailSettingsOptions>(builder.Configuration.GetSection(AppsettingsSections.EmailSettings));
 
 builder.Services.AddSingleton<ICounterService, CounterService>();
-builder.Services.AddSingleton<ISPAddressCheckerStatusDashboard.Services.Interfaces.ILogHubService, LogHubService>();
 
 builder.Services.AddScoped<ISPAddressCheckerStatusDashboard.Services.Interfaces.ITimerService, TimerService>();
 builder.Services.AddScoped<IStatusService, StatusService>();
@@ -23,7 +22,7 @@ builder.Services.AddScoped<IStatusService, StatusService>();
 builder.Services.AddTransient<IOpenAPIClient, OpenAPIClient>();
 builder.Services.AddTransient<IRequestEmailService, RequestEmailService>();
 builder.Services.AddTransient<IRequestISPAddressService, RequestISPAddressService>();
-builder.Services.AddTransient<IApplicationConfigCheckService, ApplicationConfigCheckService>();
+builder.Services.AddTransient<ISPAddressCheckerStatusDashboard.Services.Interfaces.IApplicationConfigCheckService, ApplicationConfigCheckService>();
 builder.Services.AddTransient<IISPAddressCheckerStatusService, ISPAddressCheckerStatusService>();
 builder.Services.AddTransient<ISPAddressCheckerStatusDashboard.Services.Interfaces.IEmailService, ISPAddressCheckerStatusDashboard.Services.EmailService>();
 
@@ -39,12 +38,11 @@ var applicationSettingsOptions = app.Services.GetRequiredService<IOptions<Applic
 var emailSettingsOptions = app.Services.GetRequiredService<IOptions<EmailSettingsOptions>>();
 
 // Get the service from the service provider
-var applicationConfigCheckService = app.Services.GetRequiredService<IApplicationConfigCheckService>();
+var applicationConfigCheckService = app.Services.GetRequiredService<ISPAddressCheckerStatusDashboard.Services.Interfaces.IApplicationConfigCheckService>();
 
 // Call the method to check the application settings
 await applicationConfigCheckService.CheckApplicationConfig(applicationSettingsOptions, emailSettingsOptions);
 
-//app.Services.GetService<ISPAddressCheckerStatusDashboard.Services.Interfaces.ILogHubService>()!.InstatiateLogHub().GetAwaiter().GetResult();
 // ToDo: Add emailconfig checks
 // ToDo: Add send applicationRunning 
 

@@ -1,4 +1,6 @@
-﻿@using ISPAddressCheckerStatusDashboard.Services.Interfaces;
+﻿@using ISPAddressChecker.Helpers
+@using ISPAddressCheckerStatusDashboard.Services.Interfaces;
+
 
 @inject IRequestEmailService _emailService;
 @inject ICounterService counterService;
@@ -20,7 +22,7 @@
 
         @switch (EmailType)
         {
-            case SendEmailTypeEnum._1:
+            case ISPAddressChecker.Models.Enums.SendEmailTypeEnum.HeartBeatEmail:
                 if (counterService.GetHeartbeatEmailRequestCounter() != 0)
                 {
                     <div class="email-adress-submit">
@@ -35,7 +37,7 @@
                 }
                 break;
 
-            case SendEmailTypeEnum._2:
+            case ISPAddressChecker.Models.Enums.SendEmailTypeEnum.ISPAddressChanged:
                 if (counterService.GetISPAddressChangedRequestCounter() != 0)
                 {
                     <div class="email-adress-submit">
@@ -55,12 +57,12 @@
     </div>
 
     <div class="validation-message-section">
-    @if (displayMessage)
-    {
+        @if (displayMessage)
+        {
             @switch (report?.Success)
             {
                 case true:
-                <DisplaySuccess Message="@report.Message" />
+                    <DisplaySuccess Message="@report.Message" />
                     break;
 
                 case false:
@@ -79,7 +81,11 @@
 
     [Parameter]
     [EditorRequired]
-    public SendEmailTypeEnum EmailType { get; set; }
+    public ISPAddressChecker.Models.Enums.SendEmailTypeEnum EmailType { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public EventCallback<ISPAddressChecker.Models.LogEntryModel> LogEntryCreated { get; set; }
 
 
     private SendEmailModel emailRequest = new();
@@ -90,7 +96,7 @@
 
     protected override Task OnInitializedAsync()
     {
-        emailRequest.EmailType = EmailType;
+        emailRequest.EmailType = (SendEmailTypeEnum)EmailType;
 
         return base.OnInitializedAsync();
     }
@@ -108,24 +114,32 @@
         // Trim spaces
         if (!string.IsNullOrWhiteSpace(emailRequest.EmailAddress)) emailRequest.EmailAddress = emailRequest.EmailAddress.Replace(" ", "");
 
-        if (ISPAddressChecker.Helpers.ConfigHelpers.EmailAddressIsValid(emailRequest.EmailAddress))
+        // Validating E-maill address
+        emailRequest.EmailValidated = ISPAddressChecker.Helpers.ConfigHelpers.EmailAddressIsValid(emailRequest.EmailAddress);
+
+        if (emailRequest.EmailValidated)
         {
+
+            ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
+            newLogEntry.LogType = ISPAddressChecker.Models.Enums.LogType.Information;
+            newLogEntry.Service = $"RequestEmail -> SendEmailRequest -> E-mail type: {EmailType.ToString()}";
+            newLogEntry.Message = "Email address valid";
+            await LogEntryCreated.InvokeAsync(newLogEntry);
+
             switch (EmailType)
             {
-                case SendEmailTypeEnum._1:
+                case ISPAddressChecker.Models.Enums.SendEmailTypeEnum.HeartBeatEmail:
                     counterService.SubtractHeartbeatEmailRequestCounter();
                     emailRequest.EmailType = SendEmailTypeEnum._1;
                     break;
 
-                case SendEmailTypeEnum._2:
+                case ISPAddressChecker.Models.Enums.SendEmailTypeEnum.ISPAddressChanged:
                     counterService.SubtractISPAddressChangedRequestCounter();
                     emailRequest.EmailType = SendEmailTypeEnum._2;
                     break;
             }
 
-            emailRequest.EmailValidated = true;
-            report = await _emailService.RequestEmail(emailRequest);
-            displayMessage = true;
+            await SendEmailRequest(emailRequest);
         }
         else
         {
@@ -134,8 +148,40 @@
                     Success = false,
                     Message = "Email address not valid"
                 };
+
+            ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
+            newLogEntry.LogType = ISPAddressChecker.Models.Enums.LogType.Error;
+            newLogEntry.Service = $"RequestEmail";
+            newLogEntry.Message = "Email address not valid";
+            await LogEntryCreated.InvokeAsync(newLogEntry);
+
             displayMessage = true;
         }
     }
 
+
+    private async Task SendEmailRequest(SendEmailModel emailRequest)
+    {
+        try
+        {
+            report = await _emailService.RequestEmailAsync(emailRequest);
+
+            ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
+            newLogEntry.LogType = ISPAddressChecker.Models.Enums.LogType.Information;
+            newLogEntry.Service = $"RequestEmail";
+            newLogEntry.Message = $"RequestId: {emailRequest.Id}, SendEmailRequest -> E-mail type: {emailRequest.EmailType.ToString()},  Email-Address: {StringHelpers.MakeISPAddressLogReady(emailRequest.EmailAddress)}, Valid: {emailRequest.EmailValidated}";
+            await LogEntryCreated.InvokeAsync(newLogEntry);
+
+            displayMessage = true;
+        }
+        catch (Exception ex)
+        {
+            report = new ActionReportModel
+                {
+                    Success = false,
+                    Message = ex.Message
+                };
+            displayMessage = true;
+        }
+    }
 }

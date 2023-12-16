@@ -1,9 +1,10 @@
 ﻿@page "/"
 
-@using ISPAddressCheckerStatusDashboard.Options
+@using ISPAddressChecker.Models;
+@using ISPAddressCheckerStatusDashboard.Options;
 @using ISPAddressCheckerStatusDashboard.Services.Interfaces;
 @using ISPAddressCheckerStatusDashboard.Components;
-@using Microsoft.Extensions.Options
+@using Microsoft.Extensions.Options;
 
 @inject ITimerService timerService;
 @inject IStatusService statusService;
@@ -18,17 +19,17 @@
     <HealthIndicator UptimeDays="@timerService?.UptimeDays" UptimeClockString="@timerService?.UptimeClockString" />
 
     <div class="row">
-         <RequestISPAddress HostISPAddress="@statusService?.CurrentStatus?.CurrentISPAddress" /> 
-         <RequestEmail ItemHeader="Heartbeat E-mail:" EmailType="SendEmailTypeEnum._1" /> 
-         <RequestEmail ItemHeader="ISP Address changed E-mail" EmailType="SendEmailTypeEnum._2" />
+        <RequestISPAddress HostISPAddress="@statusService?.CurrentStatus?.CurrentISPAddress" />
+        <RequestEmail ItemHeader="Heartbeat E-mail:" EmailType="ISPAddressChecker.Models.Enums.SendEmailTypeEnum.HeartBeatEmail" LogEntryCreated="OnLogEntryCreated" />
+        <RequestEmail ItemHeader="ISP Address changed E-mail" EmailType="ISPAddressChecker.Models.Enums.SendEmailTypeEnum.ISPAddressChanged" LogEntryCreated="OnLogEntryCreated" />
     </div>
 
-     <RequestDivision DashboardRequests="@value" ExternalISPCheckCounter="@(statusService!.CurrentStatus.InternalISPCheckCounter)" InternalISPCheckCounter="@(statusService.CurrentStatus.ExternalISPCheckCounter)" /> 
+    <RequestDivision DashboardRequests="@value" ExternalISPCheckCounter="@(statusService!.CurrentStatus.InternalISPCheckCounter)" InternalISPCheckCounter="@(statusService.CurrentStatus.ExternalISPCheckCounter)" />
 
-     <DisplayWarning Message="@(@"No personal details are being saved.")" /> 
-     <DisplayWarning Message="@currentTime" /> 
+    <DisplayWarning Message="@(@"No personal details are being saved.")" />
+    <DisplayWarning Message="@currentTime" />
 
-     <LogMessageBoard /> 
+    <LogMessageBoard @ref="@logMessageBoard" />
 
 
     <DisplaySuccess Message="@($"For questions email me @{appSettings?.Value?.CreatorEmail}")" />
@@ -38,12 +39,11 @@
 
     private string? currentTime;
 
-    private bool timersStarted;
     private Timer? aTimer;
 
-    private bool timersStrted;
+    private bool timersStarted;
 
-    private int successRate;
+    private LogMessageBoard? logMessageBoard;
 
     int value;
 
@@ -66,9 +66,9 @@
     }
     private async Task StartTimers()
     {
-        if (!timersStrted)
+        if (!timersStarted)
         {
-            timersStrted = true;
+            timersStarted = true;
             await timerService.StartTimers();
         }
         aTimer = new Timer(async (state) => await Tick(), null, 0, 1000);
@@ -88,5 +88,12 @@
     private async void OnStatusChange()
     {
         await InvokeAsync(StateHasChanged);
+    }
+    private async Task OnLogEntryCreated(LogEntryModel entryToAdd)
+    {
+        if (logMessageBoard is not null)
+        {
+            await logMessageBoard.AddLogEntry(entryToAdd);
+        }
     }
 }

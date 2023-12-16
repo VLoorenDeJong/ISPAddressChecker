@@ -2,6 +2,6 @@
 {
     public interface IRequestEmailService
     {
-        Task<ActionReportModel> RequestEmail(SendEmailModel emailRequest);
+        Task<ActionReportModel> RequestEmailAsync(SendEmailModel emailRequest);
     }
 }

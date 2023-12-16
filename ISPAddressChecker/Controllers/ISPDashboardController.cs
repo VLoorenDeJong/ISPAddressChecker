@@ -189,7 +189,7 @@ namespace ISPAddressChecker.Controllers
                 }
             }
 
-            _logger.LogInformation("ISPAddressCheckSendEmail -> Failed -> RequestId: {id}, EmailType:{type} -> E-mail address:{email}, message: {message}", emailRequest.Id, emailRequest?.EmailType, Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest!.EmailAddress), report.Message);
+            _logger.LogInformation("ISPAddressCheckSendEmail -> Failed -> RequestId: {id}, EmailType:{type} -> E-mail address:{email}, message: {message}", emailRequest!.Id, emailRequest?.EmailType, Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest!.EmailAddress), report.Message);
             await _loghub.SendLogWarningAsync(serviceName, $"RequestId: {emailRequest.Id}, ISPAddressCheckSendEmail -> Failed ->  EmailType: {emailRequest?.EmailType}, E-mail address:{Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest!.EmailAddress)}, message: {report.Message}");
 
             return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Failed to send email", report });

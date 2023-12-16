@@ -18,7 +18,7 @@ namespace ISPAddressChecker.SignalRHubs
         // Todo Check if this is needed
         public async Task SendLogToClients(LogEntryModel logEntry)
         {
-            _logger.LogInformation("ISPAddressChecker.SignalRHubs -> {method} -> called", LogHubMethods.SendLogToClients);
+            _logger.LogInformation("ISPAddressCheckerAPI.SignalRHubs -> {method} -> called", LogHubMethods.SendLogToClients);
             await Clients.All.SendLogToClients(logEntry);
         }
 

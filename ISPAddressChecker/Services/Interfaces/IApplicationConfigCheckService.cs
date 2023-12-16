@@ -1,7 +1,7 @@
 ﻿using ISPAddressChecker.Options;
 using Microsoft.Extensions.Options;
 
-namespace ISPAddressCheckerAPI.Services.Interfaces
+namespace ISPAddressChecker.Services.Interfaces
 {
     public interface IApplicationConfigCheckService
     {

@@ -79,6 +79,10 @@ namespace ISPAddressChecker.Helpers
             {
                 isVallid = Regex.IsMatch(emailAddressToValidate!, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
             }
+            else
+            {
+                isVallid = false;
+            }
             
             // ToDo: Check validation it fails correct emailadresses
 

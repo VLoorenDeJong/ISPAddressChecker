@@ -1,5 +1,5 @@
 ﻿using ISPAddressChecker.Options;
-using ISPAddressCheckerAPI.Services.Interfaces;
+using ISPAddressChecker.Services.Interfaces;
 using Microsoft.Extensions.Options;
 
 namespace ISPAddressChecker.Services
