@@ -46,9 +46,17 @@ namespace ISPAddressChecker.Helpers
 
             if (!string.IsNullOrWhiteSpace(emailAddress))
             {
-                int atIndex = emailAddress.IndexOf('@');
-                string maskedAddress = emailAddress.Substring(0, Math.Min(atIndex, 2)).PadRight(5, '*') + emailAddress.Substring(atIndex);
-                return maskedAddress; // Outputs "ex****@example.com"
+                try
+                {
+
+                    int atIndex = emailAddress.IndexOf('@');
+                    string maskedAddress = emailAddress.Substring(0, Math.Min(atIndex, 2)).PadRight(5, '*') + emailAddress.Substring(atIndex);
+                    return maskedAddress; // Outputs "ex****@example.com"
+                }
+                catch (Exception ex)
+                {
+
+                }
             }
 
             return emailAddress;

@@ -73,20 +73,21 @@ namespace ISPAddressChecker.Helpers
 
         public static bool EmailAddressIsValid(string? emailAddressToValidate)
         {
-            bool isVallid = true;
+            bool isValid = true;
 
             if (!string.IsNullOrWhiteSpace(emailAddressToValidate))
             {
-                isVallid = Regex.IsMatch(emailAddressToValidate!, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+                isValid = !Regex.IsMatch(emailAddressToValidate, @"(@.*@)|(\..*\.)|(@\.)|(\.@)")
+                            &&
+                          Regex.IsMatch(emailAddressToValidate!, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
+                          ;
             }
             else
             {
-                isVallid = false;
+                isValid = false;
             }
-            
-            // ToDo: Check validation it fails correct emailadresses
 
-            return isVallid;
+            return isValid;
         }
 
         private static bool BackupAPIUrlError(List<string?>? backupAPIURLs, ILogger logger)
@@ -151,7 +152,7 @@ namespace ISPAddressChecker.Helpers
                 ReportConfigError(errorMessage, logger);
                 report.ErrorMessage = report.ErrorMessage + errorMessage;
             }
-                        
+
             if (emailSettingsOptions?.HeartbeatEmailIntervalDays == 0)
             {
                 report.ChecksPassed = false;

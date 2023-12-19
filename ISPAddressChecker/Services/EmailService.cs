@@ -98,7 +98,7 @@ namespace ISPAddressChecker.Services
                     {
                         // Send the email message
                         // ToDo: enable sending emails
-                        client.Send(message);
+                      //  client.Send(message);
 
 
                         _logger.LogInformation("SendEmail -> Request Id: {id}, Sending: {subj}", sendEmailDetails.Id, subject);

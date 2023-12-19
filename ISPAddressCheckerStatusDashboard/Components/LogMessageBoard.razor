@@ -117,7 +117,6 @@
                 InvokeAsync(async () =>
                 {
                     await AddLogEntry(entry);
-                    logEntries = logEntries.OrderByDescending(x => x.Time).ToList();
                     StateHasChanged();
                 });
             });
@@ -221,7 +220,7 @@
         await InvokeAsync(() =>
         {
             logEntries.Add(entry);
-            logEntries = logEntries.OrderBy(x => x.Time).ToList();
+            logEntries = logEntries.OrderByDescending(x => x.Time).ToList();
             StateHasChanged();
         });
     }

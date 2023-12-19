@@ -6,7 +6,7 @@ namespace ISPAddressChecker.Models
     {
         public LogEntryModel()
         {
-            
+            Time = DateTimeOffset.Now;
         }
         public LogEntryModel(LogType logType, string ServiceName, string message)
         {

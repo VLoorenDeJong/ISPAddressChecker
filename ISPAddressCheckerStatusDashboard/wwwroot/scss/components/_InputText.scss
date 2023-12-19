@@ -3,13 +3,13 @@ $primary-font: $font-seg-ui;
 $secondary-font: $tahoma;
 $tertiary-font: $yu-gothic-ui;*/
 
-input[type="text"] {
+.input-text {
     color: $primary-color;
     padding: 5px;
+    border-radius: 5px;
 
     &:focus {
         border-radius: 5px;
-        outline: 1px solid $primary-color !important;
         /* or */
         box-shadow: 0 0 1px 1px $primary-color !important;
     }
@@ -55,7 +55,7 @@ input[type="text"] {
     .input-field {
         border-radius: 5px;
         border: solid 2px $secondary-color;
-        font-size:25px;
+        font-size: 25px;
     }
 
     input[type="text"] {

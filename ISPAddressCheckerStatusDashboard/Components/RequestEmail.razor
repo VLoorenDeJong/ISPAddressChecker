@@ -1,5 +1,7 @@
 ﻿@using ISPAddressChecker.Helpers
 @using ISPAddressCheckerStatusDashboard.Services.Interfaces;
+@using ISPAddressCheckerStatusDashboard.Components;
+@using Microsoft.AspNetCore.Components.Forms
 
 
 @inject IRequestEmailService _emailService;
@@ -18,46 +20,49 @@
             @ItemHeader
         </div>
 
-        <InputText PlaceHolderText="E-mail address" @bind-StringValue="@emailRequest.EmailAddress" ShowValidation="@displayMessage" InputValid="@report.Success" />
+        <EditForm Model="@emailRequest" OnSubmit="@OnSendEmailButtonClicked" FormName="@formName">
+            <InputText class="input-text" @bind-Value="emailRequest.EmailAddress" />
 
-        @switch (EmailType)
-        {
-            case ISPAddressChecker.Models.Enums.SendEmailTypeEnum.HeartBeatEmail:
-                if (counterService.GetHeartbeatEmailRequestCounter() != 0)
-                {
-                    <div class="email-adress-submit">
-                        <button @onclick="OnSendEmailButtonClicked">@($"Send ({counterService.GetHeartbeatEmailRequestCounter()}x)")</button>
-                    </div>
-                }
-                else
-                {
-                    <div class="email-adress-submit">
-                        <button disabled>@($"Send ({counterService.GetHeartbeatEmailRequestCounter()}x)")</button>
-                    </div>
-                }
-                break;
+            @switch (EmailType)
+            {
+                case ISPAddressChecker.Models.Enums.SendEmailTypeEnum.HeartBeatEmail:
+                    if (counterService.GetHeartbeatEmailRequestCounter() != 0)
+                    {
+                        <div class="email-adress-submit">
+                            <button type="submit">@($"Send ({counterService.GetHeartbeatEmailRequestCounter()}x)")</button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="email-adress-submit">
+                            <button disabled>@($"Send ({counterService.GetHeartbeatEmailRequestCounter()}x)")</button>
+                        </div>
+                    }
+                    break;
 
-            case ISPAddressChecker.Models.Enums.SendEmailTypeEnum.ISPAddressChanged:
-                if (counterService.GetISPAddressChangedRequestCounter() != 0)
-                {
-                    <div class="email-adress-submit">
-                        <button @onclick="OnSendEmailButtonClicked">@($"Send ({counterService.GetISPAddressChangedRequestCounter()}x)")</button>
-                    </div>
+                case ISPAddressChecker.Models.Enums.SendEmailTypeEnum.ISPAddressChanged:
+                    if (counterService.GetISPAddressChangedRequestCounter() != 0)
+                    {
+                        <div class="email-adress-submit">
+                            <button type="submit">@($"Send ({counterService.GetISPAddressChangedRequestCounter()}x)")</button>
+                        </div>
 
-                }
-                else
-                {
+                    }
+                    else
+                    {
 
-                    <div class="email-adress-submit">
-                        <button disabled>@($"Send ({counterService.GetISPAddressChangedRequestCounter()}x)")</button>
-                    </div>
-                }
-                break;
-        }
+                        <div class="email-adress-submit">
+                            <button disabled>@($"Send ({counterService.GetISPAddressChangedRequestCounter()}x)")</button>
+                        </div>
+                    }
+                    break;
+            }
+        </EditForm>
+
     </div>
 
     <div class="validation-message-section">
-        @if (displayMessage)
+        @if (displayMessage && !string.IsNullOrWhiteSpace(report.Id))
         {
             @switch (report?.Success)
             {
@@ -94,16 +99,20 @@
 
     private bool displayMessage;
 
+    private string formName = "RequestEmailForm";
+
     protected override Task OnInitializedAsync()
     {
         emailRequest.EmailType = (SendEmailTypeEnum)EmailType;
+
+        formName = $"Request{EmailType}E-mail";
 
         return base.OnInitializedAsync();
     }
 
     protected override Task OnAfterRenderAsync(bool firstRender)
     {
-        if (string.IsNullOrEmpty(emailRequest?.EmailAddress)) displayMessage = false;
+        if (string.IsNullOrEmpty(emailRequest?.EmailAddress) && string.IsNullOrWhiteSpace(report?.Id)) displayMessage = false;
         return base.OnAfterRenderAsync(firstRender);
     }
 
@@ -123,7 +132,7 @@
             ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
             newLogEntry.LogType = ISPAddressChecker.Models.Enums.LogType.Information;
             newLogEntry.Service = $"RequestEmail -> SendEmailRequest -> E-mail type: {EmailType.ToString()}";
-            newLogEntry.Message = "Email address valid";
+            newLogEntry.Message = $"RequestId: {emailRequest.Id}, E-mail address valid";
             await LogEntryCreated.InvokeAsync(newLogEntry);
 
             switch (EmailType)
@@ -145,6 +154,7 @@
         {
             report = new ActionReportModel
                 {
+                    Id = emailRequest.Id,
                     Success = false,
                     Message = "Email address not valid"
                 };
@@ -166,13 +176,25 @@
         {
             report = await _emailService.RequestEmailAsync(emailRequest);
 
-            ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
-            newLogEntry.LogType = ISPAddressChecker.Models.Enums.LogType.Information;
-            newLogEntry.Service = $"RequestEmail";
-            newLogEntry.Message = $"RequestId: {emailRequest.Id}, SendEmailRequest -> E-mail type: {emailRequest.EmailType.ToString()},  Email-Address: {StringHelpers.MakeISPAddressLogReady(emailRequest.EmailAddress)}, Valid: {emailRequest.EmailValidated}";
-            await LogEntryCreated.InvokeAsync(newLogEntry);
+           
+            try
+            {
+                ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
+                newLogEntry.LogType = ISPAddressChecker.Models.Enums.LogType.Information;
+                newLogEntry.Service = $"RequestEmail";
+                newLogEntry.Message = $"RequestId: {emailRequest.Id}, SendEmailRequest -> E-mail type: {emailRequest.EmailType.ToString()},  Email-Address: {StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress)}, Valid: {emailRequest.EmailValidated}";
+                await LogEntryCreated.InvokeAsync(newLogEntry);
 
+            }
+            catch(Exception ex)
+            {
+                
+            }
             displayMessage = true;
+            if (report.Success)
+            {
+                emailRequest.EmailAddress = string.Empty;
+            }
         }
         catch (Exception ex)
         {
