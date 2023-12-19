@@ -26,10 +26,6 @@ builder.Services.AddTransient<ISPAddressCheckerStatusDashboard.Services.Interfac
 builder.Services.AddTransient<IISPAddressCheckerStatusService, ISPAddressCheckerStatusService>();
 builder.Services.AddTransient<ISPAddressCheckerStatusDashboard.Services.Interfaces.IEmailService, ISPAddressCheckerStatusDashboard.Services.EmailService>();
 
-
-//ToDo Email text box input changed after sending. Sends email to old address? (Email adress not updated after input second email address)
-// ToDo Enpoint URL removal from appsettings
-
 var app = builder.Build();
 
 // Checking the configuration of the application:
@@ -42,9 +38,6 @@ var applicationConfigCheckService = app.Services.GetRequiredService<ISPAddressCh
 
 // Call the method to check the application settings
 await applicationConfigCheckService.CheckApplicationConfig(applicationSettingsOptions, emailSettingsOptions);
-
-// ToDo: Add emailconfig checks
-// ToDo: Add send applicationRunning 
 
 
 if (!app.Environment.IsDevelopment())

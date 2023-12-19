@@ -1,4 +1,5 @@
-﻿using ISPAddressCheckerStatusDashboard.Options;
+﻿using ISPAddressChecker.Helpers;
+using ISPAddressCheckerStatusDashboard.Options;
 using ISPAddressCheckerStatusDashboard.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -44,8 +45,6 @@ namespace ISPAddressCheckerStatusDashboard.Services
             }
         }
 
-        // ToDo: write methods for validating applicationsetting values
-
         private bool CheckEmailSettings(IOptions<Options.EmailSettingsOptions> emailSettings)
         {
             var settings = emailSettings.Value;
@@ -73,14 +72,14 @@ namespace ISPAddressCheckerStatusDashboard.Services
                 mandatoryEmailConfigurationPassed = false;
             }
 
-            if (string.Equals(settings?.EmailToAddress, StandardAppsettingsValues.EmailToAddress, StringComparison.CurrentCultureIgnoreCase) || !EmailAddressIsValid(settings?.EmailToAddress))
+            if (string.Equals(settings?.EmailToAddress, StandardAppsettingsValues.EmailToAddress, StringComparison.CurrentCultureIgnoreCase) || !ConfigHelpers.EmailAddressIsValid(settings?.EmailToAddress))
             {
                 string errorMessage = $"appsettings: EmailToAddress: {settings?.EmailToAddress} in appsettings not confugured correctly";
                 ThrowEmailConfigError(errorMessage, _logger);
                 mandatoryEmailConfigurationPassed = false;
             }
 
-            if (string.Equals(settings?.EmailFromAddress, StandardAppsettingsValues.EmailFromAddress, StringComparison.CurrentCultureIgnoreCase) || !EmailAddressIsValid(settings?.EmailFromAddress))
+            if (string.Equals(settings?.EmailFromAddress, StandardAppsettingsValues.EmailFromAddress, StringComparison.CurrentCultureIgnoreCase) || !ConfigHelpers.EmailAddressIsValid(settings?.EmailFromAddress))
             {
                 string errorMessage = $"appsettings: EmailFromAddress: {settings?.EmailFromAddress} in appsettings not confugured correctly";
                 ThrowEmailConfigError(errorMessage, _logger);
@@ -95,21 +94,6 @@ namespace ISPAddressCheckerStatusDashboard.Services
             logger?.LogInformation(errorMessage);
             Console.WriteLine(errorMessage);
             throw new Exception(errorMessage);
-        }
-
-
-        public static bool EmailAddressIsValid(string? emailAddressToValidate)
-        {
-            bool isVallid = true;
-
-            if (!string.IsNullOrWhiteSpace(emailAddressToValidate))
-            {
-                isVallid = Regex.IsMatch(emailAddressToValidate!, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
-            }
-
-            // ToDo: Check validation it fails correct emailadresses?
-
-            return isVallid;
         }
     }
 }

@@ -54,7 +54,10 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 // ToDo: Add uptime to the heartbeat email
-// ToDo: Switch on hubs only when dashboard is active
+// ToDo: add email requested counter
+// ToDo: add email requested counter to the heartbeat email
+
+
 
 // Checking the configuration of the application:
 // Get the application settings from the service provider

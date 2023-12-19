@@ -67,8 +67,6 @@ public class CheckISPAddressService : ICheckISPAddressService
                 _logger.LogInformation("GetISPAddressAsync -> Requesting ISP adress from endpoint");
                 await _logHub.SendLogInfoAsync(serviceName, "GetISPAddressAsync -> Requesting ISP adress from endpoint");
 
-                // ToDo remove extra log entries above
-                //Todo: add the log hub to send the logs to the client if EnableDashboardAccess is true
 
                 //Testing code:
                 //throw new HttpRequestException();

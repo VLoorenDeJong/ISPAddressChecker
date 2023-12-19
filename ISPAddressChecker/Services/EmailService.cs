@@ -11,7 +11,6 @@ using Microsoft.Extensions.Logging;
 
 namespace ISPAddressChecker.Services
 {
-    //Todo: add the log hub to send the logs to the client if EnableDashboardAccess is true
     public class EmailService : IEmailService
 
     {
