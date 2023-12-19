@@ -15,14 +15,16 @@ namespace ISPAddressChecker.Services
 
     {
         private readonly ILogger _logger;
-        private readonly EmailSettingsOptions _emailSettingsOptions;
+        private readonly EmailSettingsOptions _emailSettings;
 
-        private readonly ApplicationSettingsOptions _applicationSettingsOptions;
+        private readonly ApplicationSettingsOptions _appSettings;
 
         private MailMessage message = new MailMessage();
         public SendEmailModel APIEmailDetails { get; private set; }
 
         private readonly ILogHubService _loghub;
+        private readonly IStatusCounterService _statusCounter;
+
         private readonly string serviceName = nameof(EmailService);
 
         public EmailService(
@@ -30,22 +32,24 @@ namespace ISPAddressChecker.Services
                             , IOptions<ApplicationSettingsOptions> applicationSettingsOptions
                             , IOptions<EmailSettingsOptions> emailSettingsOptions
                             , ILogHubService loghub
+                            , IStatusCounterService statusCounterService
                            )
         {
             _logger = logger;
-            _applicationSettingsOptions = applicationSettingsOptions?.Value!;
-            _emailSettingsOptions = emailSettingsOptions!.Value;
+            _appSettings = applicationSettingsOptions?.Value!;
+            _emailSettings = emailSettingsOptions!.Value;
 
             APIEmailDetails = CreateInternalSendEmail();
             _loghub = loghub;
 
+            _statusCounter = statusCounterService;
             CreateBasicMailMessage();
         }
 
         private void CreateBasicMailMessage()
         {
             // Set the sender, recipient, subject, and body of the message
-            message.From = new MailAddress(_emailSettingsOptions.EmailFromAddress!);
+            message.From = new MailAddress(_emailSettings.EmailFromAddress!);
             message.Priority = MailPriority.High;
         }
 
@@ -75,29 +79,29 @@ namespace ISPAddressChecker.Services
             //public bool Success { get; set; }
             //public string Message { get; set; } = string.Empty;
 
-            if (_emailSettingsOptions is not null && sendEmailDetails is not null)
+            if (_emailSettings is not null && sendEmailDetails is not null)
             {
                 // Create a new SmtpClient object within a using block
                 using (SmtpClient client = new SmtpClient())
                 {
-                    client.Host = _emailSettingsOptions.MailServer!; ;
-                    client.Port = _emailSettingsOptions.SMTPPort;
-                    client.UseDefaultCredentials = _emailSettingsOptions.UseDefaultCredentials;
-                    client.Credentials = new NetworkCredential(_emailSettingsOptions?.UserName, _emailSettingsOptions?.Password);
-                    client.EnableSsl = _emailSettingsOptions!.EnableSsl;
+                    client.Host = _emailSettings.MailServer!; ;
+                    client.Port = _emailSettings.SMTPPort;
+                    client.UseDefaultCredentials = _emailSettings.UseDefaultCredentials;
+                    client.Credentials = new NetworkCredential(_emailSettings?.UserName, _emailSettings?.Password);
+                    client.EnableSsl = _emailSettings!.EnableSsl;
 
                     message.Subject = subject;
                     message.Body = emailBody;
                     message.IsBodyHtml = true;
 
-                    if (string.IsNullOrWhiteSpace(sendEmailDetails.EmailAddress)) sendEmailDetails.EmailAddress = _emailSettingsOptions!.EmailToAddress!;
+                    if (string.IsNullOrWhiteSpace(sendEmailDetails.EmailAddress)) sendEmailDetails.EmailAddress = _emailSettings!.EmailToAddress!;
                     message.To.Add(new MailAddress(sendEmailDetails.EmailAddress));
 
                     try
                     {
                         // Send the email message
                         // ToDo: enable sending emails
-                      //  client.Send(message);
+                       client.Send(message);
 
 
                         _logger.LogInformation("SendEmail -> Request Id: {id}, Sending: {subj}", sendEmailDetails.Id, subject);
@@ -130,28 +134,60 @@ namespace ISPAddressChecker.Services
             return report;
         }
 
-        public async Task<ActionReportModel> SendHeartBeatEmail(IISPAddressCounterService counterService, string oldISPAddress, string currentISPAddress, string newISPAddress, Dictionary<string, string> externalISPCheckResults, SendEmailModel sendEmailDetails)
+        public async Task<ActionReportModel> SendHeartBeatEmail(IISPAddressCounterService counterService
+                                                                , string oldISPAddress
+                                                                , string currentISPAddress
+                                                                , string newISPAddress
+                                                                , Dictionary<string, string> externalISPCheckResults
+                                                                , SendEmailModel sendEmailDetails
+                                                                )
         {
 
-            string message = $@"<p><strong>This was fun! </strong></p>"
-                                 + $"<p>API calls:<strong> {counterService.GetServiceRequestCounter()}</strong></p>"
-                                 + $"<p>API call check: <strong>{counterService.GetServiceCheckCounter()}</strong></p>"
-                                 + $"<p>Internal API calls: <strong>{counterService.GetISPEndpointRequestsCounter()}</strong></p>"
-                                 + $"<p>External API calls: <strong>{counterService.GetExternalServiceUsekCounter()}</strong></p>"
-                                 + $@"<p>Current ISP: <strong> {currentISPAddress}</strong></p>";
+            string dashboardDetails = string.Empty;
+            if (_appSettings.DashboardEnabled)
+            {
+                dashboardDetails = $"<p>ISPAddress changed E-mail requests: <strong>{_statusCounter.GetISPISPAddressChangedEmailRequested()}</strong></p>"
+                                 + $"<p>Heartbeat E-mail requests: <strong>{_statusCounter.GetISPHeartbeatEmailRequested()}</strong></p>"
+                                 + $"<p></p>"
+                                 ;
+            }
+
+            string backupAPIResults = string.Empty;
+            int counter = 1;
+
             foreach (KeyValuePair<string, string> ISPAddressCheck in externalISPCheckResults!)
             {
 
-                string ispReport = $"<p>Backup API: <a href = '{ISPAddressCheck.Key}'> {ISPAddressCheck.Key} </a> -> <strong>{ISPAddressCheck.Value}</strong></p>";
-                message = $"{message} {ispReport}";
+                string ispReport = $"<p>{counter}: <a href = '{ISPAddressCheck.Key}'> {ISPAddressCheck.Key} </a> -> <strong>{ISPAddressCheck.Value}</strong></p>";
+                backupAPIResults = $"{backupAPIResults} {ispReport}";
+                counter++;
             }
-            message = $"{message} <p>ISPAddressCheckFrequencyInMinutes: <strong>{_applicationSettingsOptions?.ISPAddressCheckFrequencyInMinutes}</strong></p>"
-                      + $"<p>API endpoint URL:<a href = '{_applicationSettingsOptions?.APIEndpointURL}'> <strong>{_applicationSettingsOptions?.APIEndpointURL}</strong></a></p>"
-                      + $@"<p>Old ISP: <strong> {oldISPAddress}</strong></p>"
-                      + $@"<p>New ISP: <strong> {newISPAddress}</strong></p>"
-                      + $"<p>See you in {_emailSettingsOptions?.HeartbeatEmailIntervalDays} days ;)</p>"
-                      + $"<p></p>"
-                      + $"<p>I wish you a splendid rest of your day!</p>";
+
+            string message =      $"<p><strong>API stats:</strong></p>"
+                                + $"<p>API calls:<strong> {counterService.GetServiceRequestCounter()} </strong> / <strong> {counterService.GetServiceCheckCounter()}</strong></p>"
+                                + $"<p>Internal API calls: <strong>{counterService.GetISPEndpointRequestsCounter()}</strong></p>"
+                                + $"<p>External API calls: <strong>{counterService.GetExternalServiceUsekCounter()}</strong></p>"
+                                + $@"<p>Current ISP: <strong> {currentISPAddress}</strong></p>"
+                                + $"<p></p>"
+                                + $"<p><strong>Dasboard stats:</strong></p>"
+                                + $"{dashboardDetails}"
+                                + $"<p></p>"
+                                + $"<p><strong>Backup API's:</strong></p>"
+                                + $"{backupAPIResults}"
+                                + $"<p></p>"
+                                + $"<p><strong>ISP Values:</strong></p>"
+                                + $@"<p>Old ISP: <strong> {oldISPAddress}</strong></p>"
+                                + $@"<p>New ISP: <strong> {newISPAddress}</strong></p>"
+                                + $"<p></p>"
+                                + $"<p><strong>API config:</strong></p>"
+                                + $"<p>ISPAddressCheckFrequencyInMinutes: <strong>{_appSettings?.ISPAddressCheckFrequencyInMinutes}</strong></p>"
+                                + $"<p>DashboardEnabled: <strong>{_appSettings?.DashboardEnabled}</strong></p>"
+                                + $"<p>DateTimeFormat: <strong>{_appSettings?.DateTimeFormat}</strong></p>"
+                                + $"<p></p>"
+                                + $@"<p><strong>This was fun! </strong></p>"
+                                + $"<p>See you in {_emailSettings?.HeartbeatEmailIntervalDays} days ;)</p>"
+
+                      ;
 
             string emailBody = CreateEmail(message);
 
@@ -186,7 +222,7 @@ namespace ISPAddressChecker.Services
 
         public async Task SendConfigSuccessMail(IISPAddressCounterService counterService)
         {
-            string heartbeatMessage = _emailSettingsOptions.HeartbeatEmailEnabled ? $@"<p>Every week on <strong> {_emailSettingsOptions?.HeartbeatEmailDayOfWeek} </strong> at <strong> {_emailSettingsOptions?.HeartbeatEmailTimeOfDay} </strong> a status update E-mail will be send.</p>" : "<p>Heartbeat email: <strong> disabled</strong> </p>";
+            string heartbeatMessage = _emailSettings.HeartbeatEmailEnabled ? $@"<p>Every week on <strong> {_emailSettings?.HeartbeatEmailDayOfWeek} </strong> at <strong> {_emailSettings?.HeartbeatEmailTimeOfDay} </strong> a status update E-mail will be send.</p>" : "<p>Heartbeat email: <strong> disabled</strong> </p>";
 
                 string message = $@"<p>You have succesfully configured the ISPAddressAPI.</p>"
                                   + "<p><strong>This was fun! </strong></p>"
@@ -194,40 +230,40 @@ namespace ISPAddressChecker.Services
                                   + $@"<br />"
                                   + $@"<br />"
                                   + $"<p><strong>The folowing things were configured:</strong></p>"
-                                  + $"<p>API endpoint URL:<a href = '{_applicationSettingsOptions?.APIEndpointURL}'> <strong>{_applicationSettingsOptions?.APIEndpointURL}</strong></a></p>"
-                                  + $"<p>ISPAddressCheckFrequencyInMinutes: <strong>{_applicationSettingsOptions?.ISPAddressCheckFrequencyInMinutes}</strong></p>"                                  
+                                  + $"<p>API endpoint URL:<a href = '{_appSettings?.APIEndpointURL}'> <strong>{_appSettings?.APIEndpointURL}</strong></a></p>"
+                                  + $"<p>ISPAddressCheckFrequencyInMinutes: <strong>{_appSettings?.ISPAddressCheckFrequencyInMinutes}</strong></p>"                                  
 
                                   + $"{heartbeatMessage}"                                  
 
-                                  + $"<p>DNSRecordHostProviderName: <strong>{_emailSettingsOptions?.DNSRecordHostProviderName}</strong></p>"
-                                  + $"<p>DNSRecordHostProviderURL : <strong>{_emailSettingsOptions?.DNSRecordHostProviderURL}</strong></p>"
-                                  + $"<p>EmailFromAddress : <strong>{_emailSettingsOptions?.EmailFromAddress}</strong></p>"
-                                  + $"<p>EmailToAddress : <strong>{_emailSettingsOptions?.EmailToAddress}</strong></p>"
-                                  + $"<p>EmailSubject : <strong>{_emailSettingsOptions?.EmailSubject}</strong></p>"
-                                  + $"<p>MailServer : <strong>{_emailSettingsOptions?.MailServer}</strong></p>"
-                                  + $"<p>userName: <strong>{_emailSettingsOptions?.UserName}</strong></p>"
+                                  + $"<p>DNSRecordHostProviderName: <strong>{_emailSettings?.DNSRecordHostProviderName}</strong></p>"
+                                  + $"<p>DNSRecordHostProviderURL : <strong>{_emailSettings?.DNSRecordHostProviderURL}</strong></p>"
+                                  + $"<p>EmailFromAddress : <strong>{_emailSettings?.EmailFromAddress}</strong></p>"
+                                  + $"<p>EmailToAddress : <strong>{_emailSettings?.EmailToAddress}</strong></p>"
+                                  + $"<p>EmailSubject : <strong>{_emailSettings?.EmailSubject}</strong></p>"
+                                  + $"<p>MailServer : <strong>{_emailSettings?.MailServer}</strong></p>"
+                                  + $"<p>userName: <strong>{_emailSettings?.UserName}</strong></p>"
                                   + $"<p>password : <strong>*Your password*</strong></p>"
-                                  + $"<p>EnableSsl : <strong>{_emailSettingsOptions?.EnableSsl}</strong></p>"
-                                  + $"<p>SMTPPort : <strong>{_emailSettingsOptions?.SMTPPort}</strong></p>"
-                                  + $"<p>UseDefaultCredentials : <strong>{_emailSettingsOptions?.UseDefaultCredentials}</strong></p>"
-                                  + $"<p>DateTimeFormat : <strong>{_applicationSettingsOptions?.DateTimeFormat}</strong></p>";
+                                  + $"<p>EnableSsl : <strong>{_emailSettings?.EnableSsl}</strong></p>"
+                                  + $"<p>SMTPPort : <strong>{_emailSettings?.SMTPPort}</strong></p>"
+                                  + $"<p>UseDefaultCredentials : <strong>{_emailSettings?.UseDefaultCredentials}</strong></p>"
+                                  + $"<p>DateTimeFormat : <strong>{_appSettings?.DateTimeFormat}</strong></p>";
             // Write out the list of API's
-            if (_applicationSettingsOptions?.BackupAPIS is not null)
+            if (_appSettings?.BackupAPIS is not null)
             {
-                foreach (string? backupAPI in _applicationSettingsOptions?.BackupAPIS!)
+                foreach (string? backupAPI in _appSettings?.BackupAPIS!)
                 {
                     message = $"{message} " +
-                                $"<p>Backup API {_applicationSettingsOptions?.BackupAPIS.IndexOf(backupAPI)} : <a href = '{backupAPI}'> <strong>{backupAPI}</strong> </a></p>";
+                                $"<p>Backup API {_appSettings?.BackupAPIS.IndexOf(backupAPI)} : <a href = '{backupAPI}'> <strong>{backupAPI}</strong> </a></p>";
                 }
             }
             // Finish the email body.
             message = $"{message} "
-                       + $"<p>The time of this check: <strong> {DateTime.Now.ToString(_applicationSettingsOptions?.DateTimeFormat)} </strong></p>"
+                       + $"<p>The time of this check: <strong> {DateTime.Now.ToString(_appSettings?.DateTimeFormat)} </strong></p>"
                        + $"<p>API Calls: <strong> {counterService.GetServiceRequestCounter()} </strong></p>"
                        + $"<p>Script runs: <strong> {counterService.GetServiceCheckCounter()} </strong></p>"
                        + $"<p>Failed attempts counter: <strong> {counterService.GetFailedISPRequestCounter()} </strong></p>"
                        + $"<p>Endpoint calls: <strong> {counterService.GetISPEndpointRequestsCounter()} </strong></p>"
-                       + $"<p>A call is made every <strong> {_applicationSettingsOptions!.ISPAddressCheckFrequencyInMinutes} </strong>minutes</p>";
+                       + $"<p>A call is made every <strong> {_appSettings!.ISPAddressCheckFrequencyInMinutes} </strong>minutes</p>";
 
             string emailBody = CreateEmail(message);
 
@@ -241,20 +277,20 @@ namespace ISPAddressChecker.Services
         {
             string message = @$"<p>ISP adress has changed and I found my self again.</p>"
                             + @$"<p><strong> {newISPAddress} </strong> is your new ISP adress</p>"
-                            + $"<p>API endpoint URL:<a href = '{_applicationSettingsOptions?.APIEndpointURL}'> <strong>{_applicationSettingsOptions?.APIEndpointURL}</strong></a></p>"
+                            + $"<p>API endpoint URL:<a href = '{_appSettings?.APIEndpointURL}'> <strong>{_appSettings?.APIEndpointURL}</strong></a></p>"
                             + "<p><strong>This is fun, hope it goes this well next time! </strong></p>"
                             + $"<p>I wish you a splendid rest of your day!</p>"
                             + $"<p>Your API</p>"
                             + $"<p><strong>Here are some statistics:</strong></p>"
                             + $"<p>A call is made every <strong> {interval} </strong>minutes</p>"
-                            + $"<p>The time of this check: <strong> {DateTime.Now.ToString(_applicationSettingsOptions?.DateTimeFormat)} </strong></p>"
+                            + $"<p>The time of this check: <strong> {DateTime.Now.ToString(_appSettings?.DateTimeFormat)} </strong></p>"
                             + $"<p>Failed attempts counter: <strong> {counterService.GetFailedISPRequestCounter()} </strong>(This counter is reset after this E-mail is send)</p>"
                             + $"<p>External API calls: <strong>{counterService.GetExternalServiceUsekCounter()}</strong></p>"
                             + $"<p>API Calls: <strong> {counterService.GetServiceRequestCounter()} </strong></p>"
                             + $"<p>Script runs: <strong> {counterService.GetServiceCheckCounter()} </strong></p>"
                             + $"<p>Endpoint calls: <strong> {counterService.GetISPEndpointRequestsCounter()} </strong></p>"
                             + $"<p>The old ISP adrdess was: {oldISPAddress}</p>"
-                            + $"<p>API endpoint URL: <strong><a href{_applicationSettingsOptions?.APIEndpointURL}</strong></p>";
+                            + $"<p>API endpoint URL: <strong><a href{_appSettings?.APIEndpointURL}</strong></p>";
 
             string emailBody = CreateEmail(message);
 
@@ -267,7 +303,7 @@ namespace ISPAddressChecker.Services
         public async Task SendISPAPIHTTPExceptionEmail(string exceptionType, string exceptionMessage)
         {
             string message = $"<p>API Did not respond:</p>"
-                           + $"<p>API endpoint URL:<a href = '{_applicationSettingsOptions?.APIEndpointURL}'> <strong>{_applicationSettingsOptions?.APIEndpointURL}</strong></a></p>"
+                           + $"<p>API endpoint URL:<a href = '{_appSettings?.APIEndpointURL}'> <strong>{_appSettings?.APIEndpointURL}</strong></a></p>"
                            + "<p>exceptionType:</p>"
                            + $"<p><strong>{exceptionType}</strong></p>"
                            + "<p>message:</p>"
@@ -287,7 +323,7 @@ namespace ISPAddressChecker.Services
             await _loghub.SendLogErrorAsync(serviceName, $"API Call error. Exceptiontype: {exceptionType} Message:{exceptionMessage}");
 
             string message = $"<p>Exception fetching ISP address from API:</p>"
-                           + $"<p>API endpoint URL:<a href = '{_applicationSettingsOptions?.APIEndpointURL}'> <strong>{_applicationSettingsOptions?.APIEndpointURL}</strong></a></p>"
+                           + $"<p>API endpoint URL:<a href = '{_appSettings?.APIEndpointURL}'> <strong>{_appSettings?.APIEndpointURL}</strong></a></p>"
                            + "<p>exceptionType:"
                            + $"<p><strong>{exceptionType}</strong></p>"
                            + "<p>message:"
@@ -339,10 +375,10 @@ namespace ISPAddressChecker.Services
         public async Task<ActionReportModel> SendISPAddressChangedEmail(string externalISPAddress, string oldISPAddress, IISPAddressCounterService counterService, double interval, SendEmailModel sendEmailDetails)
         {
             // hostingProviderText is the link to the hostprovider, id specified is shows the name
-            string hostingProviderText = string.Equals(_emailSettingsOptions?.DNSRecordHostProviderName, StandardAppsettingsValues.DNSRecordHostProviderName, StringComparison.CurrentCultureIgnoreCase) ? _emailSettingsOptions?.DNSRecordHostProviderURL! : _emailSettingsOptions?.DNSRecordHostProviderName!;
+            string hostingProviderText = string.Equals(_emailSettings?.DNSRecordHostProviderName, StandardAppsettingsValues.DNSRecordHostProviderName, StringComparison.CurrentCultureIgnoreCase) ? _emailSettings?.DNSRecordHostProviderURL! : _emailSettings?.DNSRecordHostProviderName!;
 
-            string hostingProviderLink = $"<p>Go to <a href = '{_emailSettingsOptions?.DNSRecordHostProviderURL}' target=\"_blank\"> <strong>{hostingProviderText}</strong> </a> to update the DNS record.</p>";
-            string externalEmailLink = $"<p>Go to <a href = '{_applicationSettingsOptions?.APIEndpointURL}'target=\"_blank\"> <strong>Your provider link goes here</strong> </a> to update the DNS record.</p>";
+            string hostingProviderLink = $"<p>Go to <a href = '{_emailSettings?.DNSRecordHostProviderURL}' target=\"_blank\"> <strong>{hostingProviderText}</strong> </a> to update the DNS record.</p>";
+            string externalEmailLink = $"<p>Go to <a href = '{_appSettings?.APIEndpointURL}'target=\"_blank\"> <strong>Your provider link goes here</strong> </a> to update the DNS record.</p>";
 
             string emailLink = sendEmailDetails.EmailType != SendEmailTypeEnum.Internal ? externalEmailLink : hostingProviderLink;
 
@@ -352,9 +388,9 @@ namespace ISPAddressChecker.Services
                               + $"<p>I wish you a splendid rest of your day!</p>"
                               + $"<p>Your API</p>"
                               + $"<p><strong>Here are some statistics:</strong></p>"
-                              + $"<p>API endpoint URL:<a href = '{_applicationSettingsOptions?.APIEndpointURL}'> <strong>{_applicationSettingsOptions?.APIEndpointURL}</strong></a></p>"
+                              + $"<p>API endpoint URL:<a href = '{_appSettings?.APIEndpointURL}'> <strong>{_appSettings?.APIEndpointURL}</strong></a></p>"
                               + $"<p>A call is made every <strong> {interval} </strong>minutes</p>"
-                              + $"<p>The time of this check: <strong> {DateTime.Now.ToString(_applicationSettingsOptions?.DateTimeFormat)} </strong></p>"
+                              + $"<p>The time of this check: <strong> {DateTime.Now.ToString(_appSettings?.DateTimeFormat)} </strong></p>"
                               + $"<p>Failed attempts counter: <strong> {counterService.GetFailedISPRequestCounter()} </strong></p>"
                               + $"<p>API Calls: <strong> {counterService.GetServiceRequestCounter()} </strong></p>"
                               + $"<p>Script runs: <strong> {counterService.GetServiceCheckCounter()} </strong></p>"
@@ -367,7 +403,7 @@ namespace ISPAddressChecker.Services
             _logger.LogInformation("SendISPAddressChangedEmail -> Sending: ISPAddressChangedEmail");
             await _loghub.SendLogInfoAsync(serviceName, $"RequestId: {sendEmailDetails.Id}, SendISPAddressChangedEmail -> Sending: ISPAddressChangedEmail");
 
-            return await SendEmail(_emailSettingsOptions?.EmailSubject!, sendEmailDetails, emailBody);
+            return await SendEmail(_emailSettings?.EmailSubject!, sendEmailDetails, emailBody);
         }
 
         public async Task SendDifferendISPAddressValuesEmail(Dictionary<string, string> externalISPAddressChecks, string oldISPAddress, IISPAddressCounterService counterService, double interval)
@@ -386,7 +422,7 @@ namespace ISPAddressChecker.Services
                         + $"<p>Your API</p>"
                         + $"<p><strong>Here are some statistics:</strong></p>"
                         + $"<p>A call is made every <strong> {interval} </strong>minutes</p>"
-                        + $"<p>The time of this check: <strong> {DateTime.Now.ToString(_applicationSettingsOptions?.DateTimeFormat)} </strong></p>"
+                        + $"<p>The time of this check: <strong> {DateTime.Now.ToString(_appSettings?.DateTimeFormat)} </strong></p>"
                         + $"<p>Failed attempts counter: <strong> {counterService.GetFailedISPRequestCounter} </strong></p>"
                         + $"<p>API Calls: <strong> {counterService.GetServiceRequestCounter()} </strong></p>"
                         + $"<p>Script runs: <strong> {counterService.GetServiceCheckCounter()} </strong></p>"
@@ -411,7 +447,7 @@ namespace ISPAddressChecker.Services
                             + $"<p>Your API</p>"
                             + $"<p><strong>Here are some statistics:</strong></p>"
                             + $"<p>A call is made every <strong> {interval} </strong>minutes</p>"
-                            + $"<p>The time of this check: <strong> {DateTime.Now.ToString(_applicationSettingsOptions.DateTimeFormat)} </strong></p>"
+                            + $"<p>The time of this check: <strong> {DateTime.Now.ToString(_appSettings.DateTimeFormat)} </strong></p>"
                             + $"<p>Failed attempts counter: <strong> {counterService.GetFailedISPRequestCounter()} </strong></p>"
                             + $"<p>API Calls: <strong> {counterService.GetServiceRequestCounter()} </strong></p>"
                             + $"<p>Script runs: <strong> {counterService.GetServiceCheckCounter()} </strong></p>"
@@ -431,16 +467,16 @@ namespace ISPAddressChecker.Services
         {
             SendEmailModel output = new();
 
-            if (Helpers.ConfigHelpers.EmailAddressIsValid(_emailSettingsOptions?.EmailToAddress))
+            if (Helpers.ConfigHelpers.EmailAddressIsValid(_emailSettings?.EmailToAddress))
             {
                 output.EmailValidated = true;
-                output.EmailAddress = _emailSettingsOptions!.EmailToAddress!;
+                output.EmailAddress = _emailSettings!.EmailToAddress!;
                 output.EmailType = SendEmailTypeEnum.Internal;
             }
             else
             {
-                _logger.LogError("CreateInternalSendEmail -> EmailToAddress not valid, E-mail: {email}", _emailSettingsOptions?.EmailToAddress);
-                throw new Exception($"CreateInternalSendEmail -> EmailToAddress not valid, E-mail: {_emailSettingsOptions?.EmailToAddress}");
+                _logger.LogError("CreateInternalSendEmail -> EmailToAddress not valid, E-mail: {email}", _emailSettings?.EmailToAddress);
+                throw new Exception($"CreateInternalSendEmail -> EmailToAddress not valid, E-mail: {_emailSettings?.EmailToAddress}");
             }
 
             return output;

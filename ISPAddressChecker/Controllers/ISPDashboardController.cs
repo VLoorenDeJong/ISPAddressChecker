@@ -60,9 +60,9 @@ namespace ISPAddressChecker.Controllers
         {
             _logger.LogInformation("GetStatusUpdate -> Status update has been requested");
 
-            if (!_applicationSettingsOptions.EnableDashboardAccess)
+            if (!_applicationSettingsOptions.DashboardEnabled)
             {
-                _logger.LogWarning("ISPAddressCheckIntervalInMinutes -> Dashboard not enabled (appsettings:EnableDashboardAccess)");
+                _logger.LogWarning("ISPAddressCheckIntervalInMinutes -> Dashboard not enabled (appsettings:DashboardEnabled)");
 
                 return Forbid();
             }
@@ -81,9 +81,9 @@ namespace ISPAddressChecker.Controllers
         {
             _logger.LogInformation("GetStartDateTime -> Start date has been requested");
 
-            if (!_applicationSettingsOptions.EnableDashboardAccess)
+            if (!_applicationSettingsOptions.DashboardEnabled)
             {
-                _logger.LogWarning("ISPAddressCheckIntervalInMinutes -> Dashboard not enabled (appsettings:EnableDashboardAccess)");
+                _logger.LogWarning("ISPAddressCheckIntervalInMinutes -> Dashboard not enabled (appsettings:DashboardEnabled)");
 
                 return Forbid();
             }
@@ -102,9 +102,9 @@ namespace ISPAddressChecker.Controllers
         {
             _logger.LogInformation("ISPAddressCheckIntervalInMinutes -> ISP address check interval has been requested (minutes)");
 
-            if (!_applicationSettingsOptions.EnableDashboardAccess)
+            if (!_applicationSettingsOptions.DashboardEnabled)
             {
-                _logger.LogWarning("ISPAddressCheckIntervalInMinutes -> Dashboard not enabled (appsettings:EnableDashboardAccess)");
+                _logger.LogWarning("ISPAddressCheckIntervalInMinutes -> Dashboard not enabled (appsettings:DashboardEnabled)");
 
                 return Forbid();
             }
@@ -127,10 +127,10 @@ namespace ISPAddressChecker.Controllers
         {
             ActionReportModel report = new();
 
-            if (!_applicationSettingsOptions.EnableDashboardAccess)
+            if (!_applicationSettingsOptions.DashboardEnabled)
             {
-                _logger.LogWarning("ISPAddressCheckSendEmail -> Dashboard not enabled (appsettings:EnableDashboardAccess)");
-                await _loghub.SendLogWarningAsync(serviceName, "ISPAddressCheckSendEmail -> Dashboard not enabled (appsettings:EnableDashboardAccess)");
+                _logger.LogWarning("ISPAddressCheckSendEmail -> Dashboard not enabled (appsettings:DashboardEnabled)");
+                await _loghub.SendLogWarningAsync(serviceName, "ISPAddressCheckSendEmail -> Dashboard not enabled (appsettings:DashboardEnabled)");
 
                 return Forbid();
             }
@@ -204,9 +204,9 @@ namespace ISPAddressChecker.Controllers
         {
             _logger.LogInformation("ISPAddressCheckAPIEndpoint -> ISP address check Endpoint url has been requested");
 
-            if (!_applicationSettingsOptions.EnableDashboardAccess)
+            if (!_applicationSettingsOptions.DashboardEnabled)
             {
-                _logger.LogInformation("ISPAddressCheckAPIEndpoint -> Dashboard not enabled (appsettings:EnableDashboardAccess)");
+                _logger.LogInformation("ISPAddressCheckAPIEndpoint -> Dashboard not enabled (appsettings:DashboardEnabled)");
 
                 return Forbid();
             }
@@ -232,10 +232,10 @@ namespace ISPAddressChecker.Controllers
             _logger.LogInformation("ISPAddressGetAPILoghubURL -> ISP address check LogHub URL has been requested");
             await _loghub.SendLogInfoAsync(serviceName, "ISPAddressGetAPILoghubURL -> ISP address check LogHub URL has been requested");
 
-            if (!_applicationSettingsOptions.EnableDashboardAccess)
+            if (!_applicationSettingsOptions.DashboardEnabled)
             {
-                _logger.LogInformation("ISPAddressGetAPILoghubURL -> Dashboard not enabled (appsettings:EnableDashboardAccess)");
-                await _loghub.SendLogWarningAsync(serviceName, "ISPAddressGetAPILoghubURL -> Dashboard not enabled (appsettings:EnableDashboardAccess)");
+                _logger.LogInformation("ISPAddressGetAPILoghubURL -> Dashboard not enabled (appsettings:DashboardEnabled)");
+                await _loghub.SendLogWarningAsync(serviceName, "ISPAddressGetAPILoghubURL -> Dashboard not enabled (appsettings:DashboardEnabled)");
 
                 return Forbid();
             }
@@ -271,9 +271,9 @@ namespace ISPAddressChecker.Controllers
 
             _logger.LogInformation("ISPAddressGetAPIClockhubURL -> ISP address check Clock Hub URL has been requested");
 
-            if (!_applicationSettingsOptions.EnableDashboardAccess)
+            if (!_applicationSettingsOptions.DashboardEnabled)
             {
-                _logger.LogInformation("ISPAddressGetAPIClockhubURL -> Dashboard not enabled (appsettings:EnableDashboardAccess)");
+                _logger.LogInformation("ISPAddressGetAPIClockhubURL -> Dashboard not enabled (appsettings:DashboardEnabled)");
 
                 return Forbid();
             }

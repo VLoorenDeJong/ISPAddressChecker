@@ -92,7 +92,7 @@ namespace ISPAddressChecker.Services
             }
             else
             {
-                _logger.LogInformation("CheckAppsettings -> _emailSettingsOptions is null");
+                _logger.LogInformation("CheckAppsettings -> _emailSettings is null");
                 throw new ArgumentException();
             }
 

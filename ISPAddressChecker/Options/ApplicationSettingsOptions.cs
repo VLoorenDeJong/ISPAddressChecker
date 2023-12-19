@@ -8,7 +8,7 @@ namespace ISPAddressChecker.Options
         public List<string?>? BackupAPIS { get; set; }
         public double ISPAddressCheckFrequencyInMinutes { get; set; }
         public string? DateTimeFormat { get; set; }
-        public bool EnableDashboardAccess { get; set; }
+        public bool DashboardEnabled { get; set; }
 
         public double AppsettingsVersion { get; set; }
         public double ExpectedAppsettingsVersion  = 1.1;

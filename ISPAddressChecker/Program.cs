@@ -69,7 +69,7 @@ var applicationConfigCheckService = app.Services.GetRequiredService<IApplication
 // Call the method to check the application settings
 applicationConfigCheckService.CheckApplicationConfig(applicationSettingsOptions);
 
-bool dashboardActive = applicationSettingsOptions.Value.EnableDashboardAccess;
+bool dashboardActive = applicationSettingsOptions.Value.DashboardEnabled;
                      ;
 if (dashboardActive)
 {

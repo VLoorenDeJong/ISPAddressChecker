@@ -164,13 +164,13 @@
             await AddLogEntry(new LogEntryModel
                 {
                     LogType = LogType.Error,
-                    Message = $"Is the \"EnableDashboardAccess\" set to \"true\" in the appsettings of the API?",
+                    Message = $"Is the \"DashboardEnabled\" set to \"true\" in the appsettings of the API?",
                     Service = "LogMessageBoard",
                     Time = DateTime.UtcNow
                 });
             logger.LogError($"Error establishing hub connection, no URL fetched!");
             logger.LogWarning($"No URL fetched, is the API running?");
-            logger.LogWarning($"No URL fetched, Is the \"EnableDashboardAccess\" set to \"true\" in the appsettings of the API??");
+            logger.LogWarning($"No URL fetched, Is the \"DashboardEnabled\" set to \"true\" in the appsettings of the API??");
         }
     }
 

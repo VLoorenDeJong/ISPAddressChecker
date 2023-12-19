@@ -26,7 +26,7 @@ namespace ISPAddressChecker.Services
 
         public async Task SendLogInfoAsync(string serviceName, string message)
         {
-            if (_appSettings.EnableDashboardAccess)
+            if (_appSettings.DashboardEnabled)
             {
                 var logEntry = new LogEntryModel(LogType.Information,
                                              serviceName,
@@ -37,7 +37,7 @@ namespace ISPAddressChecker.Services
 
         public async Task SendLogWarningAsync(string serviceName, string message)
         {
-            if (_appSettings.EnableDashboardAccess)
+            if (_appSettings.DashboardEnabled)
             {
                 var logEntry = new LogEntryModel(LogType.Warning,
                                             serviceName,
@@ -48,7 +48,7 @@ namespace ISPAddressChecker.Services
 
         public async Task SendLogDebugAsync(string serviceName, string message)
         {
-            if (_appSettings.EnableDashboardAccess)
+            if (_appSettings.DashboardEnabled)
             {
                 var logEntry = new LogEntryModel(LogType.Debug,
                                              serviceName,
@@ -59,7 +59,7 @@ namespace ISPAddressChecker.Services
 
         public async Task SendLogErrorAsync(string serviceName, string message)
         {
-            if (_appSettings.EnableDashboardAccess)
+            if (_appSettings.DashboardEnabled)
             {
                 var logEntry = new LogEntryModel(LogType.Error,
                                              serviceName,
