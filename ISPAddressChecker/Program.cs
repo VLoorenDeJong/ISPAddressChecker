@@ -5,6 +5,7 @@ using ISPAddressChecker.SignalRHubs;
 using ISPAddressChecker.SignalRHubs.Interfaces;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Options;
 using MyApplication;
 using static ISPAddressChecker.Models.Enums.Constants;
 using static ISPAddressChecker.Options.ApplicationSettingsOptions;
@@ -32,6 +33,7 @@ builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 builder.Services.AddTransient<ICheckISPAddressService, CheckISPAddressService>();
 builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddTransient<ILogHubService, LogHubService>();
+builder.Services.AddTransient<IApplicationConfigCheckService, ApplicationConfigCheckService>();
 
 builder.Services.Configure<ApplicationSettingsOptions>(builder.Configuration.GetSection(AppsettingsSections.ApplicationSettings));
 builder.Services.Configure<EmailSettingsOptions>(builder.Configuration.GetSection(AppsettingsSections.EmailSettings));
@@ -54,8 +56,17 @@ app.UseAuthorization();
 // ToDo: Add uptime to the heartbeat email
 // ToDo: Switch on hubs only when dashboard is active
 
+// Checking the configuration of the application:
+// Get the application settings from the service provider
+var applicationSettingsOptions = app.Services.GetRequiredService<IOptions<ApplicationSettingsOptions>>();
 
-bool dashboardActive = true;
+// Get the service from the service provider
+var applicationConfigCheckService = app.Services.GetRequiredService<IApplicationConfigCheckService>();
+
+// Call the method to check the application settings
+applicationConfigCheckService.CheckApplicationConfig(applicationSettingsOptions);
+
+bool dashboardActive = applicationSettingsOptions.Value.EnableDashboardAccess;
                      ;
 if (dashboardActive)
 {

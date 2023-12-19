@@ -1,4 +1,5 @@
-﻿using ISPAddressChecker.Options;
+﻿using ISPAddressChecker.Helpers;
+using ISPAddressChecker.Options;
 using ISPAddressChecker.Services.Interfaces;
 using Microsoft.Extensions.Options;
 
@@ -13,7 +14,7 @@ namespace ISPAddressChecker.Services
 
         private void CheckAppsettingsVersionMatch(IOptions<ApplicationSettingsOptions> appSettings)
         {
-            if (appSettings.Value.AppsettingsVersion == appSettings.Value.ExpectedAppsettingsVersion)
+            if (appSettings.Value.AppsettingsVersion == appSettings?.Value?.ExpectedAppsettingsVersion)
             {
 
                 Console.ForegroundColor = ConsoleColor.Yellow;
@@ -23,7 +24,7 @@ namespace ISPAddressChecker.Services
             else
             {
                 Console.ForegroundColor = ConsoleColor.DarkRed;
-                Console.WriteLine($"Startup => ConfigureServices => Appsettings version issue!: expected: {appSettings.Value.ExpectedAppsettingsVersion} -> Current: {appSettings.Value.AppsettingsVersion}");
+                Console.WriteLine($"Startup => ConfigureServices => Appsettings version issue!: expected: {appSettings?.Value?.ExpectedAppsettingsVersion} -> Current: {appSettings?.Value?.AppsettingsVersion}");
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Make sure the appsettings match");
                 Console.ForegroundColor = ConsoleColor.White;
