@@ -140,6 +140,7 @@ namespace ISPAddressChecker.Services
                                                                 , string newISPAddress
                                                                 , Dictionary<string, string> externalISPCheckResults
                                                                 , SendEmailModel sendEmailDetails
+                                                                , TimeSpan uptime
                                                                 )
         {
 
@@ -164,6 +165,7 @@ namespace ISPAddressChecker.Services
             }
 
             string message =      $"<p><strong>API stats:</strong></p>"
+                                + $"<p>Uptime: <strong>{uptime.Days}</strong> days / <strong>{uptime.Hours}</strong> hours</p>"
                                 + $"<p>API calls:<strong> {counterService.GetServiceRequestCounter()} </strong> / <strong> {counterService.GetServiceCheckCounter()}</strong></p>"
                                 + $"<p>Internal API calls: <strong>{counterService.GetISPEndpointRequestsCounter()}</strong></p>"
                                 + $"<p>External API calls: <strong>{counterService.GetExternalServiceUsekCounter()}</strong></p>"
@@ -193,7 +195,7 @@ namespace ISPAddressChecker.Services
 
             _logger.LogInformation("SendHeartBeatEmail -> Sending: SendHeartBeatEmail");
 
-            return await SendEmail("ISPAddressCheckerAPI update", sendEmailDetails, emailBody);
+            return await SendEmail("ISPAddressCheckerAPI Heartbeat", sendEmailDetails, emailBody);
         }
 
         public async Task SendCounterDifferenceEmail(IISPAddressCounterService counterService)

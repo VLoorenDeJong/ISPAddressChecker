@@ -2,5 +2,5 @@
 {
     Task GetISPAddressAsync();
     Task GetISPAddressFromBackupAPIs(bool heartBeatCheck);
-    Task HeartBeatCheck();
+    Task HeartBeatCheck(TimeSpan uptime);
 }

@@ -37,7 +37,7 @@ namespace ISPAddressChecker.Services
                 case true:
                     _logger.LogInformation("StartAsync -> FirstStart: configSuccess: {configSuccess}", configSuccess);
                     _timerService!.StartISPCheckTimers();
-                    await _checkISPAddressService.HeartBeatCheck();
+                    await _checkISPAddressService.HeartBeatCheck(_timerService.GetUptime());
                     break;
                 case false:
                     _logger.LogInformation("StartAsync -> FirstStart: configSuccess: {configSuccess}", configSuccess);

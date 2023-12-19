@@ -24,7 +24,12 @@ namespace ISPAddressChecker.Services
 
         private double ISPAddressCHeckInterval;
 
-        public TimerService(ILogger<CheckISPAddressService> logger, IOptions<ApplicationSettingsOptions> applicationSettingsOptions, IISPAddressCounterService counterService, ICheckISPAddressService ISPAddressService, IOptions<EmailSettingsOptions> emailSettingsOptions)
+        public TimerService(ILogger<CheckISPAddressService> logger
+                          , IOptions<ApplicationSettingsOptions> applicationSettingsOptions
+                          , IISPAddressCounterService counterService
+                          , ICheckISPAddressService ISPAddressService
+                          , IOptions<EmailSettingsOptions> emailSettingsOptions
+                            )
         {
             _logger = logger;
             _applicationSettingsOptions = applicationSettingsOptions?.Value!;
@@ -74,7 +79,7 @@ namespace ISPAddressChecker.Services
 
             HeartbeatemailTimer = new Timer(async (state) =>
             {
-                await _ISPAddressService.HeartBeatCheck();
+                await _ISPAddressService.HeartBeatCheck(GetUptime());
             }, null, (int)(nextOccurrence - now).TotalMilliseconds, (int)heartBeatInterval.TotalMilliseconds);
         }
 

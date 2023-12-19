@@ -153,7 +153,7 @@ namespace ISPAddressChecker.Controllers
                                 mocValues.Add($"{externalAPI}", "ISP address return value will be put here");
                             }
 
-                            report = await _emailService.SendHeartBeatEmail(_ISPAddressCounterService, _iSPAddressService.GetOldISPAddress(), _iSPAddressService.GetCurrentISPAddress(), _iSPAddressService.GetNewISPAddress(), mocValues, emailRequest);
+                            report = await _emailService.SendHeartBeatEmail(_ISPAddressCounterService, _iSPAddressService.GetOldISPAddress(), _iSPAddressService.GetCurrentISPAddress(), _iSPAddressService.GetNewISPAddress(), mocValues, emailRequest, _timerService.GetUptime());
 
                             if (report.Success)
                             {

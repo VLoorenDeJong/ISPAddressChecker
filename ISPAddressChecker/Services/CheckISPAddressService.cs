@@ -43,16 +43,18 @@ public class CheckISPAddressService : ICheckISPAddressService
         _emailSettingsOptions = emailSettingsOptions?.Value;
     }
 
-    public async Task HeartBeatCheck()
+    public async Task HeartBeatCheck(TimeSpan uptime)
     {
         _logger.LogInformation("HeartBeatCheck -> start");
         await GetISPAddressFromBackupAPIs(true);
         if (_emailSettingsOptions!.HeartbeatEmailEnabled)
         {
-            await _emailService.SendHeartBeatEmail(_counterService, _iSPAddressService.GetOldISPAddress(),
-                                                   _iSPAddressService.GetCurrentISPAddress(),
-                                                   _iSPAddressService.GetNewISPAddress(),
-                                                   ISPAddressChecks, _emailService.APIEmailDetails
+            await _emailService.SendHeartBeatEmail(_counterService
+                                                  , _iSPAddressService.GetOldISPAddress()
+                                                  , _iSPAddressService.GetCurrentISPAddress()
+                                                  ,_iSPAddressService.GetNewISPAddress()
+                                                  ,ISPAddressChecks, _emailService.APIEmailDetails
+                                                  , uptime
                                                    );
         }
         ISPAddressChecks.Clear();

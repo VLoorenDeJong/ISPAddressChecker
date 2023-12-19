@@ -23,6 +23,7 @@ builder.Services.AddHostedService<ClockWorker>();
 
 // Add HttpClient and CheckISPAddressService
 builder.Services.AddHttpClient();
+
 builder.Services.AddSingleton<IISPAddressService, ISPAddressService>();
 builder.Services.AddSingleton<ITimerService, TimerService>();
 builder.Services.AddSingleton<IISPAddressCounterService, ISPAddressCounterService>();
@@ -52,12 +53,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
-// ToDo: Add uptime to the heartbeat email
-// ToDo: add email requested counter
-// ToDo: add email requested counter to the heartbeat email
-
-
 
 // Checking the configuration of the application:
 // Get the application settings from the service provider
