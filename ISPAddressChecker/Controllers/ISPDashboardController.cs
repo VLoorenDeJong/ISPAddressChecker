@@ -140,8 +140,13 @@ namespace ISPAddressChecker.Controllers
                 _logger.LogInformation("ISPAddressCheckSendEmail -> RequestId: {id}, EmailAddressValidated:{valid}, emailAddress:{emailAddress}", emailRequest.Id, emailRequest!.EmailValidated, Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress));
                 await _loghub.SendLogInfoAsync(serviceName, $"RequestId: {emailRequest.Id}, ISPAddressCheckSendEmail -> EmailAddressValidated:{emailRequest!.EmailValidated}, emailAddress:{Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress)}");
 
-                if (emailRequest.EmailValidated)
+                _logger.LogInformation("ISPAddressCheckSendEmail -> RequestId: {id} Validating E-mail address", emailRequest.Id);
+                await _loghub.SendLogInfoAsync(serviceName, $"RequestId: {emailRequest.Id}, ISPAddressCheckSendEmail -> Validating E-mail address");
+                if (ConfigHelpers.EmailAddressIsValid(emailRequest.EmailAddress))
                 {
+                    _logger.LogInformation("ISPAddressCheckSendEmail -> RequestId: {id} E-mail address is valid", emailRequest.Id);
+                    await _loghub.SendLogInfoAsync(serviceName, $"RequestId: {emailRequest.Id}, ISPAddressCheckSendEmail -> E-mail address is valid");
+
                     switch (emailRequest.EmailType)
                     {
                         case Models.Enums.SendEmailTypeEnum.HeartBeatEmail:
@@ -179,11 +184,19 @@ namespace ISPAddressChecker.Controllers
                             break;
                     }
                 }
-                // ToDo: check this clause
-                if (report.Success)
+                else
                 {
-                    _logger.LogWarning("ISPAddressCheckSendEmail -> Failed -> RequestId: {id}, EmailType:{type} -> E-mail address:{email}, message: {message}", emailRequest.Id, emailRequest.EmailType, Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress), report.Message);
-                    await _loghub.SendLogWarningAsync(serviceName, $"RequestId: {emailRequest.Id}, ISPAddressCheckSendEmail -> Failed ->  EmailType:{emailRequest.EmailType}, E-mail address:{Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress)}, message: {report.Message}");
+                    _logger.LogWarning("ISPAddressCheckSendEmail -> RequestId: {id} E-mail address is not valid", emailRequest.Id);
+                    await _loghub.SendLogWarningAsync(serviceName, $"RequestId: {emailRequest.Id}, ISPAddressCheckSendEmail -> E-mail address is not valid");
+
+                    report.Success = false;
+                    report.Message = "E-mail address is not valid";
+                }
+
+                if (!report.Success)
+                {
+                    _logger.LogError("ISPAddressCheckSendEmail -> Failed -> RequestId: {id}, EmailType:{type} -> E-mail address:{email}, message: {message}", emailRequest.Id, emailRequest.EmailType, Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress), report.Message);
+                    await _loghub.SendLogErrorAsync(serviceName, $"RequestId: {emailRequest.Id}, ISPAddressCheckSendEmail -> Failed ->  EmailType:{emailRequest.EmailType}, E-mail address:{Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress)}, message: {report.Message}");
 
                     return BadRequest(report);
                 }

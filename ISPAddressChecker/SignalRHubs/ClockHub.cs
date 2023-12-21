@@ -34,7 +34,7 @@ namespace ISPAddressChecker.SignalRHubs
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                _logger.LogInformation("LogWorker running at: {Time}", DateTime.Now);
+                //_logger.LogInformation("LogWorker running at: {Time}", DateTime.Now);
                 await _clockHub.Clients.All.ShowTime(DateTime.Now);
                 await Task.Delay(1000, stoppingToken);
             }

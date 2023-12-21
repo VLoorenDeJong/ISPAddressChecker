@@ -6,7 +6,6 @@ using ISPAddressChecker.SignalRHubs.Interfaces;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Options;
-using MyApplication;
 using static ISPAddressChecker.Models.Enums.Constants;
 using static ISPAddressChecker.Options.ApplicationSettingsOptions;
 
