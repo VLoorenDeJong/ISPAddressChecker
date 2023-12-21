@@ -27,7 +27,6 @@
     <RequestDivision DashboardRequests="@value" ExternalISPCheckCounter="@(statusService!.CurrentStatus.InternalISPCheckCounter)" InternalISPCheckCounter="@(statusService.CurrentStatus.ExternalISPCheckCounter)" />
 
     <DisplayWarning Message="@(@"No personal details are being saved.")" />
-    <DisplayWarning Message="@currentTime" />
 
     <LogMessageBoard @ref="@logMessageBoard" />
 

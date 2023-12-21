@@ -112,14 +112,13 @@
 
     protected override Task OnAfterRenderAsync(bool firstRender)
     {
-        if (string.IsNullOrEmpty(emailRequest?.EmailAddress) && string.IsNullOrWhiteSpace(report?.Id)) displayMessage = false;
+        //if (string.IsNullOrEmpty(emailRequest?.EmailAddress) && string.IsNullOrWhiteSpace(report?.Id)) displayMessage = false;
         return base.OnAfterRenderAsync(firstRender);
     }
 
     private async Task OnSendEmailButtonClicked()
     {
         emailRequest.Id = Guid.NewGuid().ToString("N").Substring(0, 5);
-        displayMessage = false;
         // Trim spaces
         if (!string.IsNullOrWhiteSpace(emailRequest.EmailAddress)) emailRequest.EmailAddress = emailRequest.EmailAddress.Replace(" ", "");
 
@@ -165,7 +164,7 @@
             newLogEntry.Message = "Email address not valid";
             await LogEntryCreated.InvokeAsync(newLogEntry);
 
-            displayMessage = true;
+            await ShowMessage();
         }
     }
 
@@ -176,7 +175,7 @@
         {
             report = await _emailService.RequestEmailAsync(emailRequest);
 
-           
+
             try
             {
                 ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
@@ -188,13 +187,14 @@
             }
             catch(Exception ex)
             {
-                
+
             }
-            displayMessage = true;
+
             if (report.Success)
             {
                 emailRequest.EmailAddress = string.Empty;
             }
+            await ShowMessage();
         }
         catch (Exception ex)
         {
@@ -203,7 +203,15 @@
                     Success = false,
                     Message = ex.Message
                 };
-            displayMessage = true;
+            await ShowMessage();
         }
+    }
+
+    private async Task ShowMessage()
+    {
+        displayMessage = true;
+        await Task.Delay(5000);
+        displayMessage = false;
+
     }
 }

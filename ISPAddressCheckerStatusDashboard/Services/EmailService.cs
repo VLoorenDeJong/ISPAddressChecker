@@ -138,7 +138,6 @@ namespace ISPAddressCheckerStatusDashboard.Services
                     try
                     {
                         // Send the email message
-                        // ToDo: enable sending emails
                         client.Send(message);
 
 

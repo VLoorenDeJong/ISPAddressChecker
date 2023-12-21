@@ -13,7 +13,8 @@
 
 <div class="log-section">
     <div class="log-message-board">
-        <div class="log-message-board_title">ISP checker log message board
+        <div class="log-message-board_title">
+            ISP checker log message board
 
             <button class="log-message-board_title_clear-button" @onclick="@ClearBoard">
                 <i class="fa fa-arrows-rotate" title="Clear log" />
@@ -23,7 +24,7 @@
             @if (appSettings.Value.ShowSignalRTestClock)
             {
                 <div class="log-messages_test-time">
-                    @_time
+                    <DisplayWarning Message="@_time"/>
                 </div>
             }
             <table>

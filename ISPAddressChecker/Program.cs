@@ -66,10 +66,6 @@ applicationConfigCheckService.CheckApplicationConfig(applicationSettingsOptions)
 
 bool dashboardActive = applicationSettingsOptions.Value.DashboardEnabled;
 
-// ToDo:Change contact me line
-// ToDo:Remove white space in no personal data is being saved message
-// ToDo:ad timer to request email message
-
 if (dashboardActive)
 {
     app.MapHub<ClockHub>(SignalRHubUrls.ClockHubURL);
