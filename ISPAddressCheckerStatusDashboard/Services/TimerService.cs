@@ -141,7 +141,7 @@ namespace ISPAddressCheckerStatusDashboard.Services
                 UptimeDays = string.Format("{0:%d} days", APIUpTime);
                 UptimeClockString = string.Format("{0:hh\\:mm\\:ss}", APIUpTime);
             }
-            _logger.LogInformation("HandleUptimeCalculation -> APIUpTime: {time}", APIUpTime);
+           // _logger.LogInformation("HandleUptimeCalculation -> APIUpTime: {time}", APIUpTime);
         }
 
         private TimeSpan CalculateUptime(DateTimeOffset startDateTime)
