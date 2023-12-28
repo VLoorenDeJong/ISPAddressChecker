@@ -1,4 +1,5 @@
 ﻿@using ISPAddressCheckerStatusDashboard.Services.Interfaces;
+@using ISPAddressChecker.Helpers;
 
 @inject IRequestISPAddressService ispService;
 @inject IStatusService statusService;
@@ -41,6 +42,9 @@
 @code {
     [Parameter]
     public string? HostISPAddress { get; set; }
+    [Parameter]
+    [EditorRequired]
+    public EventCallback<ISPAddressChecker.Models.LogEntryModel> LogEntryCreated { get; set; }
 
     private string visitorIspAddress = string.Empty;
 
@@ -52,6 +56,13 @@
 
     private async Task GetVisitorIspAddress()
     {
+        ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
+
+        newLogEntry.LogType = ISPAddressChecker.Models.Enums.LogType.Information;
+        newLogEntry.Service = $"Dashboard -> RequestISPAddress";
+        newLogEntry.Message = $"ISP address requested";
+        await LogEntryCreated.InvokeAsync(newLogEntry);
+
         string endpointURL = await ispService.GetCHeckISPAddressEndpointURLAsync();
 
         if (!string.IsNullOrEmpty(endpointURL))
@@ -65,6 +76,21 @@
                 if (response.IsSuccessStatusCode)
                 {
                     visitorIspAddress = await response.Content.ReadAsStringAsync();
+
+                    if (!string.IsNullOrWhiteSpace(visitorIspAddress))
+                    {
+                        newLogEntry.LogType = ISPAddressChecker.Models.Enums.LogType.Information;
+                        newLogEntry.Service = $"Dashboard -> GetVisitorIspAddress";
+                        newLogEntry.Message = $"ISP address returned {StringHelpers.MakeISPAddressLogReady(visitorIspAddress)}";
+                        await LogEntryCreated.InvokeAsync(newLogEntry);
+                    }
+                    else
+                    {
+                        newLogEntry.LogType = ISPAddressChecker.Models.Enums.LogType.Error;
+                        newLogEntry.Service = $"Dashboard -> GetVisitorIspAddress";
+                        newLogEntry.Message = $"No ISP address returned";
+                        await LogEntryCreated.InvokeAsync(newLogEntry);
+                    }
                 }
             }
             catch (Exception ex)

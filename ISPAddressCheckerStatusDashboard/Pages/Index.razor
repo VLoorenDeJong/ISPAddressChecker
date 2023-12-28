@@ -19,7 +19,7 @@
     <HealthIndicator UptimeDays="@timerService?.UptimeDays" UptimeClockString="@timerService?.UptimeClockString" />
 
     <div class="row">
-        <RequestISPAddress HostISPAddress="@statusService?.CurrentStatus?.CurrentISPAddress" />
+        <RequestISPAddress HostISPAddress="@statusService?.CurrentStatus?.CurrentISPAddress" LogEntryCreated="OnLogEntryCreated" />
         <RequestEmail ItemHeader="Heartbeat E-mail:" EmailType="ISPAddressChecker.Models.Enums.SendEmailTypeEnum.HeartBeatEmail" LogEntryCreated="OnLogEntryCreated" />
         <RequestEmail ItemHeader="ISP Address changed E-mail" EmailType="ISPAddressChecker.Models.Enums.SendEmailTypeEnum.ISPAddressChanged" LogEntryCreated="OnLogEntryCreated" />
     </div>

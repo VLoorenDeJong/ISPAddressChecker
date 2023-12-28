@@ -130,7 +130,7 @@
 
             ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
             newLogEntry.LogType = ISPAddressChecker.Models.Enums.LogType.Information;
-            newLogEntry.Service = $"RequestEmail -> SendEmailRequest -> E-mail type: {EmailType.ToString()}";
+            newLogEntry.Service = $"Dashboard -> RequestEmail -> SendEmailRequest -> E-mail type: {EmailType.ToString()}";
             newLogEntry.Message = $"RequestId: {emailRequest.Id}, E-mail address valid";
             await LogEntryCreated.InvokeAsync(newLogEntry);
 
@@ -160,7 +160,7 @@
 
             ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
             newLogEntry.LogType = ISPAddressChecker.Models.Enums.LogType.Error;
-            newLogEntry.Service = $"RequestEmail";
+            newLogEntry.Service = $"Dashboard -> RequestEmail";
             newLogEntry.Message = "Email address not valid";
             await LogEntryCreated.InvokeAsync(newLogEntry);
 
@@ -180,7 +180,7 @@
             {
                 ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
                 newLogEntry.LogType = ISPAddressChecker.Models.Enums.LogType.Information;
-                newLogEntry.Service = $"RequestEmail";
+                newLogEntry.Service = $"Dashboard -> RequestEmail";
                 newLogEntry.Message = $"RequestId: {emailRequest.Id}, SendEmailRequest -> E-mail type: {emailRequest.EmailType.ToString()},  Email-Address: {StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress)}, Valid: {emailRequest.EmailValidated}";
                 await LogEntryCreated.InvokeAsync(newLogEntry);
 
