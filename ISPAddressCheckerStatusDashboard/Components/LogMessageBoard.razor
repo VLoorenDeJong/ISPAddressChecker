@@ -1,15 +1,14 @@
-﻿@using ISPAddressChecker.Models;
-@using ISPAddressChecker.Models.Enums;
-@using ISPAddressCheckerStatusDashboard.Options
-@using ISPAddressCheckerStatusDashboard.Services.Interfaces
+﻿@using ISPAddressChecker.Interfaces
+@using ISPAddressChecker.Models;
+@using ISPAddressChecker.Models.Constants
+@using ISPAddressChecker.Options
 @using Microsoft.AspNetCore.SignalR.Client;
 @using Microsoft.Extensions.Options
-@using static ISPAddressChecker.Models.Enums.Constants
 
 @implements IAsyncDisposable
 @inject ILogger<Index> logger
 @inject IRequestISPAddressService requestISPAddressService;
-@inject IOptions<ApplicationSettingsOptions> appSettings;
+@inject IOptions<DashboardApplicationSettingsOptions> appSettings;
 
 <div class="log-section">
     <div class="log-message-board">

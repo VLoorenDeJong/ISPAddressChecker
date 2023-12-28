@@ -1,5 +1,6 @@
-﻿@using ISPAddressCheckerStatusDashboard.Services.Interfaces;
+﻿@using ISPAddressChecker.Interfaces;
 @using ISPAddressChecker.Helpers;
+@using ISPAddressChecker.Models.Constants;
 
 @inject IRequestISPAddressService ispService;
 @inject IStatusService statusService;
@@ -58,7 +59,7 @@
     {
         ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
 
-        newLogEntry.LogType = ISPAddressChecker.Models.Enums.LogType.Information;
+        newLogEntry.LogType = LogType.Information;
         newLogEntry.Service = $"Dashboard -> RequestISPAddress";
         newLogEntry.Message = $"ISP address requested";
         await LogEntryCreated.InvokeAsync(newLogEntry);
@@ -79,14 +80,14 @@
 
                     if (!string.IsNullOrWhiteSpace(visitorIspAddress))
                     {
-                        newLogEntry.LogType = ISPAddressChecker.Models.Enums.LogType.Information;
+                        newLogEntry.LogType = LogType.Information;
                         newLogEntry.Service = $"Dashboard -> GetVisitorIspAddress";
                         newLogEntry.Message = $"ISP address returned {StringHelpers.MakeISPAddressLogReady(visitorIspAddress)}";
                         await LogEntryCreated.InvokeAsync(newLogEntry);
                     }
                     else
                     {
-                        newLogEntry.LogType = ISPAddressChecker.Models.Enums.LogType.Error;
+                        newLogEntry.LogType = LogType.Error;
                         newLogEntry.Service = $"Dashboard -> GetVisitorIspAddress";
                         newLogEntry.Message = $"No ISP address returned";
                         await LogEntryCreated.InvokeAsync(newLogEntry);

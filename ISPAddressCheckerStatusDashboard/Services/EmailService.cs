@@ -1,25 +1,24 @@
 ﻿using ISPAddressChecker.Options;
-using ISPAddressChecker.Services.Interfaces;
-using ISPAddressCheckerStatusDashboard.Services.Interfaces;
+using ISPAddressChecker.Interfaces;
 using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Mail;
 
-namespace ISPAddressCheckerStatusDashboard.Services
+namespace ISPAddressCheckerDashboard.Services
 {
-    public class EmailService : ISPAddressCheckerStatusDashboard.Services.Interfaces.IEmailService
+    public class EmailService : IDashboardEmailService
     {
-        private readonly ILogger<CheckISPAddressService> _logger;
-        private readonly ISPAddressCheckerStatusDashboard.Options.ApplicationSettingsOptions _applicationSettingsOptions;
-        private readonly ISPAddressCheckerStatusDashboard.Options.EmailSettingsOptions _emailSettingsOptions;
+        private readonly ILogger<EmailService> _logger;
+        private readonly DashboardApplicationSettingsOptions _applicationSettingsOptions;
+        private readonly EmailSettingsOptions _emailSettingsOptions;
 
         private MailMessage message = new MailMessage();
         private IRequestISPAddressService _ispService;
 
         public EmailService(
-                              ILogger<CheckISPAddressService> logger
-                            , IOptions<ISPAddressCheckerStatusDashboard.Options.ApplicationSettingsOptions> applicationSettingsOptions
-                            , IOptions<ISPAddressCheckerStatusDashboard.Options.EmailSettingsOptions> emailSettingsOptions
+                              ILogger<EmailService> logger
+                            , IOptions<DashboardApplicationSettingsOptions> applicationSettingsOptions
+                            , IOptions<EmailSettingsOptions> emailSettingsOptions
             , IRequestISPAddressService ispService
             )
         {
@@ -88,7 +87,7 @@ namespace ISPAddressCheckerStatusDashboard.Services
 
             string emailBody = CreateEmail(message);
 
-            SendEmail("ISPAddressCheckerStatusDashboard - Configuration success!", emailBody);
+            SendEmail("ISPAddressCheckerOptions - Configuration success!", emailBody);
         }
         public async Task SendConfigFailMail()
         {
@@ -113,7 +112,7 @@ namespace ISPAddressCheckerStatusDashboard.Services
 
             string emailBody = CreateEmail(message);
 
-            SendEmail("ISPAddressCheckerStatusDashboard - Configuration Error!", emailBody);
+            SendEmail("ISPAddressCheckerOptions - Configuration Error!", emailBody);
 
         }
         private void SendEmail(string subject, string emailBody)

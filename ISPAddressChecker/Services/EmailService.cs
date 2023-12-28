@@ -1,23 +1,21 @@
-﻿using static ISPAddressChecker.Options.ApplicationSettingsOptions;
-using ISPAddressChecker.Services.Interfaces;
+﻿using static ISPAddressChecker.Options.APIApplicationSettingsOptions;
+using ISPAddressChecker.Interfaces;
 using Microsoft.Extensions.Options;
 using ISPAddressChecker.Options;
 using System.Net.Mail;
 using System.Net;
 using ISPAddressChecker.Models;
-using ISPAddressChecker.Models.Enums;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.Extensions.Logging;
+using ISPAddressChecker.Models.Constants;
 
 namespace ISPAddressChecker.Services
 {
-    public class EmailService : IEmailService
+    public class EmailService : IAPIEmailService
 
     {
         private readonly ILogger _logger;
-        private readonly EmailSettingsOptions _emailSettings;
+        private readonly APIEmailSettingsOptions _emailSettings;
 
-        private readonly ApplicationSettingsOptions _appSettings;
+        private readonly APIApplicationSettingsOptions _appSettings;
 
         private MailMessage message = new MailMessage();
         public SendEmailModel APIEmailDetails { get; private set; }
@@ -28,9 +26,9 @@ namespace ISPAddressChecker.Services
         private readonly string serviceName = nameof(EmailService);
 
         public EmailService(
-                              ILogger<CheckISPAddressService> logger
-                            , IOptions<ApplicationSettingsOptions> applicationSettingsOptions
-                            , IOptions<EmailSettingsOptions> emailSettingsOptions
+                              ILogger<EmailService> logger
+                            , IOptions<APIApplicationSettingsOptions> applicationSettingsOptions
+                            , IOptions<APIEmailSettingsOptions> emailSettingsOptions
                             , ILogHubService loghub
                             , IStatusCounterService statusCounterService
                            )

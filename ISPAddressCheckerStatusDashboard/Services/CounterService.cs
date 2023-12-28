@@ -1,6 +1,6 @@
-﻿using ISPAddressCheckerStatusDashboard.Services.Interfaces;
+﻿using ISPAddressChecker.Interfaces;
 
-namespace ISPAddressCheckerStatusDashboard.Services
+namespace ISPAddressCheckerDashboard.Services
 {
     public class CounterService : ICounterService
     {

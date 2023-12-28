@@ -1,10 +1,11 @@
-﻿using ISPAddressCheckerStatusDashboard.Services.Interfaces;
+﻿using ISPAddressChecker.Models;
+using ISPAddressChecker.Interfaces;
 
-namespace ISPAddressCheckerStatusDashboard.Services
+namespace ISPAddressCheckerDashboard.Services
 {
     public class StatusService : IStatusService
     {
-        public ISPAddressCheckerStatusUpdateModel CurrentStatus { get; private set; } = new();
+        public ISPAddressChecker.Models.ISPAddressCheckerStatusUpdateModel CurrentStatus { get; private set; } = new();
 
         public event Action? OnChange;
 
@@ -14,6 +15,7 @@ namespace ISPAddressCheckerStatusDashboard.Services
         {
             _iSPStatusService = iSPStatusService;
         }
+
         public async Task GetStatus()
         {
             try

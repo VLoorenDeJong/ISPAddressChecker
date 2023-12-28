@@ -1,8 +1,7 @@
 ﻿using ISPAddressChecker.Models;
-using ISPAddressChecker.Models.Enums;
+using ISPAddressChecker.Models.Constants;
 using ISPAddressChecker.SignalRHubs.Interfaces;
 using Microsoft.AspNetCore.SignalR;
-using static ISPAddressChecker.Models.Enums.Constants;
 
 namespace ISPAddressChecker.SignalRHubs
 {

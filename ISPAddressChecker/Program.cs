@@ -1,13 +1,11 @@
+using ISPAddressChecker.Interfaces;
+using ISPAddressChecker.Models.Constants;
 using ISPAddressChecker.Options;
 using ISPAddressChecker.Services;
-using ISPAddressChecker.Services.Interfaces;
 using ISPAddressChecker.SignalRHubs;
-using ISPAddressChecker.SignalRHubs.Interfaces;
+using ISPAddressCheckerAPI.Services;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Options;
-using static ISPAddressChecker.Models.Enums.Constants;
-using static ISPAddressChecker.Options.ApplicationSettingsOptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,12 +29,12 @@ builder.Services.AddSingleton<IApplicationService, ApplicationService>();
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
 builder.Services.AddTransient<ICheckISPAddressService, CheckISPAddressService>();
-builder.Services.AddTransient<IEmailService, EmailService>();
+builder.Services.AddTransient<IAPIEmailService, EmailService>();
 builder.Services.AddTransient<ILogHubService, LogHubService>();
-builder.Services.AddTransient<IApplicationConfigCheckService, ApplicationConfigCheckService>();
+builder.Services.AddTransient<IAPIConfigCheckService, ApplicationConfigCheckService>();
 
-builder.Services.Configure<ApplicationSettingsOptions>(builder.Configuration.GetSection(AppsettingsSections.ApplicationSettings));
-builder.Services.Configure<EmailSettingsOptions>(builder.Configuration.GetSection(AppsettingsSections.EmailSettings));
+builder.Services.Configure<APIApplicationSettingsOptions>(builder.Configuration.GetSection(AppsettingsSections.ApplicationSettings));
+builder.Services.Configure<APIEmailSettingsOptions>(builder.Configuration.GetSection(AppsettingsSections.EmailSettings));
 
 var app = builder.Build();
 
@@ -55,10 +53,10 @@ app.UseAuthorization();
 
 // Checking the configuration of the application:
 // Get the application settings from the service provider
-var applicationSettingsOptions = app.Services.GetRequiredService<IOptions<ApplicationSettingsOptions>>();
+var applicationSettingsOptions = app.Services.GetRequiredService<IOptions<APIApplicationSettingsOptions>>();
 
 // Get the service from the service provider
-var applicationConfigCheckService = app.Services.GetRequiredService<IApplicationConfigCheckService>();
+var applicationConfigCheckService = app.Services.GetRequiredService<IAPIConfigCheckService>();
 
 // Call the method to check the application settings
 applicationConfigCheckService.CheckApplicationConfig(applicationSettingsOptions);

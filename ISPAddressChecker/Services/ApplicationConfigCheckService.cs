@@ -1,18 +1,18 @@
 ﻿using ISPAddressChecker.Helpers;
 using ISPAddressChecker.Options;
-using ISPAddressChecker.Services.Interfaces;
+using ISPAddressChecker.Interfaces;
 using Microsoft.Extensions.Options;
 
-namespace ISPAddressChecker.Services
+namespace ISPAddressCheckerAPI.Services
 {
-    public class ApplicationConfigCheckService : IApplicationConfigCheckService
+    public class ApplicationConfigCheckService : IAPIConfigCheckService
     {
-        public void CheckApplicationConfig(IOptions<ApplicationSettingsOptions> appSettings)
+        public void CheckApplicationConfig(IOptions<APIApplicationSettingsOptions> appSettings)
         {
             CheckAppsettingsVersionMatch(appSettings);
         }
 
-        private void CheckAppsettingsVersionMatch(IOptions<ApplicationSettingsOptions> appSettings)
+        private void CheckAppsettingsVersionMatch(IOptions<APIApplicationSettingsOptions> appSettings)
         {
             if (appSettings.Value.AppsettingsVersion == appSettings?.Value?.ExpectedAppsettingsVersion)
             {

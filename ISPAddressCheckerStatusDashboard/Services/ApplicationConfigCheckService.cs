@@ -1,31 +1,31 @@
 ﻿using ISPAddressChecker.Helpers;
-using ISPAddressCheckerStatusDashboard.Options;
-using ISPAddressCheckerStatusDashboard.Services.Interfaces;
+using ISPAddressChecker.Interfaces;
+using ISPAddressChecker.Models.Constants;
+using ISPAddressChecker.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Text.RegularExpressions;
-using static ISPAddressChecker.Options.ApplicationSettingsOptions;
 
-namespace ISPAddressCheckerStatusDashboard.Services
+namespace ISPAddressCheckerDashboard.Services
 {
-    public class ApplicationConfigCheckService : IApplicationConfigCheckService
+    public class ApplicationConfigCheckService : IDashboardConfigCheckService
     {
         private ILogger<ApplicationConfigCheckService>? _logger;
-        private readonly IEmailService _emailService;
+        private readonly IDashboardEmailService _emailService;
 
-        public ApplicationConfigCheckService(ILogger<ApplicationConfigCheckService> logger, IEmailService emailService)
+        public ApplicationConfigCheckService(ILogger<ApplicationConfigCheckService> logger, IDashboardEmailService emailService)
         {
             _logger = logger;
             _emailService = emailService;
         }
 
-        public async Task CheckApplicationConfig(IOptions<Options.ApplicationSettingsOptions> appSettings, IOptions<Options.EmailSettingsOptions> emailSettings)
+        public async Task CheckApplicationConfig(IOptions<DashboardApplicationSettingsOptions> appSettings, IOptions<EmailSettingsOptions> emailSettings)
         {
             CheckAppsettingsVersionMatch(appSettings);
             if (CheckEmailSettings(emailSettings)) await _emailService.SendConfigSuccessMail();
         }
 
-        private void CheckAppsettingsVersionMatch(IOptions<Options.ApplicationSettingsOptions> appSettings)
+        private void CheckAppsettingsVersionMatch(IOptions<DashboardApplicationSettingsOptions> appSettings)
         {
             if (appSettings.Value.AppsettingsVersion == appSettings.Value.ExpectedAppsettingsVersion)
             {
@@ -45,7 +45,7 @@ namespace ISPAddressCheckerStatusDashboard.Services
             }
         }
 
-        private bool CheckEmailSettings(IOptions<Options.EmailSettingsOptions> emailSettings)
+        private bool CheckEmailSettings(IOptions<EmailSettingsOptions> emailSettings)
         {
             var settings = emailSettings.Value;
 

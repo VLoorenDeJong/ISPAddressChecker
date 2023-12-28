@@ -1,4 +1,5 @@
-﻿using ISPAddressChecker.Services.Interfaces;
+﻿
+using ISPAddressChecker.Interfaces;
 
 namespace ISPAddressChecker.Services
 {

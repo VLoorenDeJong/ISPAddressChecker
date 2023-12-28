@@ -1,7 +1,7 @@
 ﻿using ISPAddressChecker.Helpers;
-using ISPAddressCheckerStatusDashboard.Services.Interfaces;
+using ISPAddressChecker.Interfaces;
 
-namespace ISPAddressCheckerStatusDashboard.Services
+namespace ISPAddressCheckerDashboard.Services
 {
 
     public class ISPAddressCheckerStatusService : IISPAddressCheckerStatusService
@@ -29,6 +29,11 @@ namespace ISPAddressCheckerStatusDashboard.Services
             }
 
             return status;
+        }
+
+        Task<ISPAddressChecker.Models.ISPAddressCheckerStatusUpdateModel> IISPAddressCheckerStatusService.GetAPIStatusAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

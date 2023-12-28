@@ -2,10 +2,10 @@
 using ISPAddressChecker.SignalRHubs;
 using Microsoft.AspNetCore.SignalR;
 using ISPAddressChecker.Models;
-using ISPAddressChecker.Models.Enums;
-using ISPAddressChecker.Services.Interfaces;
+using ISPAddressChecker.Interfaces;
 using Microsoft.Extensions.Options;
 using ISPAddressChecker.Options;
+using ISPAddressChecker.Models.Constants;
 
 namespace ISPAddressChecker.Services
 {
@@ -13,11 +13,11 @@ namespace ISPAddressChecker.Services
     {
 
         private readonly IHubContext<LogHub, ILogHub> _logHub;
-        private readonly ApplicationSettingsOptions _appSettings;
+        private readonly APIApplicationSettingsOptions _appSettings;
 
         public LogHubService(
                              IHubContext<LogHub, ILogHub> logHub
-                             , IOptions<ApplicationSettingsOptions> appsettings
+                             , IOptions<APIApplicationSettingsOptions> appsettings
                             )
         {
             _logHub = logHub;

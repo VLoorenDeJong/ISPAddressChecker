@@ -1,24 +1,30 @@
-﻿using ISPAddressChecker.Services.Interfaces;
+﻿using ISPAddressChecker.Interfaces;
 using Microsoft.Extensions.Options;
 using ISPAddressChecker.Options;
 using ISPAddressChecker.Helpers;
 using ISPAddressChecker.Models;
 
-namespace ISPAddressChecker.Services
+namespace ISPAddressCheckerAPI.Services
 {
     public class ApplicationService : IApplicationService, IHostedService
     {
-        private readonly ApplicationSettingsOptions _applicationSettingsOptions;
-        private readonly EmailSettingsOptions _emailSettingsOptions;
+        private readonly APIApplicationSettingsOptions _applicationSettingsOptions;
+        private readonly APIEmailSettingsOptions _emailSettingsOptions;
         private readonly ITimerService _timerService;
-        private readonly IEmailService _emailService;
+        private readonly IAPIEmailService _emailService;
         private readonly IISPAddressCounterService _counterService;
         private readonly ICheckISPAddressService _checkISPAddressService;
         private readonly ILogger _logger;
 
         private bool configSuccess = false;
 
-        public ApplicationService(ILogger<CheckISPAddressService> logger, IOptions<ApplicationSettingsOptions> applicationSettingsOptions, IOptions<EmailSettingsOptions> emailSettingsOptions, ITimerService timerService, IEmailService emailService, IISPAddressCounterService counterService, ICheckISPAddressService checkISPAddressService)
+        public ApplicationService(ILogger<CheckISPAddressService> logger
+                                , IOptions<APIApplicationSettingsOptions> applicationSettingsOptions
+                                , IOptions<APIEmailSettingsOptions> emailSettingsOptions
+                                , ITimerService timerService
+                                , IAPIEmailService emailService
+                                , IISPAddressCounterService counterService
+                                , ICheckISPAddressService checkISPAddressService)
         {
             _logger = logger;
             _applicationSettingsOptions = applicationSettingsOptions?.Value!;

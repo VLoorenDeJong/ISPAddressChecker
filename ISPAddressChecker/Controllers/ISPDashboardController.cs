@@ -1,14 +1,12 @@
-﻿using ISPAddressChecker.Services.Interfaces;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.Extensions.Options;
 using ISPAddressChecker.Options;
 using Microsoft.AspNetCore.Mvc;
 using ISPAddressChecker.Models;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using static ISPAddressChecker.Models.Enums.Constants;
 using ISPAddressChecker.Helpers;
+using ISPAddressChecker.Models.Constants;
+using ISPAddressChecker.Interfaces;
 
 namespace ISPAddressChecker.Controllers
 {
@@ -20,8 +18,8 @@ namespace ISPAddressChecker.Controllers
         private readonly IISPAddressCounterService _ISPAddressCounterService;
         private readonly IStatusCounterService _statusCounterService;
         private readonly IISPAddressService _iSPAddressService;
-        private readonly IEmailService _emailService;
-        private readonly ApplicationSettingsOptions _applicationSettingsOptions;
+        private readonly IAPIEmailService _emailService;
+        private readonly APIApplicationSettingsOptions _applicationSettingsOptions;
         private readonly ILogger<ISPAddressCheckerStatusController> _logger;
         private readonly ILogHubService _loghub;
         private readonly IUrlHelper _urlHelper;
@@ -32,8 +30,8 @@ namespace ISPAddressChecker.Controllers
             IISPAddressCounterService ISPAddressCounterService,
             IStatusCounterService statusCounterService,
             IISPAddressService iSPAddressService,
-            IEmailService emailService,
-            IOptions<ApplicationSettingsOptions> applicationSettingsOptions,
+            IAPIEmailService emailService,
+            IOptions<APIApplicationSettingsOptions> applicationSettingsOptions,
             ILogger<ISPAddressCheckerStatusController> logger,
             ILogHubService loghub,
             IUrlHelperFactory urlHelperFactory,
@@ -149,7 +147,7 @@ namespace ISPAddressChecker.Controllers
 
                     switch (emailRequest.EmailType)
                     {
-                        case Models.Enums.SendEmailTypeEnum.HeartBeatEmail:
+                        case SendEmailTypeEnum.HeartBeatEmail:
 
                             Dictionary<string, string> mocValues = new Dictionary<string, string>();
 
@@ -169,7 +167,7 @@ namespace ISPAddressChecker.Controllers
                                 return Ok(report);
                             }
                             break;
-                        case Models.Enums.SendEmailTypeEnum.ISPAddressChanged:
+                        case SendEmailTypeEnum.ISPAddressChanged:
 
                             report = await _emailService.SendISPAddressChangedEmail(_iSPAddressService.GetExternalISPAddress(), _iSPAddressService.GetOldISPAddress(), _ISPAddressCounterService, _applicationSettingsOptions.ISPAddressCheckFrequencyInMinutes, emailRequest);
 

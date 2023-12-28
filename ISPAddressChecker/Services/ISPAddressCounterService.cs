@@ -1,5 +1,4 @@
-﻿using ISPAddressChecker.Services.Interfaces;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using ISPAddressChecker.Interfaces;
 
 namespace ISPAddressChecker.Services
 {

@@ -1,5 +1,5 @@
-﻿using ISPAddressChecker.Services.Interfaces;
-using ISPAddressChecker.Helpers;
+﻿using ISPAddressChecker.Helpers;
+using ISPAddressChecker.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ISPAddressChecker.Controllers

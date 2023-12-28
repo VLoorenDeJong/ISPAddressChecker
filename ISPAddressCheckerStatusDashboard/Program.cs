@@ -1,40 +1,38 @@
-using static ISPAddressCheckerStatusDashboard.Options.ApplicationSettingsOptions;
-using ISPAddressCheckerStatusDashboard.Services.Interfaces;
-using ISPAddressCheckerStatusDashboard.Services;
-using ISPAddressCheckerStatusDashboard.Options;
-using ISPAddressCheckerStatusDashboard;
+using ISPAddressChecker.Interfaces;
 using Microsoft.Extensions.Options;
-using ISPAddressChecker.Services.Interfaces;
+using ISPAddressChecker.Options;
+using ISPAddressChecker.Models.Constants;
+using ISPAddressCheckerDashboard.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
-builder.Services.Configure<ApplicationSettingsOptions>(builder.Configuration.GetSection(AppsettingsSections.ApplicationSettings));
+builder.Services.Configure<DashboardApplicationSettingsOptions>(builder.Configuration.GetSection(AppsettingsSections.ApplicationSettings));
 builder.Services.Configure<EmailSettingsOptions>(builder.Configuration.GetSection(AppsettingsSections.EmailSettings));
 
 builder.Services.AddSingleton<ICounterService, CounterService>();
 
-builder.Services.AddScoped<ISPAddressCheckerStatusDashboard.Services.Interfaces.ITimerService, TimerService>();
+builder.Services.AddScoped<IDashboardTimerService, TimerService>();
 builder.Services.AddScoped<IStatusService, StatusService>();
 
 builder.Services.AddTransient<IOpenAPIClient, OpenAPIClient>();
 builder.Services.AddTransient<IRequestEmailService, RequestEmailService>();
 builder.Services.AddTransient<IRequestISPAddressService, RequestISPAddressService>();
-builder.Services.AddTransient<ISPAddressCheckerStatusDashboard.Services.Interfaces.IApplicationConfigCheckService, ApplicationConfigCheckService>();
+builder.Services.AddTransient<IDashboardConfigCheckService, ApplicationConfigCheckService>();
 builder.Services.AddTransient<IISPAddressCheckerStatusService, ISPAddressCheckerStatusService>();
-builder.Services.AddTransient<ISPAddressCheckerStatusDashboard.Services.Interfaces.IEmailService, ISPAddressCheckerStatusDashboard.Services.EmailService>();
+builder.Services.AddTransient<IDashboardEmailService, EmailService>();
 
 var app = builder.Build();
 
 // Checking the configuration of the application:
 // Get the application settings from the service provider
-var applicationSettingsOptions = app.Services.GetRequiredService<IOptions<ApplicationSettingsOptions>>();
+var applicationSettingsOptions = app.Services.GetRequiredService<IOptions<DashboardApplicationSettingsOptions>>();
 var emailSettingsOptions = app.Services.GetRequiredService<IOptions<EmailSettingsOptions>>();
 
 // Get the service from the service provider
-var applicationConfigCheckService = app.Services.GetRequiredService<ISPAddressCheckerStatusDashboard.Services.Interfaces.IApplicationConfigCheckService>();
+var applicationConfigCheckService = app.Services.GetRequiredService<IDashboardConfigCheckService>();
 
 // Call the method to check the application settings
 await applicationConfigCheckService.CheckApplicationConfig(applicationSettingsOptions, emailSettingsOptions);

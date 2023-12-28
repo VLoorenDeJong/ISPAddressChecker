@@ -1,14 +1,11 @@
-﻿using System.Diagnostics;
-using ISPAddressChecker.Services;
-using ISPAddressCheckerStatusDashboard.Options;
-using ISPAddressCheckerStatusDashboard.Services.Interfaces;
+﻿using ISPAddressChecker.Interfaces;
+using ISPAddressChecker.Options;
 using Microsoft.Extensions.Options;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace ISPAddressCheckerStatusDashboard.Services
+namespace ISPAddressCheckerDashboard.Services
 {
 
-    public class TimerService : ITimerService
+    public class TimerService : IDashboardTimerService
     {
         private readonly IStatusService _statusService;
         private readonly ICounterService _counterService;
@@ -17,7 +14,7 @@ namespace ISPAddressCheckerStatusDashboard.Services
 
         private Timer? ISPStatusUpdateTimer;
         private Timer? upTimeCalculatorTimer;
-        private readonly ApplicationSettingsOptions _appSettings;
+        private readonly DashboardApplicationSettingsOptions _appSettings;
 
         private TimeSpan APIUpTime { get; set; }
         public DateTimeOffset APIStartDateTime { get; private set; }
@@ -28,7 +25,7 @@ namespace ISPAddressCheckerStatusDashboard.Services
 
         bool timersStarted = false;
 
-        public TimerService(IOpenAPIClient aPIClient, ILogger<TimerService> logger, IStatusService statusService, ICounterService counterservice, IOptions<ApplicationSettingsOptions> appsettings)
+        public TimerService(IOpenAPIClient aPIClient, ILogger<TimerService> logger, IStatusService statusService, ICounterService counterservice, IOptions<DashboardApplicationSettingsOptions> appsettings)
         {
             _apiClient = aPIClient;
             _logger = logger;

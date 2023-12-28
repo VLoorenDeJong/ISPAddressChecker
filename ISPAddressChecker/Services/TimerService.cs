@@ -1,4 +1,4 @@
-﻿using ISPAddressChecker.Services.Interfaces;
+﻿using ISPAddressChecker.Interfaces;
 using Microsoft.Extensions.Options;
 using ISPAddressChecker.Helpers;
 using ISPAddressChecker.Options;
@@ -9,8 +9,8 @@ namespace ISPAddressChecker.Services
 {
     public class TimerService : ITimerService
     {
-        private readonly ApplicationSettingsOptions _applicationSettingsOptions;
-        private readonly EmailSettingsOptions _emailSettingsOptions;
+        private readonly APIApplicationSettingsOptions _applicationSettingsOptions;
+        private readonly APIEmailSettingsOptions _emailSettingsOptions;
         private readonly ICheckISPAddressService _ISPAddressService;
         private readonly IISPAddressCounterService _counterService;
         private readonly ILogger _logger;
@@ -24,11 +24,11 @@ namespace ISPAddressChecker.Services
 
         private double ISPAddressCHeckInterval;
 
-        public TimerService(ILogger<CheckISPAddressService> logger
-                          , IOptions<ApplicationSettingsOptions> applicationSettingsOptions
+        public TimerService(ILogger<TimerService> logger
+                          , IOptions<APIApplicationSettingsOptions> applicationSettingsOptions
                           , IISPAddressCounterService counterService
                           , ICheckISPAddressService ISPAddressService
-                          , IOptions<EmailSettingsOptions> emailSettingsOptions
+                          , IOptions<APIEmailSettingsOptions> emailSettingsOptions
                             )
         {
             _logger = logger;
