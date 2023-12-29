@@ -67,7 +67,7 @@
         ISPAddressChecker.Models.LogEntryModel infoLogEntry = new();
 
         infoLogEntry.LogType = LogType.Information;
-        infoLogEntry.Service = $"Dashboard -> RequestISPAddress";
+        infoLogEntry.Service = $"RequestISPAddress";
         infoLogEntry.Message = $"ISP address requested";
         await LogEntryCreated.InvokeAsync(infoLogEntry);
 
@@ -89,7 +89,7 @@
                     {
                         ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
                         newLogEntry.LogType = LogType.Information;
-                        newLogEntry.Service = $"Dashboard -> GetVisitorIspAddress";
+                        newLogEntry.Service = $"GetVisitorIspAddress";
                         newLogEntry.Message = $"ISP address returned {StringHelpers.MakeISPAddressLogReady(visitorIspAddress)}";
                         await LogEntryCreated.InvokeAsync(newLogEntry);
                     }
