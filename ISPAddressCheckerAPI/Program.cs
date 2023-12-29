@@ -76,5 +76,8 @@ app.Run();
 // ToDo: Change request devision to failed request instead of external request of the API endpoint
 // ToDo: Add the time of the next check into the health indicator
 // ToDo: Check the functionality with real world test
-// ToDo: Add protection rules on branch
+// ToDo: Add protection rules on branch (Pull request mendatory)
 // ToDo: Create WIKI entry for the project
+// ToDo: Check website with VPN for user ISP / User ISP address is not displayed
+// ToDo: Font size need to be bigger for phones
+// ToDo: Change color sceme
