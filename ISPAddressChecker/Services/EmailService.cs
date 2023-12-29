@@ -144,10 +144,11 @@ namespace ISPAddressChecker.Services
             string dashboardDetails = string.Empty;
             if (_appSettings.DashboardEnabled)
             {
-                dashboardDetails = $"<p>ISPAddress changed E-mail requests: <strong>{_statusCounter.GetISPISPAddressChangedEmailRequested()}</strong></p>"
-                                 + $"<p>Heartbeat E-mail requests: <strong>{_statusCounter.GetISPHeartbeatEmailRequested()}</strong></p>"
-                                 + $"<p></p>"
-                                 ;
+                dashboardDetails =     $"<p><strong>Dasboard stats:</strong></p>"
+                                     + $"<p>ISPAddress changed E-mail requests: <strong>{_statusCounter.GetISPISPAddressChangedEmailRequested()}</strong></p>"
+                                     + $"<p>Heartbeat E-mail requests: <strong>{_statusCounter.GetISPHeartbeatEmailRequested()}</strong></p>"
+                                     + $"<p></p>"
+                                     ;
             }
 
             string backupAPIResults = string.Empty;
@@ -168,7 +169,6 @@ namespace ISPAddressChecker.Services
                                 + $"<p>External API calls: <strong>{counterService.GetExternalServiceUsekCounter()}</strong></p>"
                                 + $@"<p>Current ISP: <strong> {currentISPAddress}</strong></p>"
                                 + $"<p></p>"
-                                + $"<p><strong>Dasboard stats:</strong></p>"
                                 + $"{dashboardDetails}"
                                 + $"<p></p>"
                                 + $"<p><strong>Backup API's:</strong></p>"
@@ -466,7 +466,7 @@ namespace ISPAddressChecker.Services
         {
             SendEmailModel output = new();
 
-            if (Helpers.ConfigHelpers.EmailAddressIsValid(_emailSettings?.EmailToAddress))
+            if (Helpers.ValidationHelpers.EmailAddressIsValid(_emailSettings?.EmailToAddress))
             {
                 output.EmailValidated = true;
                 output.EmailAddress = _emailSettings!.EmailToAddress!;

@@ -8,6 +8,7 @@ namespace ISPAddressChecker.Models
         public LogEntryModel()
         {
             Time = DateTimeOffset.Now;
+            Id = Guid.NewGuid().ToString("N");
         }
         public LogEntryModel(LogType logType, string ServiceName, string message)
         {

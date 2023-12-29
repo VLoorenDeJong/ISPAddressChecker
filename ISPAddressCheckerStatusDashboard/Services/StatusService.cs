@@ -1,11 +1,11 @@
-﻿using ISPAddressChecker.Models;
-using ISPAddressChecker.Interfaces;
+﻿using ISPAddressChecker.Interfaces;
+using ISPAddressCheckerStatusDashboard;
 
 namespace ISPAddressCheckerDashboard.Services
 {
     public class StatusService : IStatusService
     {
-        public ISPAddressChecker.Models.ISPAddressCheckerStatusUpdateModel CurrentStatus { get; private set; } = new();
+        public ISPAddressCheckerStatusUpdateModel CurrentStatus { get; private set; } = new();
 
         public event Action? OnChange;
 

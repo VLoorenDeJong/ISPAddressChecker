@@ -1,4 +1,4 @@
-﻿using ISPAddressChecker.Models;
+﻿using ISPAddressCheckerStatusDashboard;
 
 namespace ISPAddressChecker.Interfaces
 {

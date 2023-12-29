@@ -1,6 +1,7 @@
 ﻿using ISPAddressChecker.Interfaces;
 using ISPAddressChecker.Options;
 using Microsoft.Extensions.Options;
+using ISPAddressCheckerStatusDashboard;
 
 namespace ISPAddressCheckerDashboard.Services
 {

@@ -4,6 +4,7 @@ using ISPAddressChecker.Options;
 using ISPAddressChecker.Services;
 using ISPAddressChecker.SignalRHubs;
 using ISPAddressCheckerAPI.Services;
+using ISPAddressCheckerAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Options;
 

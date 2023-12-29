@@ -3,6 +3,8 @@ using Microsoft.Extensions.Options;
 using ISPAddressChecker.Options;
 using ISPAddressChecker.Models.Constants;
 using ISPAddressCheckerDashboard.Services;
+using ISPAddressCheckerStatusDashboard;
+using ISPAddressCheckerStatusDashboard.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 

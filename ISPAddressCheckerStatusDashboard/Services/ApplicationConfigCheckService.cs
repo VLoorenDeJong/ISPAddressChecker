@@ -2,6 +2,7 @@
 using ISPAddressChecker.Interfaces;
 using ISPAddressChecker.Models.Constants;
 using ISPAddressChecker.Options;
+using ISPAddressCheckerStatusDashboard.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Text.RegularExpressions;
@@ -72,14 +73,14 @@ namespace ISPAddressCheckerDashboard.Services
                 mandatoryEmailConfigurationPassed = false;
             }
 
-            if (string.Equals(settings?.EmailToAddress, StandardAppsettingsValues.EmailToAddress, StringComparison.CurrentCultureIgnoreCase) || !ConfigHelpers.EmailAddressIsValid(settings?.EmailToAddress))
+            if (string.Equals(settings?.EmailToAddress, StandardAppsettingsValues.EmailToAddress, StringComparison.CurrentCultureIgnoreCase) || !ValidationHelpers.EmailAddressIsValid(settings?.EmailToAddress))
             {
                 string errorMessage = $"appsettings: EmailToAddress: {settings?.EmailToAddress} in appsettings not confugured correctly";
                 ThrowEmailConfigError(errorMessage, _logger);
                 mandatoryEmailConfigurationPassed = false;
             }
 
-            if (string.Equals(settings?.EmailFromAddress, StandardAppsettingsValues.EmailFromAddress, StringComparison.CurrentCultureIgnoreCase) || !ConfigHelpers.EmailAddressIsValid(settings?.EmailFromAddress))
+            if (string.Equals(settings?.EmailFromAddress, StandardAppsettingsValues.EmailFromAddress, StringComparison.CurrentCultureIgnoreCase) || !ValidationHelpers.EmailAddressIsValid(settings?.EmailFromAddress))
             {
                 string errorMessage = $"appsettings: EmailFromAddress: {settings?.EmailFromAddress} in appsettings not confugured correctly";
                 ThrowEmailConfigError(errorMessage, _logger);

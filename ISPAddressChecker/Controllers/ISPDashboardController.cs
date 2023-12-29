@@ -140,7 +140,7 @@ namespace ISPAddressChecker.Controllers
 
                 _logger.LogInformation("ISPAddressCheckSendEmail -> RequestId: {id} Validating E-mail address", emailRequest.Id);
                 await _loghub.SendLogInfoAsync(serviceName, $"RequestId: {emailRequest.Id}, ISPAddressCheckSendEmail -> Validating E-mail address");
-                if (ConfigHelpers.EmailAddressIsValid(emailRequest.EmailAddress))
+                if (ValidationHelpers.EmailAddressIsValid(emailRequest.EmailAddress))
                 {
                     _logger.LogInformation("ISPAddressCheckSendEmail -> RequestId: {id} E-mail address is valid", emailRequest.Id);
                     await _loghub.SendLogInfoAsync(serviceName, $"RequestId: {emailRequest.Id}, ISPAddressCheckSendEmail -> E-mail address is valid");

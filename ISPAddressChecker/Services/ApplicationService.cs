@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using ISPAddressChecker.Options;
 using ISPAddressChecker.Helpers;
 using ISPAddressChecker.Models;
+using ISPAddressCheckerAPI.Services.Interfaces;
 
 namespace ISPAddressCheckerAPI.Services
 {
@@ -15,24 +16,28 @@ namespace ISPAddressCheckerAPI.Services
         private readonly IISPAddressCounterService _counterService;
         private readonly ICheckISPAddressService _checkISPAddressService;
         private readonly ILogger _logger;
+        private readonly IAPIConfigCheckService _configCheckService;
 
         private bool configSuccess = false;
 
-        public ApplicationService(ILogger<CheckISPAddressService> logger
+        public ApplicationService(ILogger<ApplicationService> logger
                                 , IOptions<APIApplicationSettingsOptions> applicationSettingsOptions
                                 , IOptions<APIEmailSettingsOptions> emailSettingsOptions
                                 , ITimerService timerService
                                 , IAPIEmailService emailService
                                 , IISPAddressCounterService counterService
-                                , ICheckISPAddressService checkISPAddressService)
+                                , ICheckISPAddressService checkISPAddressService
+                                , IAPIConfigCheckService configCheckService)
         {
             _logger = logger;
-            _applicationSettingsOptions = applicationSettingsOptions?.Value!;
+            _applicationSettingsOptions = applicationSettingsOptions!.Value!;
             _emailSettingsOptions = emailSettingsOptions!.Value;
             _timerService = timerService;
             _emailService = emailService;
             _counterService = counterService;
-            _checkISPAddressService = checkISPAddressService; 
+            _checkISPAddressService = checkISPAddressService;
+            _configCheckService = configCheckService;
+
             configSuccess = CheckAppsettings();
         }
         
@@ -68,7 +73,7 @@ namespace ISPAddressCheckerAPI.Services
                 ConfigErrorReportModel report = new();
 
                 _logger.LogInformation("CheckAppsettings -> MandatoryConfigurationChecks STARTED, mail configured: {config}", mailConfigured);
-                mailConfigured = ConfigHelpers.MandatoryConfigurationChecks(_emailSettingsOptions, _applicationSettingsOptions, _logger);
+                mailConfigured = _configCheckService.MandatoryConfigurationChecks(_emailSettingsOptions, _applicationSettingsOptions, _logger);
 
                 _logger.LogInformation("CheckAppsettings -> mailConfigured: {mailConfigured}", mailConfigured);
                 switch (mailConfigured)
@@ -79,7 +84,7 @@ namespace ISPAddressCheckerAPI.Services
                         return appsettingsConfigSuccess;
                     case true:
                         _logger.LogInformation("CheckAppsettings -> appsettingsConfigSuccess: {appsettingsConfigSuccess}", appsettingsConfigSuccess);
-                        report = ConfigHelpers.DefaultSettingsCheck(_emailSettingsOptions,_applicationSettingsOptions, _logger);
+                        report = _configCheckService.DefaultSettingsCheck(_emailSettingsOptions,_applicationSettingsOptions, _logger);
                         break;
                 }
 

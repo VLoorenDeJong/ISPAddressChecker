@@ -28,7 +28,7 @@ namespace ISPAddressChecker.Models
         public int ExternalISPCheckCounter { get; }
         public int StatusUpdateRequested { get; }
         public DateTimeOffset StartDateTime { get; }
-        public int RequestSuccessPercentage { get; set; } = 83;
-        public string CurrentISPAddress { get; set; } = "192.168.2.*!*";
+        public int RequestSuccessPercentage { get; set; }
+        public string CurrentISPAddress { get; set; } = "ISPAddressCheckerStatusUpdateModel -> Default value";
     }
 }
