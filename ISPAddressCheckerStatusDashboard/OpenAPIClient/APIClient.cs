@@ -97,7 +97,7 @@ namespace ISPAddressCheckerStatusDashboard
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.18.2.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class OpenAPIClient : IOpenAPIClient
     {
-        private string _baseUrl = "https://localhost:7235/";
+        private string _baseUrl = "https://localhost:5203/";
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
         public OpenAPIClient()
