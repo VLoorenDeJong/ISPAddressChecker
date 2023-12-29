@@ -8,4 +8,6 @@
 - Weekly a mail with some stats
 - Configuration via appsettings
 
+Visit the demo:
+https://checkispaddressdashboard.victorloorendejong.nl/
 
