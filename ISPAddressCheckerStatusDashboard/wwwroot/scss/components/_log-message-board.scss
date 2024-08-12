@@ -1,0 +1,93 @@
+﻿.log-section {
+
+    .log-message-board {
+        background-color: $primary-color;
+        height: 100%;
+        border-radius: 10px;
+        border: 1px solid $secondary-color;
+
+        &_title {
+            color: $secondary-color;
+            font-family: $primary-font;
+            font-size: larger;
+
+            &_clear-button {
+                color: $secondary-color;
+                background-color: transparent;
+                border-radius: 50%;
+                border: none;
+                border-color: $secondary-color;
+                margin-right: 15px;
+                margin-top: 5px;                
+                float: right;
+                font-size:large;
+            }
+        }
+    }
+
+    .log-messages {
+        height: 90%;
+        border: 1px solid $tertiary-color;
+        margin: 10px 10px 10px 10px;
+        overflow-y: auto;
+
+        &_test-time {
+            color: yellow;
+        }
+
+        &_message {
+            // ToDo: add colors to variables
+
+            &_time {
+                padding-right: 5px;
+                color: #006600;
+                font-family: inherit;
+                font-family: $console-font;
+            }
+
+            &_type {
+                &_information {
+                    padding-right: 5px;
+                    color: #ffff99;
+                    font-family: inherit;
+                    font-family: $console-font;
+                    font-size: small;
+                }
+
+                &_warning {
+                    padding-right: 5px;
+                    color: #ffa31a;
+                    font-family: $console-font;
+                    font-size: small;
+                }
+
+                &_error {
+                    padding-right: 5px;
+                    color: #e60000;
+                    font-family: $console-font;
+                    font-size: small;
+                }
+
+                &_debug {
+                    padding-right: 5px;
+                    color: #3366ff;
+                    font-family: $console-font;
+                    font-size: small;
+                }
+            }
+
+            &_service {
+                padding-right: 5px;
+                color: #006600;
+                font-family: $console-font;
+            }
+
+            &_message {
+                padding-right: 5px;
+                color: #009933;
+                font-family: $console-font;
+                text-align: left;
+            }
+        }
+    }
+}

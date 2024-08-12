@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISPAddressCheckerAPI", "ISPAddressCheckerAPI\ISPAddressCheckerAPI.csproj", "{92B769D6-FFE2-45A7-B1F1-0FBE2D3ABD33}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISPAddressCheckerStatusDashboard", "ISPAddressCheckerStatusDashboard\ISPAddressCheckerStatusDashboard.csproj", "{0A0C3D19-D83B-4F07-BCB6-A26A8E61C9F0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISPAddressCheckerTests", "ISPAddressCheckerTests\ISPAddressCheckerTests.csproj", "{1D9BFEEB-E310-4C29-8A72-C877D039ED53}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISPAddressCheckerLibrary", "ISPAddressCheckerLibrary\ISPAddressCheckerLibrary.csproj", "{5C1F6F42-88A6-45B2-8F40-A45FA2701E1E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{92B769D6-FFE2-45A7-B1F1-0FBE2D3ABD33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92B769D6-FFE2-45A7-B1F1-0FBE2D3ABD33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92B769D6-FFE2-45A7-B1F1-0FBE2D3ABD33}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{92B769D6-FFE2-45A7-B1F1-0FBE2D3ABD33}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{0A0C3D19-D83B-4F07-BCB6-A26A8E61C9F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A0C3D19-D83B-4F07-BCB6-A26A8E61C9F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A0C3D19-D83B-4F07-BCB6-A26A8E61C9F0}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A0C3D19-D83B-4F07-BCB6-A26A8E61C9F0}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{1D9BFEEB-E310-4C29-8A72-C877D039ED53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D9BFEEB-E310-4C29-8A72-C877D039ED53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D9BFEEB-E310-4C29-8A72-C877D039ED53}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D9BFEEB-E310-4C29-8A72-C877D039ED53}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{5C1F6F42-88A6-45B2-8F40-A45FA2701E1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C1F6F42-88A6-45B2-8F40-A45FA2701E1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C1F6F42-88A6-45B2-8F40-A45FA2701E1E}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C1F6F42-88A6-45B2-8F40-A45FA2701E1E}.Release|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2A4D5081-C221-44BB-95B8-9A9C732D7754}
+	EndGlobalSection
+EndGlobal

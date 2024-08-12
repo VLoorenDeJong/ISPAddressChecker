@@ -1,0 +1,62 @@
+﻿@using ISPAddressChecker.Interfaces;
+@using ISPAddressCheckerStatusDashboard.Services;
+
+@inject IStatusService statusService;
+
+@implements IDisposable
+
+
+
+<div class="health-indicator">
+    <div class="protection-level-indicator">
+        <LinearGauge SuccessRate="@statusService?.CurrentStatus?.RequestSuccessPercentage">
+            <Icon>
+                <i class="fa fa-shield gauge-label"></i>
+            </Icon>
+        </LinearGauge>
+    </div>
+
+    <div class="uptime-indicator">
+        <div class="uptime-icon">
+            <i class="fa-solid fa-stopwatch"></i>
+        </div>
+        <div class="days-counter">
+            @UptimeDays
+        </div>
+        <div class="clock">
+            @UptimeClockString
+        </div>
+    </div>
+
+    <div class="isp-address">
+        <label for="curent-isp-address">@(statusService?.CurrentStatus?.CurrentISPAddress)</label>
+    </div>
+</div>
+@code {
+    [Parameter]
+    public string? UptimeDays { get; set; }
+
+    [Parameter]
+    public string? UptimeClockString { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        statusService.OnChange += StateHasChanged;
+        await base.OnInitializedAsync();
+    }
+
+    protected override void OnInitialized()
+    {
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+    }
+
+    public void Dispose()
+    {
+        statusService.OnChange -= StateHasChanged;
+    }
+}

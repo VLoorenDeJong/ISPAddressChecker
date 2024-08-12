@@ -1,0 +1,56 @@
+﻿.stats-section {
+    .linear-gauge {
+        display: flex;
+        height: 50px;
+        text-align: center;
+    }
+
+    .gauge-bar {
+        color: $tertiary-color;
+        flex-grow: 1;
+        height: 100%;
+        border-radius: 5px;
+        height: 20px;
+        margin-top: 30px;
+        margin-left: 1px;
+        padding: 5px;
+    }
+
+    .color1 {
+        background-color: $request-division-color-1;
+    }
+
+    .color2 {
+        background-color: $request-division-color-2;
+    }
+
+    .color3 {
+        background-color: $request-division-color-3;
+    }
+
+    .legend {
+        margin-top: 10px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        margin-right: 25px;
+    }
+
+    .legend-color {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        margin-right: 5px;
+    }
+
+    .legend-text {
+        font-size: 14px;
+        float: left;
+        font-family: $primary-font;
+        color: $secondary-color;
+    }
+}

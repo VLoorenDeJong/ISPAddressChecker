@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>677b2c5d-6448-4890-ad33-6fc663211bc2</UserSecretsId>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Helpers\**" />
+	  <Content Remove="Helpers\**" />
+	  <EmbeddedResource Remove="Helpers\**" />
+	  <None Remove="Helpers\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="bootstrap" Version="5.3.0-alpha3" />
+		<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.14" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="NSwag.AspNetCore" Version="13.20.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="OpenAPIClient\" />
+	</ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ISPAddressCheckerLibrary\ISPAddressCheckerLibrary.csproj" />
+  </ItemGroup>
+
+</Project>

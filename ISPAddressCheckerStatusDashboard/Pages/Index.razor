@@ -1,0 +1,101 @@
+﻿@page "/"
+@using ISPAddressChecker.Models
+
+@using ISPAddressChecker.Interfaces;
+
+@using ISPAddressChecker.Models.Constants;
+@using ISPAddressChecker.Options;
+@using ISPAddressCheckerStatusDashboard.Components;
+@using Microsoft.Extensions.Options;
+@using ISPAddressCheckerStatusDashboard.Services;
+
+@inject IDashboardTimerService timerService;
+@inject IStatusService statusService;
+@inject ICounterService counterService;
+@inject IOptions<DashboardApplicationSettingsOptions> appSettings;
+
+@implements IDisposable
+
+<PageTitle>ISPAddressChecker - Dashboard</PageTitle>
+
+<div class="main-layout">
+    <HealthIndicator UptimeDays="@timerService?.UptimeDays" UptimeClockString="@timerService?.UptimeClockString" />
+
+    <div class="row">
+        <RequestISPAddress HostISPAddress="@statusService?.CurrentStatus?.CurrentISPAddress" LogEntryCreated="OnLogEntryCreated" />
+        <RequestEmail ItemHeader="Heartbeat E-mail:" EmailType="SendEmailTypeEnum.HeartBeatEmail" LogEntryCreated="OnLogEntryCreated" />
+        <RequestEmail ItemHeader="ISP Address changed E-mail" EmailType="SendEmailTypeEnum.ISPAddressChanged" LogEntryCreated="OnLogEntryCreated" />
+    </div>
+
+    <RequestDivision DashboardRequests="@value" ExternalISPCheckCounter="@(statusService!.CurrentStatus.InternalISPCheckCounter)" InternalISPCheckCounter="@(statusService.CurrentStatus.ExternalISPCheckCounter)" />
+
+    <DisplayWarning Message="@(@"No personal details are being saved.")" />
+
+    <LogMessageBoard @ref="@logMessageBoard" />
+
+
+    <DisplaySuccess Message="@($"{appSettings?.Value?.CreatorEmail}")" />
+</div>
+
+@code {
+
+    private string? currentTime;
+
+    private Timer? aTimer;
+
+    private bool timersStarted;
+
+    private LogMessageBoard? logMessageBoard;
+
+    int value;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await StartTimers();
+            await statusService.GetStatus();
+        }
+
+        value = counterService.GetDashboardISPAddressRequestCounter();
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+    private async Task StartTimers()
+    {
+        if (!timersStarted)
+        {
+            timersStarted = true;
+            await timerService.StartTimers();
+        }
+        aTimer = new Timer(async (state) => await Tick(), null, 0, 1000);
+    }
+
+    private async Task Tick()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        statusService.OnChange -= StateHasChanged;
+        timerService.ClearStatusUpdateTimer();
+        aTimer?.Dispose();
+    }
+    private async void OnStatusChange()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+    private async Task OnLogEntryCreated(LogEntryModel entryToAdd)
+    {
+        if (logMessageBoard is not null)
+        {
+            await logMessageBoard.AddLogEntry(entryToAdd);
+        }
+    }
+}

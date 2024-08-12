@@ -1,0 +1,38 @@
+﻿<div class="linear-gauge">
+    <div class="gauge-bar" aria-label="ISP Address cheker success rate: @($"{currentSuccessRate}%")" style="@($"width: {currentSuccessRate}%; background-color: {GetColor(currentSuccessRate)}; ")">@Icon</div>
+</div>
+
+@code {
+    [Parameter]
+    public int? SuccessRate { get; set; }
+
+    [Parameter]
+    public RenderFragment? Icon { get; set; }
+
+    private int currentSuccessRate;
+
+    protected override void OnParametersSet()
+    {
+        currentSuccessRate = SuccessRate ?? 100;
+        base.OnParametersSet();
+    }
+
+    private string GetColor(int value)
+    {
+        if (value == 0)
+        {
+            return "#FF0000"; // red
+        }
+        else if (value == 100)
+        {
+            return "#00FF00"; // green
+        }
+        else // red for low values
+        {
+            var r = (int)Math.Round(255 - (value * 2.55));
+            var g = (int)Math.Round(0 + (value * 2.55));
+            var b = 0;
+            return $"#{r:X2}{g:X2}{b:X2}";
+        }
+    }   
+}

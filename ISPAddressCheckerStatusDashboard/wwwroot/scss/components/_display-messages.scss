@@ -1,0 +1,27 @@
+﻿body {
+
+    .message {
+        &_success {
+            background-color: $secondary-color;
+            color: $tertiary-color;
+            border-radius: 5px;
+            max-width: 30%;
+            margin: auto;
+            padding: 5px;
+            font-family: $primary-font;
+            text-align: center;
+        }
+
+
+        &_warning {
+            background-color: $warning-background-color;
+            color: $warning-text-color;
+            border-radius: 5px;
+            max-width: 30%;
+            margin: auto;
+            padding: 5px;
+            font-family: $primary-font;
+            text-align: center;
+        }
+    }
+}

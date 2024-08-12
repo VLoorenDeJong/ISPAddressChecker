@@ -1,0 +1,126 @@
+﻿@using ISPAddressChecker.Interfaces;
+@using ISPAddressChecker.Helpers;
+@using ISPAddressChecker.Models.Constants;
+@using ISPAddressCheckerStatusDashboard.Services;
+
+@inject IRequestISPAddressService ispService;
+@inject IStatusService statusService;
+@inject ICounterService counterService;
+@inject ILogger<RequestISPAddress> logger;
+
+
+@implements IDisposable
+
+<div class="interactive-row-element col">
+    <div class="align-items-center">
+
+        @if (string.IsNullOrWhiteSpace(visitorIspAddress))
+        {
+            <div class="input-text-header-header">
+                Host machine ISP address:
+            </div>
+
+            <div class="input-text-header">
+                @statusService?.CurrentStatus?.CurrentISPAddress
+            </div>
+
+        }
+
+        @if (!string.IsNullOrWhiteSpace(visitorIspAddress))
+        {
+            <div class="input-text-header-header">
+                Your ISP address:
+            </div>
+            <div class="input-text-header">
+                @visitorIspAddress
+            </div>
+        }
+
+        <div class="email-adress-submit">
+            <button @onclick="GetVisitorIspAddress">Get your ISP address</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string? HostISPAddress { get; set; }
+    [Parameter]
+    [EditorRequired]
+    public EventCallback<ISPAddressChecker.Models.LogEntryModel> LogEntryCreated { get; set; }
+
+    private string visitorIspAddress = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        statusService.OnChange += StateHasChanged;
+        await base.OnInitializedAsync();
+    }
+
+    protected override void OnParametersSet()
+    {
+        if(string.IsNullOrWhiteSpace(HostISPAddress)) HostISPAddress = statusService.CurrentStatus?.CurrentISPAddress;
+        base.OnParametersSet();
+    }
+
+    private async Task GetVisitorIspAddress()
+    {
+        ISPAddressChecker.Models.LogEntryModel infoLogEntry = new();
+
+        infoLogEntry.LogType = LogType.Information;
+        infoLogEntry.Service = $"RequestISPAddress";
+        infoLogEntry.Message = $"ISP address requested";
+        await LogEntryCreated.InvokeAsync(infoLogEntry);
+
+        string endpointURL = await ispService.GetCHeckISPAddressEndpointURLAsync();
+
+        if (!string.IsNullOrEmpty(endpointURL))
+        {
+            counterService.AddDashboardISPAddressRequestCounter();
+            var httpClient = new HttpClient();
+
+            try
+            {
+                var response = await httpClient.GetAsync(endpointURL);
+                if (response.IsSuccessStatusCode)
+                {
+                    visitorIspAddress = await response.Content.ReadAsStringAsync();
+
+                    if (!string.IsNullOrWhiteSpace(visitorIspAddress))
+                    {
+                        ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
+                        newLogEntry.LogType = LogType.Information;
+                        newLogEntry.Service = $"GetVisitorIspAddress";
+                        newLogEntry.Message = $"ISP address returned {StringHelpers.MakeISPAddressLogReady(visitorIspAddress)}";
+                        await LogEntryCreated.InvokeAsync(newLogEntry);
+                    }
+                    else
+                    {
+                        ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
+                        newLogEntry.LogType = LogType.Error;
+                        newLogEntry.Service = $"Dashboard -> GetVisitorIspAddress";
+                        newLogEntry.Message = $"No ISP address returned";
+                        await LogEntryCreated.InvokeAsync(newLogEntry);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("GetVisitorIspAddress ->  Exception: {ex}", ex.Message);
+                
+                ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
+                newLogEntry.LogType = LogType.Error;
+                newLogEntry.Service = $"Dashboard -> GetVisitorIspAddress";
+                newLogEntry.Message = $"Something went wrong, is the dashboard enabled?";
+                await LogEntryCreated.InvokeAsync(newLogEntry);
+            }
+        }
+
+        await statusService.GetStatus();
+    }
+
+    public void Dispose()
+    {
+        statusService.OnChange -= StateHasChanged;
+    }
+}

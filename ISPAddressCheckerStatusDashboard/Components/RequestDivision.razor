@@ -1,0 +1,48 @@
+﻿@using ISPAddressChecker.Interfaces;
+
+<div class="stats-section">
+    <div class="justify-content-center">
+        <div class="linear-gauge">
+            <div class="gauge-bar color1" style="@($"flex-basis: {DashboardRequests}%;")">@DashboardRequests</div>
+            <div class="gauge-bar color2" style="@($"flex-basis: {InternalISPCheckCounter}%;")">@InternalISPCheckCounter</div>
+            <div class="gauge-bar color3" style="@($"flex-basis: {ExternalISPCheckCounter}%;")">@ExternalISPCheckCounter</div>
+        </div>
+        <div>
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color color1"></div>
+                    <span class="legend-text">Dashboard requests</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color color2"></div>
+                    <span class="legend-text">Internal requests</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color color3"></div>
+                    <span class="legend-text">External requests</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    [EditorRequired]
+    public int DashboardRequests { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public int InternalISPCheckCounter { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public int ExternalISPCheckCounter { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+    }
+}
+

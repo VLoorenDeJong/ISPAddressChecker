@@ -1,0 +1,242 @@
+﻿@using ISPAddressChecker.Interfaces
+@using ISPAddressChecker.Models;
+@using ISPAddressChecker.Models.Constants
+@using ISPAddressChecker.Options
+@using Microsoft.AspNetCore.SignalR.Client;
+@using Microsoft.Extensions.Options
+
+@implements IAsyncDisposable
+@inject ILogger<Index> logger
+@inject IRequestISPAddressService requestISPAddressService;
+@inject IOptions<DashboardApplicationSettingsOptions> appSettings;
+
+<div class="log-section">
+    <div class="log-message-board">
+        <div class="log-message-board_title">
+            ISP checker log message board
+
+            <button class="log-message-board_title_clear-button" @onclick="@ClearBoard">
+                <i class="fa fa-arrows-rotate" title="Clear log" />
+            </button>
+        </div>
+        <div class="log-messages">
+            @if (appSettings.Value.ShowSignalRTestClock)
+            {
+                <div class="log-messages_test-time">
+                    <DisplayWarning Message="@_time"/>
+                </div>
+            }
+            <table>
+                <tbody>
+
+                    @foreach (var entry in logEntries)
+                    {
+                        <tr>
+                            <td class="log-messages_message_time">@(entry.Time.UtcDateTime.ToLocalTime().ToString())</td>
+                            @switch (entry.LogType)
+                            {
+                                case LogType.Information:
+                                    <td class="log-messages_message_type_information">@(entry.LogType.ToString())</td>
+                                    break;
+                                case LogType.Debug:
+                                    <td class="log-messages_message_type_debug">@(entry.LogType.ToString())</td>
+                                    break;
+                                case LogType.Warning:
+                                    <td class="log-messages_message_type_warning">@(entry.LogType.ToString())</td>
+                                    break;
+                                case LogType.Error:
+                                    <td class="log-messages_message_type_error">@(entry.LogType.ToString())</td>
+                                    break;
+                            }
+                            <td class="log-messages_message_service">@entry.Service</td>
+                            <td class="log-messages_message_message">@entry.Message</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string? _time;
+    private HubConnection? clockHubConnection;
+
+    private List<LogEntryModel> logEntries = new List<LogEntryModel>();
+    private HubConnection? logHubConnection;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (appSettings.Value.ShowSignalRTestClock)
+        {
+            await instatiateClockHub();
+
+        }
+        await InstatiateLogHub();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (clockHubConnection is not null)
+        {
+            await clockHubConnection.DisposeAsync();
+        }
+        if (logHubConnection is not null)
+        {
+            await logHubConnection.DisposeAsync();
+        }
+    }
+
+    private async Task InstatiateLogHub()
+    {
+        string logHubUrl = string.Empty;
+        int counter = 0;
+        bool continueLooping = true;
+
+        do
+        {
+            logHubUrl = await requestISPAddressService.GetLogHubURLAsync();
+            counter++;
+            if (counter > 3 || !string.IsNullOrWhiteSpace(logHubUrl))
+            {
+                continueLooping = false;
+            }
+        }
+        while (continueLooping);
+
+        if (!string.IsNullOrWhiteSpace(logHubUrl))
+        {
+            logHubConnection = new HubConnectionBuilder()
+            .WithUrl(logHubUrl)
+            .WithAutomaticReconnect()
+                .Build();
+
+            logHubConnection.On<LogEntryModel>(LogHubMethods.SendLogToClients, (entry) =>
+            {
+                InvokeAsync(async () =>
+                {
+                    await AddLogEntry(entry);
+                    StateHasChanged();
+                });
+            });
+
+            try
+            {
+                await logHubConnection.StartAsync();
+                await AddLogEntry(new LogEntryModel
+                    {
+                        LogType = LogType.Information,
+                        Message = "Hub connection established.",
+                        Service = "LogHub",
+                        Time = DateTime.UtcNow
+                    });
+                logger.LogInformation("Hub connection established.");
+            }
+            catch (Exception ex)
+            {
+                logEntries.Add(new LogEntryModel
+                    {
+                        LogType = LogType.Error,
+                        Message = $"Error establishing hub connection: {ex.Message}",
+                        Service = "LogHub",
+                        Time = DateTime.UtcNow
+                    });
+                logger.LogInformation($"Error establishing hub connection: {ex.Message}");
+            }
+        }
+        else
+        {
+            await AddLogEntry(new LogEntryModel
+                {
+                    LogType = LogType.Error,
+                    Message = $"Error establishing hub connection, no URL fetched!",
+                    Service = "LogMessageBoard",
+                    Time = DateTime.UtcNow
+                });
+            await AddLogEntry(new LogEntryModel
+                {
+                    LogType = LogType.Error,
+                    Message = $"No URL fetched, is the API running?",
+                    Service = "LogMessageBoard",
+                    Time = DateTime.UtcNow
+                });
+            await AddLogEntry(new LogEntryModel
+                {
+                    LogType = LogType.Error,
+                    Message = $"Is the \"DashboardEnabled\" set to \"true\" in the appsettings of the API?",
+                    Service = "LogMessageBoard",
+                    Time = DateTime.UtcNow
+                });
+            logger.LogError($"Error establishing hub connection, no URL fetched!");
+            logger.LogWarning($"No URL fetched, is the API running?");
+            logger.LogWarning($"No URL fetched, Is the \"DashboardEnabled\" set to \"true\" in the appsettings of the API??");
+        }
+    }
+
+    private async Task instatiateClockHub()
+    {
+        string clockHubUrl = string.Empty;
+
+        do
+        {
+            clockHubUrl = await requestISPAddressService.GetClockhubURLAsync();
+        }
+        while (string.IsNullOrWhiteSpace(clockHubUrl));
+
+        clockHubConnection = new HubConnectionBuilder()
+        .WithUrl(clockHubUrl)
+        .WithAutomaticReconnect()
+            .Build();
+
+        clockHubConnection.On<DateTime>("ShowTime", (time) =>
+        {
+            InvokeAsync(() =>
+            {
+                _time = time.ToString();
+                StateHasChanged();
+            });
+        });
+
+        try
+        {
+            await clockHubConnection.StartAsync();
+            logger.LogInformation("Hub connection established.");
+            logEntries.Add(new LogEntryModel
+                {
+                    LogType = LogType.Information,
+                    Message = "Hub connection established.",
+                    Service = "ClockHub",
+                    Time = DateTime.UtcNow
+                });
+        }
+        catch (Exception ex)
+        {
+            logger.LogInformation($"Error establishing hub connection: {ex.Message}");
+            logEntries.Add(new LogEntryModel
+                {
+                    LogType = LogType.Error,
+                    Message = $"Error establishing hub connection: {ex.Message}",
+                    Service = "ClockHub",
+                    Time = DateTime.UtcNow
+                });
+        }
+    }
+
+    public async Task AddLogEntry(LogEntryModel entry)
+    {
+        await InvokeAsync(() =>
+        {
+            logEntries.Add(entry);
+            logEntries = logEntries.OrderByDescending(x => x.Time).ToList();
+            StateHasChanged();
+        });
+    }
+
+    private void ClearBoard()
+    {
+        logEntries.Clear();
+        StateHasChanged();
+    }
+}
+

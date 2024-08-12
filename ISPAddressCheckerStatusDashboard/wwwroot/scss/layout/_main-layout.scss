@@ -1,0 +1,51 @@
+﻿body {
+    background-color: $tertiary-color;
+    margin: 0;
+}
+
+.main-layout {
+    height: 100%;
+    width: 100%;
+}
+
+.interactive-row-element {
+    text-align: center;
+}
+
+    @media (min-width: $break-point) {
+        .interactive-row-element {
+            /*    background-color:yellow;
+    border:solid 1px red;*/
+        }
+    }
+    
+    .stats-section {
+        padding: 20px;
+    }
+
+.log-section {
+    height: calc(45 * 100vh / 100);
+    text-align: center;
+    padding:10px;
+}
+
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    @media (min-width: $break-point) {
+        .col {
+            flex-basis: 33.33%;
+            box-sizing: border-box;
+            padding-top: 40px;
+        }
+    }
+
+    @media (max-width: $break-point) {
+        .col {
+            padding-top: 20px;
+            flex-basis: 100%;
+        }
+    }

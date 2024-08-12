@@ -1,0 +1,225 @@
+﻿@using ISPAddressChecker.Helpers;
+@using ISPAddressChecker.Interfaces;
+@using ISPAddressChecker.Models;
+@using ISPAddressChecker.Models.Constants;
+@using Microsoft.AspNetCore.Components.Forms;
+@using ISPAddressCheckerStatusDashboard.Services;
+
+@inject ILogger<RequestEmail> logger;
+@inject IRequestEmailService _emailService;
+@inject ICounterService counterService;
+
+<div class="interactive-row-element col">
+    <div class="align-items-center">
+
+
+
+        <div class="input-text-header-header">
+            Send me a:
+        </div>
+
+        <div class="input-text-header">
+            @ItemHeader
+        </div>
+
+        <EditForm Model="@emailRequest" OnSubmit="@OnSendEmailButtonClicked" FormName="@formName">
+            <InputText class="input-text" @bind-Value="emailRequest.EmailAddress" />
+
+            @switch (EmailType)
+            {
+                case SendEmailTypeEnum.HeartBeatEmail:
+                    if (counterService.GetHeartbeatEmailRequestCounter() != 0)
+                    {
+                        <div class="email-adress-submit">
+                            <button type="submit">@($"Send ({counterService.GetHeartbeatEmailRequestCounter()}x)")</button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="email-adress-submit">
+                            <button disabled>@($"Send ({counterService.GetHeartbeatEmailRequestCounter()}x)")</button>
+                        </div>
+                    }
+                    break;
+
+                case SendEmailTypeEnum.ISPAddressChanged:
+                    if (counterService.GetISPAddressChangedRequestCounter() != 0)
+                    {
+                        <div class="email-adress-submit">
+                            <button type="submit">@($"Send ({counterService.GetISPAddressChangedRequestCounter()}x)")</button>
+                        </div>
+
+                    }
+                    else
+                    {
+
+                        <div class="email-adress-submit">
+                            <button disabled>@($"Send ({counterService.GetISPAddressChangedRequestCounter()}x)")</button>
+                        </div>
+                    }
+                    break;
+            }
+        </EditForm>
+
+    </div>
+
+    <div class="validation-message-section">
+        @if (displayMessage && !string.IsNullOrWhiteSpace(currentReport.Id))
+        {
+            @switch (currentReport?.Success)
+            {
+                case true:
+                    <DisplaySuccess Message="@currentReport.Message" />
+                    break;
+
+                case false:
+                    <DisplayWarning Message="@currentReport.Message" />
+                    break;
+            }
+        }
+    </div>
+
+</div>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public string ItemHeader { get; set; } = "HeaderText";
+
+    [Parameter]
+    [EditorRequired]
+    public SendEmailTypeEnum EmailType { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public EventCallback<ISPAddressChecker.Models.LogEntryModel> LogEntryCreated { get; set; }
+
+
+    private ISPAddressCheckerStatusDashboard.SendEmailModel emailRequest = new ();
+
+    private ActionReportModel currentReport = new();
+
+    private bool displayMessage;
+
+    private string formName = "RequestEmailForm";
+
+    protected override Task OnInitializedAsync()
+    {
+        emailRequest.EmailType = (ISPAddressCheckerStatusDashboard.SendEmailTypeEnum)EmailType;
+
+        formName = $"Request{EmailType}E-mail";
+
+        return base.OnInitializedAsync();
+    }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        //if (string.IsNullOrEmpty(emailRequest?.EmailAddress) && string.IsNullOrWhiteSpace(report?.Id)) displayMessage = false;
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+    private async Task OnSendEmailButtonClicked()
+    {
+        emailRequest.Id = Guid.NewGuid().ToString("N").Substring(0, 5);
+        // Trim spaces
+        if (!string.IsNullOrWhiteSpace(emailRequest.EmailAddress)) emailRequest.EmailAddress = emailRequest.EmailAddress.Replace(" ", "");
+
+        // Validating E-maill address
+        emailRequest.EmailValidated = ISPAddressChecker.Helpers.ValidationHelpers.EmailAddressIsValid(emailRequest.EmailAddress);
+
+        if (emailRequest.EmailValidated)
+        {
+
+            ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
+            newLogEntry.LogType = LogType.Information;
+            newLogEntry.Service = $"Dashboard -> RequestEmail -> SendEmailRequest -> E-mail type: {EmailType.ToString()}";
+            newLogEntry.Message = $"RequestId: {emailRequest.Id}, E-mail address valid";
+            await LogEntryCreated.InvokeAsync(newLogEntry);
+
+            switch (EmailType)
+            {
+                case SendEmailTypeEnum.HeartBeatEmail:
+                    counterService.SubtractHeartbeatEmailRequestCounter();
+                    emailRequest.EmailType = (ISPAddressCheckerStatusDashboard.SendEmailTypeEnum) SendEmailTypeEnum.HeartBeatEmail;
+                    break;
+
+                case SendEmailTypeEnum.ISPAddressChanged:
+                    counterService.SubtractISPAddressChangedRequestCounter();
+                    emailRequest.EmailType = (ISPAddressCheckerStatusDashboard.SendEmailTypeEnum)SendEmailTypeEnum.ISPAddressChanged;
+                    break;
+            }
+
+            await SendEmailRequest(emailRequest);
+        }
+        else
+        {
+            currentReport = new ActionReportModel
+                {
+                    Id = emailRequest.Id,
+                    Success = false,
+                    Message = "Email address not valid"
+                };
+
+            ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
+            newLogEntry.LogType = LogType.Error;
+            newLogEntry.Service = $"Dashboard -> RequestEmail";
+            newLogEntry.Message = "Email address not valid";
+            await LogEntryCreated.InvokeAsync(newLogEntry);
+
+            await ShowMessage();
+        }
+    }
+
+
+    private async Task SendEmailRequest(ISPAddressCheckerStatusDashboard.SendEmailModel emailRequest)
+    {
+        try
+        {
+            ISPAddressCheckerStatusDashboard.ActionReportModel report = await _emailService.RequestEmailAsync(emailRequest);
+
+
+            try
+            {
+                ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
+                newLogEntry.LogType = LogType.Information;
+                newLogEntry.Service = $"Dashboard -> RequestEmail";
+                newLogEntry.Message = $"RequestId: {emailRequest.Id}, SendEmailRequest -> E-mail type: {emailRequest.EmailType.ToString()},  Email-Address: {StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress)}, Valid: {emailRequest.EmailValidated}";
+                await LogEntryCreated.InvokeAsync(newLogEntry);
+
+            }
+            catch(Exception ex)
+            {
+                logger.LogWarning("Something went wornf requesting a Email. Details: {message}", ex.Message);
+            }
+
+            if (report.Success)
+            {
+                emailRequest.EmailAddress = string.Empty;
+                currentReport = new ActionReportModel
+                {
+                    Id = emailRequest.Id,
+                    Success = true,
+                    Message = "E-mail sent, check the spam folder!"
+                };
+            }
+            await ShowMessage();
+        }
+        catch (Exception ex)
+        {
+            currentReport = new ActionReportModel
+                {
+                    Success = false,
+                    Message = ex.Message
+                };
+            await ShowMessage();
+        }
+    }
+
+    private async Task ShowMessage()
+    {
+        displayMessage = true;
+        await Task.Delay(5000);
+        displayMessage = false;
+
+    }
+}

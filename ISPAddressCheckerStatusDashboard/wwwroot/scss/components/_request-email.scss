@@ -1,0 +1,169 @@
+﻿.interactive-row-element {
+
+    .input-text-header-header {
+        font-family: $secondary-font;
+        color: $secondary-color;
+        font-size: 12px;
+        margin-left: 3px;
+        margin-bottom: 4px;
+    }
+
+    .validation-message-section {
+        text-align: center;
+        height: 30px;
+        width: 100%;
+    }
+
+    .input-text-header {
+        font-family: $secondary-font;
+        color: $secondary-color;
+        font-size: 15px;
+        margin-left: 3px;
+        margin-bottom: 6px;
+        font-weight: 600;
+    }
+
+    button {
+        color: $secondary-color;
+        background-color: transparent;
+        border: solid 1px $secondary-color;
+        border-radius: 6px;
+        font-size: 12px;
+        padding: 5px;
+        margin-bottom: 10px;
+
+        &:hover {
+            color: $tertiary-color;
+            border: solid 1px $secondary-color;
+            background-color: $primary-color;
+        }
+
+        &:focus {
+            outline: 1px solid $primary-color;
+        }
+
+        &:disabled {
+            opacity: 0.5;
+
+            &:hover {
+                color: $secondary-color;
+                background-color: transparent;
+                border: solid 1px $secondary-color;
+            }
+        }
+    }
+}
+
+
+.email-adress-submit {
+    margin-top: 10px !important;
+}
+
+@media (max-width: $break-point) {
+
+    .interactive-row-element {
+        padding-top: 1em;
+
+        .message {
+
+            &--success {
+                max-width: 50%;
+                padding: 5px;
+                font-family: $tertiary-font;
+            }
+
+            &--warning {
+                padding: 5px;
+                max-width: 50%;
+                font-family: $tertiary-font;
+            }
+        }
+
+        .message-warning {
+        }
+
+        .validation-message-section {
+            margin: auto;
+            height: 30px;
+            width: 100%;
+        }
+
+        .input-text-header-header {
+            font-size: 22px;
+            margin-left: 3px;
+            margin-bottom: 2px;
+        }
+
+
+        .input-text-header {
+            font-size: 25px;
+            margin-left: 3px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .input-text-header-header {
+            font-size: 12px;
+            margin-left: 3px;
+            margin-bottom: 2px;
+        }
+
+
+        .input-text-header {
+            font-size: 15px;
+            margin-left: 3px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .input-text-header-header {
+            font-size: 15px;
+            margin-left: 3px;
+            margin-bottom: 4px;
+        }
+
+        .input-text-header {
+            font-size: 20px;
+            margin-left: 3px;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .email-adress-submit {
+            margin-top: 10px !important;
+        }
+
+        button {
+            border-radius: 5px;
+            border: solid 1px $secondary-color;
+            outline: solid 1px $secondary-color;
+            font-size: 20px;
+            padding: 10px;
+            margin: 5px;
+
+            &:hover {
+                border-radius: 5px;
+                color: $tertiary-color;
+                outline: solid 1px $secondary-color;
+                border: solid 1px $secondary-color;
+                background-color: $primary-color;
+            }
+
+            &:focus {
+                border-radius: 5px;
+                outline: 1px solid $primary-color;
+                border: solid 1px $secondary-color;
+            }
+
+            &:disabled {
+                opacity: 0.5;
+
+                &:hover {
+                    color: $secondary-color;
+                    background-color: transparent;
+                    border: solid 1px $secondary-color;
+                }
+            }
+        }
+    }
+}

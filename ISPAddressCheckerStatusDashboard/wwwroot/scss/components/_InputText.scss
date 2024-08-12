@@ -1,0 +1,73 @@
+﻿/*
+$primary-font: $font-seg-ui;
+$secondary-font: $tahoma;
+$tertiary-font: $yu-gothic-ui;*/
+
+.input-text {
+    color: $primary-color;
+    background-color: $denary-color;
+    padding: 5px;
+    border-radius: 5px;
+
+    &:focus {
+        border-radius: 5px;
+        /* or */
+        box-shadow: 0 0 1px 1px $primary-color !important;
+    }
+
+    @media (max-width: $break-point) {
+        outline: 3px solid $primary-color !important;
+        width: 300px;
+        height: 40px;
+    }
+
+
+    &.text-invalid {
+        box-shadow: 0 0 0 1px rgba(178, 8, 0, 0.5), 0 0 3px rgba(178, 8, 0, 0.5);
+    }
+
+    &.text-valid {
+        box-shadow: 0 0 0 1px rgb(22, 81, 24, 0.50), 0 0 3px rgb(119, 195, 132, 0.50);
+    }
+}
+
+.input-field {
+    border-radius: 5px;
+    border: solid 1px $secondary-color;
+}
+
+::-webkit-input-placeholder {
+    color: $secondary-color;
+}
+
+:-moz-placeholder {
+    color: $secondary-color;
+}
+
+::-moz-placeholder {
+    color: $secondary-color;
+}
+
+:-ms-input-placeholder {
+    color: $secondary-color;
+}
+
+@media (max-width: $break-point) {
+    .input-field {
+        border-radius: 5px;
+        border: solid 2px $secondary-color;
+        font-size: 25px;
+    }
+
+    input[type="text"] {
+
+
+        &.text-invalid {
+            box-shadow: 0 0 0 5px rgba(178, 8, 0, 0.5), 0 0 10px rgba(178, 8, 0, 0.5);
+        }
+
+        &.text-valid {
+            box-shadow: 0 0 0 5px rgb(22, 81, 24, 0.50), 0 0 10px rgb(119, 195, 132, 0.50);
+        }
+    }
+}

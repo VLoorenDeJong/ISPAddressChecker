@@ -1,0 +1,469 @@
+﻿.container {
+  /*    background-color:purple !important;
+      border: solid 2px dotted green !important;*/
+  max-width: 2500px !important;
+}
+
+body {
+  background-color: #ecfcff;
+  margin: 0;
+}
+
+.main-layout {
+  height: 100%;
+  width: 100%;
+}
+
+.interactive-row-element {
+  text-align: center;
+}
+
+@media (min-width: 1000px) {
+  .interactive-row-element {
+    /*    background-color:yellow;
+    border:solid 1px red;*/
+  }
+}
+.stats-section {
+  padding: 20px;
+}
+
+.log-section {
+  height: 45vh;
+  text-align: center;
+  padding: 10px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+@media (min-width: 1000px) {
+  .col {
+    flex-basis: 33.33%;
+    box-sizing: border-box;
+    padding-top: 40px;
+  }
+}
+@media (max-width: 1000px) {
+  .col {
+    padding-top: 20px;
+    flex-basis: 100%;
+  }
+}
+.main-layout .health-indicator {
+  margin: 0 auto;
+  background-color: #10232B;
+  color: #ecfcff;
+  border-end-end-radius: 30px;
+  border-end-start-radius: 30px;
+  text-align: center;
+  width: 90%;
+  max-width: 550px;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-bottom: 10px;
+}
+.main-layout .health-indicator .uptime-indicator {
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+}
+.main-layout .health-indicator .uptime-icon {
+  flex: 1;
+  text-align: center;
+  font-size: xx-large;
+  color: #547884;
+}
+.main-layout .health-indicator .days-counter {
+  flex: 1;
+  text-align: left;
+  font-size: 25px;
+  color: #547884;
+}
+.main-layout .health-indicator .clock {
+  flex: 1;
+  text-align: left;
+  font-size: 25px;
+  color: #547884;
+  font-family: "Segoe UI";
+}
+.main-layout .health-indicator .protection-level-indicator {
+  margin: 0;
+  padding: 0;
+}
+.main-layout .health-indicator .isp-address {
+  font-size: 20px;
+  color: #547884;
+  font-family: "Segoe UI";
+  padding: 10px;
+}
+
+.linear-gauge {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 2px;
+  padding-top: 2px;
+}
+
+.gauge-bar {
+  left: 0;
+  transform: translateY(-50%);
+  height: 30px;
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+
+.gauge-label {
+  position: absolute;
+  top: 70%;
+  left: 0;
+  transform: translateY(-50%);
+  padding-left: 5px;
+  font-size: 11px;
+  text-align: left;
+  color: #547884;
+}
+
+/*
+$primary-font: $font-seg-ui;
+$secondary-font: $tahoma;
+$tertiary-font: $yu-gothic-ui;*/
+.input-text {
+  color: #10232B;
+  background-color: #f2fdff;
+  padding: 5px;
+  border-radius: 5px;
+}
+.input-text:focus {
+  border-radius: 5px;
+  /* or */
+  box-shadow: 0 0 1px 1px #10232B !important;
+}
+@media (max-width: 1000px) {
+  .input-text {
+    outline: 3px solid #10232B !important;
+    width: 300px;
+    height: 40px;
+  }
+}
+.input-text.text-invalid {
+  box-shadow: 0 0 0 1px rgba(178, 8, 0, 0.5), 0 0 3px rgba(178, 8, 0, 0.5);
+}
+.input-text.text-valid {
+  box-shadow: 0 0 0 1px rgba(22, 81, 24, 0.5), 0 0 3px rgba(119, 195, 132, 0.5);
+}
+
+.input-field {
+  border-radius: 5px;
+  border: solid 1px #547884;
+}
+
+::-webkit-input-placeholder {
+  color: #547884;
+}
+
+:-moz-placeholder {
+  color: #547884;
+}
+
+::-moz-placeholder {
+  color: #547884;
+}
+
+:-ms-input-placeholder {
+  color: #547884;
+}
+
+@media (max-width: 1000px) {
+  .input-field {
+    border-radius: 5px;
+    border: solid 2px #547884;
+    font-size: 25px;
+  }
+  input[type=text].text-invalid {
+    box-shadow: 0 0 0 5px rgba(178, 8, 0, 0.5), 0 0 10px rgba(178, 8, 0, 0.5);
+  }
+  input[type=text].text-valid {
+    box-shadow: 0 0 0 5px rgba(22, 81, 24, 0.5), 0 0 10px rgba(119, 195, 132, 0.5);
+  }
+}
+.interactive-row-element .input-text-header-header {
+  font-family: Tahoma;
+  color: #547884;
+  font-size: 12px;
+  margin-left: 3px;
+  margin-bottom: 4px;
+}
+.interactive-row-element .validation-message-section {
+  text-align: center;
+  height: 30px;
+  width: 100%;
+}
+.interactive-row-element .input-text-header {
+  font-family: Tahoma;
+  color: #547884;
+  font-size: 15px;
+  margin-left: 3px;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+.interactive-row-element button {
+  color: #547884;
+  background-color: transparent;
+  border: solid 1px #547884;
+  border-radius: 6px;
+  font-size: 12px;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+.interactive-row-element button:hover {
+  color: #ecfcff;
+  border: solid 1px #547884;
+  background-color: #10232B;
+}
+.interactive-row-element button:focus {
+  outline: 1px solid #10232B;
+}
+.interactive-row-element button:disabled {
+  opacity: 0.5;
+}
+.interactive-row-element button:disabled:hover {
+  color: #547884;
+  background-color: transparent;
+  border: solid 1px #547884;
+}
+
+.email-adress-submit {
+  margin-top: 10px !important;
+}
+
+@media (max-width: 1000px) {
+  .interactive-row-element {
+    padding-top: 1em;
+  }
+  .interactive-row-element .message--success {
+    max-width: 50%;
+    padding: 5px;
+    font-family: "Lucida Sans";
+  }
+  .interactive-row-element .message--warning {
+    padding: 5px;
+    max-width: 50%;
+    font-family: "Lucida Sans";
+  }
+  .interactive-row-element .validation-message-section {
+    margin: auto;
+    height: 30px;
+    width: 100%;
+  }
+  .interactive-row-element .input-text-header-header {
+    font-size: 22px;
+    margin-left: 3px;
+    margin-bottom: 2px;
+  }
+  .interactive-row-element .input-text-header {
+    font-size: 25px;
+    margin-left: 3px;
+    margin-bottom: 5px;
+    font-weight: 600;
+  }
+  .interactive-row-element .input-text-header-header {
+    font-size: 12px;
+    margin-left: 3px;
+    margin-bottom: 2px;
+  }
+  .interactive-row-element .input-text-header {
+    font-size: 15px;
+    margin-left: 3px;
+    margin-bottom: 5px;
+    font-weight: 600;
+  }
+  .interactive-row-element .input-text-header-header {
+    font-size: 15px;
+    margin-left: 3px;
+    margin-bottom: 4px;
+  }
+  .interactive-row-element .input-text-header {
+    font-size: 20px;
+    margin-left: 3px;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .interactive-row-element .email-adress-submit {
+    margin-top: 10px !important;
+  }
+  .interactive-row-element button {
+    border-radius: 5px;
+    border: solid 1px #547884;
+    outline: solid 1px #547884;
+    font-size: 20px;
+    padding: 10px;
+    margin: 5px;
+  }
+  .interactive-row-element button:hover {
+    border-radius: 5px;
+    color: #ecfcff;
+    outline: solid 1px #547884;
+    border: solid 1px #547884;
+    background-color: #10232B;
+  }
+  .interactive-row-element button:focus {
+    border-radius: 5px;
+    outline: 1px solid #10232B;
+    border: solid 1px #547884;
+  }
+  .interactive-row-element button:disabled {
+    opacity: 0.5;
+  }
+  .interactive-row-element button:disabled:hover {
+    color: #547884;
+    background-color: transparent;
+    border: solid 1px #547884;
+  }
+}
+.stats-section .linear-gauge {
+  display: flex;
+  height: 50px;
+  text-align: center;
+}
+.stats-section .gauge-bar {
+  color: #ecfcff;
+  flex-grow: 1;
+  height: 100%;
+  border-radius: 5px;
+  height: 20px;
+  margin-top: 30px;
+  margin-left: 1px;
+  padding: 5px;
+}
+.stats-section .color1 {
+  background-color: #10232B;
+}
+.stats-section .color2 {
+  background-color: #547884;
+}
+.stats-section .color3 {
+  background-color: #27758F;
+}
+.stats-section .legend {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+.stats-section .legend-item {
+  display: flex;
+  align-items: center;
+  margin-right: 25px;
+}
+.stats-section .legend-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+.stats-section .legend-text {
+  font-size: 14px;
+  float: left;
+  font-family: "Segoe UI";
+  color: #547884;
+}
+
+.log-section .log-message-board {
+  background-color: #10232B;
+  height: 100%;
+  border-radius: 10px;
+  border: 1px solid #547884;
+}
+.log-section .log-message-board_title {
+  color: #547884;
+  font-family: "Segoe UI";
+  font-size: larger;
+}
+.log-section .log-message-board_title_clear-button {
+  color: #547884;
+  background-color: transparent;
+  border-radius: 50%;
+  border: none;
+  border-color: #547884;
+  margin-right: 15px;
+  margin-top: 5px;
+  float: right;
+  font-size: large;
+}
+.log-section .log-messages {
+  height: 90%;
+  border: 1px solid #ecfcff;
+  margin: 10px 10px 10px 10px;
+  overflow-y: auto;
+}
+.log-section .log-messages_test-time {
+  color: yellow;
+}
+.log-section .log-messages_message_time {
+  padding-right: 5px;
+  color: #006600;
+  font-family: inherit;
+  font-family: "Courier New";
+}
+.log-section .log-messages_message_type_information {
+  padding-right: 5px;
+  color: #ffff99;
+  font-family: inherit;
+  font-family: "Courier New";
+  font-size: small;
+}
+.log-section .log-messages_message_type_warning {
+  padding-right: 5px;
+  color: #ffa31a;
+  font-family: "Courier New";
+  font-size: small;
+}
+.log-section .log-messages_message_type_error {
+  padding-right: 5px;
+  color: #e60000;
+  font-family: "Courier New";
+  font-size: small;
+}
+.log-section .log-messages_message_type_debug {
+  padding-right: 5px;
+  color: #3366ff;
+  font-family: "Courier New";
+  font-size: small;
+}
+.log-section .log-messages_message_service {
+  padding-right: 5px;
+  color: #006600;
+  font-family: "Courier New";
+}
+.log-section .log-messages_message_message {
+  padding-right: 5px;
+  color: #009933;
+  font-family: "Courier New";
+  text-align: left;
+}
+
+body .message_success {
+  background-color: #547884;
+  color: #ecfcff;
+  border-radius: 5px;
+  max-width: 30%;
+  margin: auto;
+  padding: 5px;
+  font-family: "Segoe UI";
+  text-align: center;
+}
+body .message_warning {
+  background-color: #EB8C45;
+  color: #FFFFFF;
+  border-radius: 5px;
+  max-width: 30%;
+  margin: auto;
+  padding: 5px;
+  font-family: "Segoe UI";
+  text-align: center;
+}
+
+/*# sourceMappingURL=data:application/json;charset=utf-8,%7B%22version%22:3,%22sourceRoot%22:%22%22,%22sources%22:%5B%22file:///C:/Users/Victor/source/repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/bootstrap-overrides/_bootstrap-overrides.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/layout/_main-layout.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/partials/_variables.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/components/_health-indicator.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/components/_linear-gauge.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/components/_InputText.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/components/_request-email.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/components/_request-division.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/components/_log-message-board.scss%22,%22file:///C:/Users/Victor/source/repos/ISPAddressChecker/ISPAddressCheckerStatusDashboard/wwwroot/scss/components/_display-messages.scss%22%5D,%22names%22:%5B%5D,%22mappings%22:%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%22%7D */

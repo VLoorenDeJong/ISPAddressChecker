@@ -1,0 +1,55 @@
+﻿.main-layout {
+    .health-indicator {
+        margin: 0 auto;
+        background-color: $primary-color;
+        color: $tertiary-color;
+        border-end-end-radius: 30px;
+        border-end-start-radius: 30px;
+        text-align: center;
+        width: 90%;
+        max-width: 550px;
+        padding-left: 5px;
+        padding-right: 5px;
+        padding-bottom: 10px;
+
+        .uptime-indicator {
+            justify-content: space-between;
+            align-items: center;
+            display: flex;
+        }
+
+        .uptime-icon {
+            flex: 1;
+            text-align: center;
+            font-size: xx-large;
+            color: $secondary-color;
+        }
+
+        .days-counter {
+            flex: 1;
+            text-align: left;
+            font-size: 25px;
+            color: $secondary-color;
+        }
+
+        .clock {
+            flex: 1;
+            text-align: left;
+            font-size: 25px;
+            color: $secondary-color;
+            font-family: $primary-font;
+        }
+
+        .protection-level-indicator {
+            margin: 0;
+            padding: 0;
+        }
+
+        .isp-address {
+            font-size: 20px;
+            color: $secondary-color;
+            font-family: $primary-font;
+            padding: 10px;
+        }
+    }
+}
