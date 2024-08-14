@@ -248,6 +248,9 @@ orleans.codegen.cs
 # (https://github.com/github/gitignore/pull/1529#issuecomment-104372622)
 #bower_components/
 
+# Ignore appsettings.Development.json in all subdirectories
+**/appsettings.Development.json
+
 # RIA/Silverlight projects
 Generated_Code/
 
@@ -301,6 +304,9 @@ node_modules/
 **/*.Server/GeneratedArtifacts
 **/*.Server/ModelManifest.xml
 _Pvt_Extensions
+
+# Ignore appsettings.Development.json in all subdirectories
+**/appsettings.Development.json
 
 # Paket dependency manager
 .paket/paket.exe
