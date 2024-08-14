@@ -20,10 +20,13 @@ builder.Configuration
     .AddEnvironmentVariables(); // Add environment variables
 
 #if DEBUG
-// Log all configuration values
+// Log only appsettings values
 foreach (var kvp in builder.Configuration.AsEnumerable())
 {
-    Console.WriteLine($"{kvp.Key}: {kvp.Value}");
+    if (kvp.Key.StartsWith(AppsettingsSections.ApplicationSettings) || kvp.Key.StartsWith(AppsettingsSections.EmailSettings))
+    {
+        Console.WriteLine($"{kvp.Key}: {kvp.Value}");
+    }
 }
 #endif
 
