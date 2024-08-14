@@ -24,6 +24,31 @@ namespace ISPAddressCheckerDashboard.Services
         {
             CheckAppsettingsVersionMatch(appSettings);
             if (CheckEmailSettings(emailSettings)) await _emailService.SendConfigSuccessMail();
+            CheckAPIBaseURL(appSettings);
+        }
+
+        private void CheckAPIBaseURL(IOptions<DashboardApplicationSettingsOptions> appSettings)
+        {
+            if (!string.IsNullOrWhiteSpace(appSettings?.Value?.APIBaseURL) && !string.Equals(StandardAppsettingsValues.APIBaseURL, appSettings?.Value?.APIBaseURL, StringComparison.CurrentCultureIgnoreCase))
+            {
+                _logger!.LogInformation("Startup -> ApplicationConfigCheckService -> CheckAPIBaseURL -> APIBaseURL configured, BaseURL: {url}", appSettings!.Value.APIBaseURL);
+
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"Startup -> ApplicationConfigCheckService -> CheckAPIBaseURL -> APIBaseURL configured, BaseURL: {appSettings!.Value.APIBaseURL}");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+            else
+            {
+                _logger!.LogCritical("Startup -> ApplicationConfigCheckService -> CheckAPIBaseURL -> APIBaseURL NOT configured correctly, BaseURL: {url}", appSettings!.Value.APIBaseURL);
+
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine($"Startup -> ApplicationConfigCheckService -> CheckAPIBaseURL -> APIBaseURL NOT configured correctly, BaseURL:{appSettings!.Value.APIBaseURL}");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Make sure to configure the APIBaseURL in appsettings");
+                Console.ForegroundColor = ConsoleColor.White;
+
+                throw new ArgumentException("APIBaseURL not configured! DashboardApplicationSettingsOptions & appsettings");
+            }
         }
 
         private void CheckAppsettingsVersionMatch(IOptions<DashboardApplicationSettingsOptions> appSettings)
@@ -32,17 +57,20 @@ namespace ISPAddressCheckerDashboard.Services
             {
 
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine($"Startup => ConfigureServices => Version match! {appSettings.Value.ExpectedAppsettingsVersion}");
+                Console.WriteLine($"Startup -> ApplicationConfigCheckService -> CheckAppsettingsVersionMatch -> Appsettings Version match! Version: {appSettings.Value.ExpectedAppsettingsVersion}");
                 Console.ForegroundColor = ConsoleColor.White;
+                _logger!.LogInformation("Startup -> ApplicationConfigCheckService -> CheckAppsettingsVersionMatch -> Appsettings Version match! Version: {version}", appSettings.Value.ExpectedAppsettingsVersion);
             }
             else
             {
                 Console.ForegroundColor = ConsoleColor.DarkRed;
-                Console.WriteLine($"Startup => ConfigureServices => Appsettings version issue!: expected: {appSettings.Value.ExpectedAppsettingsVersion} -> Current: {appSettings.Value.AppsettingsVersion}");
+                Console.WriteLine($"Startup -> ApplicationConfigCheckService -> CheckAppsettingsVersionMatch -> Appsettings version difference!: expected: {appSettings.Value.ExpectedAppsettingsVersion} -> Current: {appSettings.Value.AppsettingsVersion}");
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Make sure the appsettings match");
                 Console.ForegroundColor = ConsoleColor.White;
-                throw new ArgumentException("Appsettings version mis match!");
+                _logger!.LogCritical("Startup -> ApplicationConfigCheckService -> CheckAppsettingsVersionMatch -> Appsettings Version difference! Expected from DashboardApplicationSettingsOptions: {exp} -> Current from appsettings: {appsett}", appSettings.Value.ExpectedAppsettingsVersion, appSettings.Value.AppsettingsVersion);
+                throw new ArgumentException("Appsettings version mis match! DashboardApplicationSettingsOptions & appsettings");
+
             }
         }
 

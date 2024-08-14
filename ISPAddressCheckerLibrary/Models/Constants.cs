@@ -24,6 +24,7 @@
         public const string MailServer = "MailServer";
         public const string UserName = "UserName";
         public const string Password = "Pa$$w0rd";
+        public const string APIBaseURL = "YourAPIBaseURL";
     }
     public class ClockHubMethods
     {
