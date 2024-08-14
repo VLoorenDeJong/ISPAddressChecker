@@ -9,6 +9,25 @@ using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
+string environment = builder.Environment.EnvironmentName;
+Console.ForegroundColor = ConsoleColor.Green;
+Console.WriteLine($"Program.cs -> Environment: {environment}");
+Console.ResetColor();
+
+// Add environment-specific configuration files
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables(); // Add environment variables
+
+#if DEBUG
+// Log all configuration values
+foreach (var kvp in builder.Configuration.AsEnumerable())
+{
+    Console.WriteLine($"{kvp.Key}: {kvp.Value}");
+}
+#endif
+
 // Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

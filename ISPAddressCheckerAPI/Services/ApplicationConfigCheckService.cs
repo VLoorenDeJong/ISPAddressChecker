@@ -175,14 +175,12 @@ namespace ISPAddressCheckerAPI.Services
 
         private void ReportConfigError(string errorMessage, ILogger logger)
         {
-            Console.WriteLine(errorMessage);
-            logger.LogInformation(errorMessage);
+            logger.LogCritical(errorMessage);
         }
 
         private void ThrowEmailConfigError(string errorMessage, ILogger logger)
         {
-            logger.LogInformation(errorMessage);
-            Console.WriteLine(errorMessage);
+            logger.LogCritical(errorMessage);
             throw new Exception(errorMessage);
         }
     }
