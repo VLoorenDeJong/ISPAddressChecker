@@ -30,8 +30,14 @@ foreach (var kvp in builder.Configuration.AsEnumerable())
 }
 #endif
 
+
+
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddHttpClient();
+
+// Add services for controllers
+builder.Services.AddControllers();
 
 builder.Services.Configure<DashboardApplicationSettingsOptions>(builder.Configuration.GetSection(AppsettingsSections.ApplicationSettings));
 builder.Services.Configure<EmailSettingsOptions>(builder.Configuration.GetSection(AppsettingsSections.EmailSettings));
@@ -73,7 +79,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.MapControllers(); // Map API controllers
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 

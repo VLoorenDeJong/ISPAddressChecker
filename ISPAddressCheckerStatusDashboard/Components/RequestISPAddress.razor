@@ -7,6 +7,8 @@
 @inject IStatusService statusService;
 @inject ICounterService counterService;
 @inject ILogger<RequestISPAddress> logger;
+@inject HttpClient Http;
+@inject NavigationManager navManager;
 
 
 @implements IDisposable
@@ -59,7 +61,7 @@
 
     protected override void OnParametersSet()
     {
-        if(string.IsNullOrWhiteSpace(HostISPAddress)) HostISPAddress = statusService.CurrentStatus?.CurrentISPAddress;
+        if (string.IsNullOrWhiteSpace(HostISPAddress)) HostISPAddress = statusService.CurrentStatus?.CurrentISPAddress;
         base.OnParametersSet();
     }
 
@@ -72,48 +74,54 @@
         infoLogEntry.Message = $"ISP address requested";
         await LogEntryCreated.InvokeAsync(infoLogEntry);
 
-        string endpointURL = await ispService.GetCHeckISPAddressEndpointURLAsync();
-
-        if (!string.IsNullOrEmpty(endpointURL))
+        try
         {
-            counterService.AddDashboardISPAddressRequestCounter();
-            var httpClient = new HttpClient();
-
-            try
+            string baseURI = navManager.BaseUri;
+            string apiEndpointURL = $"{baseURI}api/ISPInfo/GetISPInfo";
+            var result = await Http.GetAsync(apiEndpointURL);
+            if (result is not null && result.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                var response = await httpClient.GetAsync(endpointURL);
-                if (response.IsSuccessStatusCode)
-                {
-                    visitorIspAddress = await response.Content.ReadAsStringAsync();
-
-                    if (!string.IsNullOrWhiteSpace(visitorIspAddress))
-                    {
-                        ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
-                        newLogEntry.LogType = LogType.Information;
-                        newLogEntry.Service = $"GetVisitorIspAddress";
-                        newLogEntry.Message = $"ISP address returned {StringHelpers.MakeISPAddressLogReady(visitorIspAddress)}";
-                        await LogEntryCreated.InvokeAsync(newLogEntry);
-                    }
-                    else
-                    {
-                        ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
-                        newLogEntry.LogType = LogType.Error;
-                        newLogEntry.Service = $"Dashboard -> GetVisitorIspAddress";
-                        newLogEntry.Message = $"No ISP address returned";
-                        await LogEntryCreated.InvokeAsync(newLogEntry);
-                    }
-                }
+                visitorIspAddress = await result.Content.ReadAsStringAsync();
             }
-            catch (Exception ex)
+
+        }
+        catch (Exception ex)
+        {
+            
+            throw;
+        }
+        counterService.AddDashboardISPAddressRequestCounter();
+
+        try
+        {
+           // visitorIspAddress = await ispService.GetVisitorISPAddressAsync();
+
+            if (!string.IsNullOrWhiteSpace(visitorIspAddress))
             {
-                logger.LogError("GetVisitorIspAddress ->  Exception: {ex}", ex.Message);
-                
+                ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
+                newLogEntry.LogType = LogType.Information;
+                newLogEntry.Service = $"GetVisitorIspAddress";
+                newLogEntry.Message = $"ISP address returned {StringHelpers.MakeISPAddressLogReady(visitorIspAddress)}";
+                await LogEntryCreated.InvokeAsync(newLogEntry);
+            }
+            else
+            {
                 ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
                 newLogEntry.LogType = LogType.Error;
                 newLogEntry.Service = $"Dashboard -> GetVisitorIspAddress";
-                newLogEntry.Message = $"Something went wrong, is the dashboard enabled?";
+                newLogEntry.Message = $"No ISP address returned";
                 await LogEntryCreated.InvokeAsync(newLogEntry);
             }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError("GetVisitorIspAddress ->  Exception: {ex}", ex.Message);
+
+            ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
+            newLogEntry.LogType = LogType.Error;
+            newLogEntry.Service = $"Dashboard -> GetVisitorIspAddress";
+            newLogEntry.Message = $"Something went wrong, is the dashboard enabled?";
+            await LogEntryCreated.InvokeAsync(newLogEntry);
         }
 
         await statusService.GetStatus();
