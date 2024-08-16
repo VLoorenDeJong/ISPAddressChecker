@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ISPAddressChecker.Models.Constants;
+using ISPAddressCheckerStatusDashboard.Services;
+using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace ISPAddressCheckerStatusDashboard.Controllers
@@ -7,10 +9,26 @@ namespace ISPAddressCheckerStatusDashboard.Controllers
     [Route("api/[controller]")]
     public class ISPInfoController : ControllerBase
     {
-        [HttpGet("GetISPInfo")]
-        public ActionResult<string> GetISPInfo()
+        private readonly IHTTPClientControllerMessageService _messageService;
+
+        public ISPInfoController(IHTTPClientControllerMessageService messageService)
         {
-            var ipAddress = GetClientIpAddress(HttpContext);
+            _messageService = messageService;
+        }
+
+        [HttpGet("GetVisitorISP")]
+        public ActionResult<string> GetVisitorISP()
+        {
+            var ipAddress = GetVisitorISPAddress(HttpContext);
+
+            //_logger.LogInformation("ISPAddressCheckerAPI.SignalRHubs -> {method} -> called", LogHubMethods.SendLogToClients);
+
+            ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
+            newLogEntry.LogType = LogType.Information;
+            newLogEntry.Service = $"Dashboard -> RequestEmail";
+            newLogEntry.Message = $"RequestId: something";
+
+            _messageService.SendLogMessageToDashboard("Green");
 
             if (string.IsNullOrEmpty(ipAddress))
             {
@@ -20,7 +38,7 @@ namespace ISPAddressCheckerStatusDashboard.Controllers
             return Ok(ipAddress);
         }
 
-        private string GetClientIpAddress(HttpContext context)
+        private string GetVisitorISPAddress(HttpContext context)
         {
             string? ipAddress = context.Request.Headers.ContainsKey("X-Forwarded-For")
                 ? context.Request.Headers["X-Forwarded-For"].ToString()
@@ -36,7 +54,12 @@ namespace ISPAddressCheckerStatusDashboard.Controllers
                     }
                     ipAddress = address.MapToIPv4().ToString();
                 }
+
+
+
                 return ipAddress;
+
+
             }
             else
             {

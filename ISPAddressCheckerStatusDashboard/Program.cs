@@ -53,6 +53,7 @@ builder.Services.AddTransient<IRequestISPAddressService, RequestISPAddressServic
 builder.Services.AddTransient<IDashboardConfigCheckService, ApplicationConfigCheckService>();
 builder.Services.AddTransient<IISPAddressCheckerStatusService, ISPAddressCheckerStatusService>();
 builder.Services.AddTransient<IDashboardEmailService, EmailService>();
+builder.Services.AddTransient<IHTTPClientControllerMessageService, HTTPClientControllerMessageService>();
 
 var app = builder.Build();
 

@@ -93,7 +93,9 @@ if (dashboardActive)
 app.MapControllers();
 app.Run();
 
-
+// ToDo:finish the show your isp address
+//	        - Create log entries for log screen to controller -> Think about sending messages from service
+// ToDo: Check the HTTPClient calls in the blazor side to seee if it can be doen with API client
 // ToDo: Change request devision to failed request instead of external request of the API endpoint
 // ToDo: Add the time of the next check into the health indicator
 // ToDo: Check the functionality with real world test
@@ -102,3 +104,4 @@ app.Run();
 // ToDo: Check website with VPN for user ISP / User ISP address is not displayed
 // ToDo: Font size need to be bigger for phones
 // ToDo: Change color sceme
+

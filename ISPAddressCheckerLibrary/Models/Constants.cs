@@ -40,6 +40,12 @@
         public const string ClockHubURL = "/hubs/clock";
         public const string LogHubURL = "/hubs/log";
     }
+
+    public class BlazorEndpointURLS
+    {
+        public const string GetVisitorISPURL = "api/ISPInfo/GetVisitorISP";
+    }
+
     public enum LogType
     {
         Information,

@@ -2,6 +2,7 @@
 @using ISPAddressChecker.Models;
 @using ISPAddressChecker.Models.Constants
 @using ISPAddressChecker.Options
+@using ISPAddressCheckerStatusDashboard.Services
 @using Microsoft.AspNetCore.SignalR.Client;
 @using Microsoft.Extensions.Options
 
@@ -9,6 +10,8 @@
 @inject ILogger<Index> logger
 @inject IRequestISPAddressService requestISPAddressService;
 @inject IOptions<DashboardApplicationSettingsOptions> appSettings;
+@inject IHTTPClientControllerMessageService messageService;
+
 
 <div class="log-section">
     <div class="log-message-board">
@@ -74,6 +77,8 @@
 
         }
         await InstatiateLogHub();
+
+        messageService.OnChange += StateHasChanged;
     }
 
     public async ValueTask DisposeAsync()
@@ -237,6 +242,11 @@
     {
         logEntries.Clear();
         StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        messageService.OnChange -= StateHasChanged;
     }
 }
 
