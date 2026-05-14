@@ -5,7 +5,9 @@ using ISPAddressChecker.Options;
 using ISPAddressChecker.Models;
 using ISPAddressChecker.Models.Constants;
 using MailKit.Net.Smtp;
+using MailKit.Net.Imap;
 using MailKit.Security;
+using MailKit;
 using MimeKit;
 
 namespace ISPAddressChecker.Services
@@ -97,12 +99,13 @@ namespace ISPAddressChecker.Services
 
                     report.Success = true;
                     report.Message = "E-mail has been send";
+                    await SaveToSentFolderAsync(subject, emailBody, sendEmailDetails.EmailAddress!);
                 }
                 catch (MailKit.Net.Smtp.SmtpCommandException ex)
                 {
                     Type exceptionType = ex.GetType();
-                    _logger.LogError(ex, "SendEmail -> Email account password might be wrong. Exception type: {exceptionType}  Message:{message}", exceptionType, ex.Message);
-                    await _loghub.SendLogErrorAsync(serviceName, $"SendEmail -> Email account password might be wrong. Exception type: {exceptionType}  Message:{ex.Message}");
+                    _logger.LogError(ex, "SendEmail -> SMTP error. StatusCode: {statusCode}, Exception type: {exceptionType}, Message: {message}", ex.StatusCode, exceptionType, ex.Message);
+                    await _loghub.SendLogErrorAsync(serviceName, $"SendEmail -> SMTP error. StatusCode: {ex.StatusCode}, Exception type: {exceptionType}, Message: {ex.Message}");
 
                     report.Success = false;
                     report.Message = $"Sending E-mail failed";
@@ -466,6 +469,55 @@ namespace ISPAddressChecker.Services
             await _loghub.SendLogInfoAsync(serviceName, $"SendNoISPAddressReturnedEmail -> Sending: NoISPAddressReturnedEmail");
 
             await SendEmail("ISPAddressCheckerAPI: No ISP adresses were returned", APIEmailDetails, emailBody);
+        }
+
+        private async Task SaveToSentFolderAsync(string subject, string emailBody, string toAddress)
+        {
+            if (string.IsNullOrWhiteSpace(_emailSettings.IMAPServer))
+            {
+                return;
+            };
+
+            try
+            {
+                var mimeMessage = new MimeMessage();
+                mimeMessage.From.Add(new MailboxAddress(string.Empty, _emailSettings.EmailFromAddress!));
+                mimeMessage.To.Add(new MailboxAddress(string.Empty, toAddress));
+                mimeMessage.Subject = subject;
+                mimeMessage.Body = new BodyBuilder { HtmlBody = emailBody }.ToMessageBody();
+
+                using var imapClient = new ImapClient();
+
+                var socketOptions = _emailSettings.IMAPUseSsl
+                    ? SecureSocketOptions.SslOnConnect
+                    : SecureSocketOptions.StartTls;
+
+                await imapClient.ConnectAsync(_emailSettings.IMAPServer, _emailSettings.IMAPPort, socketOptions);
+
+                if (!_emailSettings.UseDefaultCredentials)
+                    await imapClient.AuthenticateAsync(_emailSettings.UserName!, _emailSettings.Password!);
+
+                var sentFolder = imapClient.GetFolder(SpecialFolder.Sent);
+                if (sentFolder is null)
+                {
+                    _logger.LogWarning("SaveToSentFolder -> No Sent folder found on IMAP server.");
+                    await _loghub.SendLogInfoAsync(serviceName, "SaveToSentFolder -> No Sent folder found on IMAP server.");
+                    await imapClient.DisconnectAsync(true);
+                    return;
+                }
+                await sentFolder.OpenAsync(FolderAccess.ReadWrite);
+                await sentFolder.AppendAsync(new AppendRequest(mimeMessage, MessageFlags.Seen));
+                await imapClient.DisconnectAsync(true);
+
+                _logger.LogInformation("SaveToSentFolder -> Saved to Sent folder: {subj}", subject);
+                await _loghub.SendLogInfoAsync(serviceName, $"SaveToSentFolder -> Saved to Sent folder: {subject}");
+            }
+            catch (Exception ex)
+            {
+                Type exceptionType = ex.GetType();
+                _logger.LogError(ex, "SaveToSentFolder -> Failed. Exception type: {exceptionType} Message: {message}", exceptionType, ex.Message);
+                await _loghub.SendLogErrorAsync(serviceName, $"SaveToSentFolder -> Failed. Exception type: {exceptionType} Message: {ex.Message}");
+            }
         }
 
         private SendEmailModel CreateInternalSendEmail()

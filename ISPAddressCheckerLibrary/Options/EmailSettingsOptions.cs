@@ -10,5 +10,8 @@
         public bool EnableSsl { get; set; }
         public int SMTPPort { get; set; }
         public bool UseDefaultCredentials { get; set; }
+        public string? IMAPServer { get; set; }
+        public int IMAPPort { get; set; } = 993;
+        public bool IMAPUseSsl { get; set; } = true;
     }
 }
