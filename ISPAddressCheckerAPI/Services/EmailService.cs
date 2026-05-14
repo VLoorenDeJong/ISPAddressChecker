@@ -2,10 +2,11 @@
 using ISPAddressChecker.Interfaces;
 using Microsoft.Extensions.Options;
 using ISPAddressChecker.Options;
-using System.Net.Mail;
-using System.Net;
 using ISPAddressChecker.Models;
 using ISPAddressChecker.Models.Constants;
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using MimeKit;
 
 namespace ISPAddressChecker.Services
 {
@@ -17,7 +18,6 @@ namespace ISPAddressChecker.Services
 
         private readonly APIApplicationSettingsOptions _appSettings;
 
-        private MailMessage message = new MailMessage();
         public SendEmailModel APIEmailDetails { get; private set; }
 
         private readonly ILogHubService _loghub;
@@ -41,14 +41,6 @@ namespace ISPAddressChecker.Services
             _loghub = loghub;
 
             _statusCounter = statusCounterService;
-            CreateBasicMailMessage();
-        }
-
-        private void CreateBasicMailMessage()
-        {
-            // Set the sender, recipient, subject, and body of the message
-            message.From = new MailAddress(_emailSettings.EmailFromAddress!);
-            message.Priority = MailPriority.High;
         }
 
         private string CreateEmail(string emailMessage)
@@ -72,59 +64,57 @@ namespace ISPAddressChecker.Services
         {
             ActionReportModel report = new(sendEmailDetails);
 
-
-
-            //public bool Success { get; set; }
-            //public string Message { get; set; } = string.Empty;
-
             if (_emailSettings is not null && sendEmailDetails is not null)
             {
-                // Create a new SmtpClient object within a using block
-                using (SmtpClient client = new SmtpClient())
+                var mimeMessage = new MimeMessage();
+                mimeMessage.From.Add(new MailboxAddress(string.Empty, _emailSettings.EmailFromAddress));
+                mimeMessage.Priority = MessagePriority.Urgent;
+
+                if (string.IsNullOrWhiteSpace(sendEmailDetails.EmailAddress)) sendEmailDetails.EmailAddress = _emailSettings!.EmailToAddress!;
+                mimeMessage.To.Add(new MailboxAddress(string.Empty, sendEmailDetails.EmailAddress));
+                mimeMessage.Subject = subject;
+                mimeMessage.Body = new BodyBuilder { HtmlBody = emailBody }.ToMessageBody();
+
+                try
                 {
-                    client.Host = _emailSettings.MailServer!; ;
-                    client.Port = _emailSettings.SMTPPort;
-                    client.UseDefaultCredentials = _emailSettings.UseDefaultCredentials;
-                    client.Credentials = new NetworkCredential(_emailSettings?.UserName, _emailSettings?.Password);
-                    client.EnableSsl = _emailSettings!.EnableSsl;
+                    using var client = new SmtpClient();
 
-                    message.Subject = subject;
-                    message.Body = emailBody;
-                    message.IsBodyHtml = true;
+                    // Port 465 = implicit SSL (SslOnConnect); port 587 = STARTTLS (StartTls)
+                    var socketOptions = _emailSettings.SMTPPort == 465
+                        ? SecureSocketOptions.SslOnConnect
+                        : _emailSettings.EnableSsl ? SecureSocketOptions.StartTls : SecureSocketOptions.None;
 
-                    if (string.IsNullOrWhiteSpace(sendEmailDetails.EmailAddress)) sendEmailDetails.EmailAddress = _emailSettings!.EmailToAddress!;
-                    message.To.Add(new MailAddress(sendEmailDetails.EmailAddress));
+                    await client.ConnectAsync(_emailSettings.MailServer, _emailSettings.SMTPPort, socketOptions);
 
-                    try
-                    {
-                        // Send the email message
-                       client.Send(message);
+                    if (!_emailSettings.UseDefaultCredentials)
+                        await client.AuthenticateAsync(_emailSettings.UserName, _emailSettings.Password);
 
+                    await client.SendAsync(mimeMessage);
+                    await client.DisconnectAsync(true);
 
-                        _logger.LogInformation("SendEmail -> Request Id: {id}, Sending: {subj}", sendEmailDetails.Id, subject);
-                        await _loghub.SendLogInfoAsync(serviceName, $"RequestId: {sendEmailDetails.Id}, SendEmail -> Sending: {subject}");
+                    _logger.LogInformation("SendEmail -> Request Id: {id}, Sending: {subj}", sendEmailDetails.Id, subject);
+                    await _loghub.SendLogInfoAsync(serviceName, $"RequestId: {sendEmailDetails.Id}, SendEmail -> Sending: {subject}");
 
-                        report.Success = true;
-                        report.Message = "E-mail has been send";
-                    }
-                    catch (System.Net.Mail.SmtpException ex)
-                    {
-                        Type exceptionType = ex.GetType();
-                        _logger.LogError("SendEmail -> Email account password might be wrong. Exception type: {exceptionType}  Message:{message}", exceptionType, ex.Message);
-                        await _loghub.SendLogErrorAsync(serviceName, $"SendEmail -> Email account password might be wrong. Exception type: {exceptionType}  Message:{ex.Message}");
+                    report.Success = true;
+                    report.Message = "E-mail has been send";
+                }
+                catch (MailKit.Net.Smtp.SmtpCommandException ex)
+                {
+                    Type exceptionType = ex.GetType();
+                    _logger.LogError("SendEmail -> Email account password might be wrong. Exception type: {exceptionType}  Message:{message}", exceptionType, ex.Message);
+                    await _loghub.SendLogErrorAsync(serviceName, $"SendEmail -> Email account password might be wrong. Exception type: {exceptionType}  Message:{ex.Message}");
 
-                        report.Success = false;
-                        report.Message = $"Sending E-mail failed";
-                    }
-                    catch (Exception ex)
-                    {
-                        Type exceptionType = ex.GetType();
-                        _logger.LogError("SendEmail -> Request Id: {id}, Something went wrong with sending the email. Exception type: {exceptionType} Message:{message}", sendEmailDetails.Id, exceptionType, ex.Message);
-                        await _loghub.SendLogErrorAsync(serviceName, $"RequestId: {sendEmailDetails.Id}, SendEmail -> Something went wrong with sending the email. Exception type: {exceptionType} Message:{ex.Message}");
+                    report.Success = false;
+                    report.Message = $"Sending E-mail failed";
+                }
+                catch (Exception ex)
+                {
+                    Type exceptionType = ex.GetType();
+                    _logger.LogError("SendEmail -> Request Id: {id}, Something went wrong with sending the email. Exception type: {exceptionType} Message:{message}", sendEmailDetails.Id, exceptionType, ex.Message);
+                    await _loghub.SendLogErrorAsync(serviceName, $"RequestId: {sendEmailDetails.Id}, SendEmail -> Something went wrong with sending the email. Exception type: {exceptionType} Message:{ex.Message}");
 
-                        report.Success = false;
-                        report.Message = $"Sending E-mail failed";
-                    }
+                    report.Success = false;
+                    report.Message = $"Sending E-mail failed";
                 }
             }
 
