@@ -25,7 +25,14 @@ foreach (var kvp in builder.Configuration.AsEnumerable())
 {
     if (kvp.Key.StartsWith(AppsettingsSections.ApplicationSettings) || kvp.Key.StartsWith(AppsettingsSections.EmailSettings))
     {
-        Console.WriteLine($"{kvp.Key}: {kvp.Value}");
+        if (kvp.Key.EndsWith(":Password", StringComparison.OrdinalIgnoreCase) || kvp.Key.EndsWith(":password", StringComparison.OrdinalIgnoreCase))
+        {
+            Console.WriteLine($"{kvp.Key}: *****");
+        }
+        else
+        {
+            Console.WriteLine($"{kvp.Key}: {kvp.Value}");
+        }
     }
 }
 #endif
