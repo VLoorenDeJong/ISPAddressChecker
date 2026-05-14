@@ -14,7 +14,7 @@ namespace ISPAddressChecker.Interfaces
         Task SendExternalAPIExceptionEmail(string APIUrl, string exceptionType, string exceptionMessage);
         Task SendExternalAPIHTTPExceptionEmail(string APIUrl, string exceptionType, string exceptionMessage);
         Task<ActionReportModel> SendHeartBeatEmail(IISPAddressCounterService counterService, string oldISPAddress, string currentISPAddress, string newISPAddress, Dictionary<string, string> externalISPCheckResults, SendEmailModel sendEmailDetails, TimeSpan uptime);
-        Task<ActionReportModel> SendISPAddressChangedEmail(string externalISPAddress, string oldISPAddress, IISPAddressCounterService counterService, double interval, SendEmailModel sendEmailDetails);
+        Task<ActionReportModel> SendISPAddressChangedEmail(string newIPv4Address, string oldIPv4Address, string newIPv6Address, string oldIPv6Address, IISPAddressCounterService counterService, double interval, SendEmailModel sendEmailDetails);
         Task SendISPAPIExceptionEmail(string exceptionType, string exceptionMessage);
         Task SendISPAPIHTTPExceptionEmail(string exceptionType, string exceptionMessage);
         Task SendNoISPAddressReturnedEmail(string oldISPAddress, IISPAddressCounterService counterService, double interval);

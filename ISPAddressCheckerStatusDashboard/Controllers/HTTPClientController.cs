@@ -1,6 +1,8 @@
 ﻿using ISPAddressChecker.Models.Constants;
+using ISPAddressChecker.Options;
 using ISPAddressCheckerStatusDashboard.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System.Net;
 
 namespace ISPAddressCheckerStatusDashboard.Controllers
@@ -10,10 +12,12 @@ namespace ISPAddressCheckerStatusDashboard.Controllers
     public class ISPInfoController : ControllerBase
     {
         private readonly IHTTPClientControllerMessageService _messageService;
+        private readonly DashboardApplicationSettingsOptions _settings;
 
-        public ISPInfoController(IHTTPClientControllerMessageService messageService)
+        public ISPInfoController(IHTTPClientControllerMessageService messageService, IOptions<DashboardApplicationSettingsOptions> settings)
         {
             _messageService = messageService;
+            _settings = settings.Value;
         }
 
         [HttpGet("GetVisitorISP")]
@@ -52,7 +56,22 @@ namespace ISPAddressCheckerStatusDashboard.Controllers
                     {
                         address = IPAddress.Loopback;
                     }
-                    ipAddress = address.MapToIPv4().ToString();
+
+                    if (_settings.IPVersionPreference == IPVersionPreference.IPv4)
+                    {
+                        // Unwrap IPv4-mapped IPv6 (::ffff:1.2.3.4) to plain IPv4.
+                        // Pure IPv6 clients have no IPv4 to return, so fall back to their IPv6 address.
+                        ipAddress = address.IsIPv4MappedToIPv6
+                            ? address.MapToIPv4().ToString()
+                            : address.ToString();
+                    }
+                    else
+                    {
+                        // IPv6 preference: map plain IPv4 addresses to their IPv6 representation (::ffff:x.x.x.x).
+                        ipAddress = address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork
+                            ? address.MapToIPv6().ToString()
+                            : address.ToString();
+                    }
                 }
 
 

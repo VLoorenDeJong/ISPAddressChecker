@@ -363,7 +363,7 @@ namespace ISPAddressChecker.Services
             await SendEmail("ISPAddressCheckerAPI: API Call error", APIEmailDetails, emailBody);
         }
 
-        public async Task<ActionReportModel> SendISPAddressChangedEmail(string externalISPAddress, string oldISPAddress, IISPAddressCounterService counterService, double interval, SendEmailModel sendEmailDetails)
+        public async Task<ActionReportModel> SendISPAddressChangedEmail(string newIPv4Address, string oldIPv4Address, string newIPv6Address, string oldIPv6Address, IISPAddressCounterService counterService, double interval, SendEmailModel sendEmailDetails)
         {
             string hostingProviderLink = _emailSettings?.DNSHostProviders is not null
                 ? string.Concat(_emailSettings.DNSHostProviders.Select(p =>
@@ -376,7 +376,19 @@ namespace ISPAddressChecker.Services
 
             string emailLink = sendEmailDetails.EmailType != SendEmailTypeEnum.Internal ? externalEmailLink : hostingProviderLink;
 
-            string message = @$"<p><strong> {externalISPAddress} </strong> is your new ISP adress</p>"
+            string ipv4Section = !string.IsNullOrWhiteSpace(newIPv4Address)
+                ? $"<p>New IPv4 address: <strong>{newIPv4Address}</strong></p>"
+                  + $"<p>Old IPv4 address: <strong>{oldIPv4Address}</strong></p>"
+                : "<p>IPv4: <em>no change detected</em></p>";
+
+            string ipv6Section = !string.IsNullOrWhiteSpace(newIPv6Address)
+                ? $"<p>New IPv6 address: <strong>{newIPv6Address}</strong></p>"
+                  + $"<p>Old IPv6 address: <strong>{oldIPv6Address}</strong></p>"
+                : "<p>IPv6: <em>no change detected</em></p>";
+
+            string message = $"<p><strong>Your ISP address has changed</strong></p>"
+                              + ipv4Section
+                              + ipv6Section
                               + $"{emailLink}"
                               + $"<p>External API calls: <strong>{counterService.GetExternalServiceUsekCounter()}</strong></p>"
                               + $"<p>I wish you a splendid rest of your day!</p>"
@@ -389,7 +401,6 @@ namespace ISPAddressChecker.Services
                               + $"<p>API Calls: <strong> {counterService.GetServiceRequestCounter()} </strong></p>"
                               + $"<p>Script runs: <strong> {counterService.GetServiceCheckCounter()} </strong></p>"
                               + $"<p>Endpoint calls: <strong> {counterService.GetISPEndpointRequestsCounter()} </strong></p>"
-                              + $"<p>The old ISP adrdess was: <strong>{oldISPAddress}</strong></p>"
                               ;
 
             string emailBody = CreateEmail(message);

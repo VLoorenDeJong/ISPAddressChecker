@@ -234,10 +234,19 @@ namespace ISPAddressCheckerAPI.Services
 
                         string ISPAddress = await response.Content.ReadAsStringAsync();
 
+                        // Try to extract IPv4 first, then fall back to IPv6
                         Match match = Regex.Match(ISPAddress, @"\b(?:\d{1,3}\.){3}\d{1,3}\b");
                         if (match.Success)
                         {
-                            ISPAddress = match.Value; // Output: ISP adress
+                            ISPAddress = match.Value;
+                        }
+                        else
+                        {
+                            Match ipv6Match = Regex.Match(ISPAddress, @"(?:[0-9a-fA-F]{0,4}:){2,7}[0-9a-fA-F]{0,4}");
+                            if (ipv6Match.Success)
+                            {
+                                ISPAddress = ipv6Match.Value;
+                            }
                         }
 
                         _logger.LogInformation("GetISPAddressFromBackupAPIs -> URL:{APIUrl} Respons:{ispAddress}", APIUrl, StringHelpers.MakeISPAddressLogReady(ISPAddress));
@@ -280,90 +289,103 @@ namespace ISPAddressCheckerAPI.Services
 
             if (ISPAddressChecks.Count > 0)
             {
-                _logger.LogInformation("GetISPAddressFromBackupAPIs -> More then one result:{count}", ISPAddressChecks.Count);
-                await _logHub.SendLogInfoAsync(serviceName, $"GetISPAddressFromBackupAPIs -> More then one result: {ISPAddressChecks.Count}");
+                // Split results by IP version so mixed IPv4/IPv6 responses are handled independently
+                var ipv4Checks = ISPAddressChecks
+                    .Where(kvp => System.Net.IPAddress.TryParse(kvp.Value.Trim(), out var a)
+                                  && a.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                    .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-                // Get the uniwue ISP adresses from the dictionary
-                List<string>? uniqueAddresses = ISPAddressChecks?.Values?.Distinct()?.ToList()!;
+                var ipv6Checks = ISPAddressChecks
+                    .Where(kvp => System.Net.IPAddress.TryParse(kvp.Value.Trim(), out var a)
+                                  && a.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
+                    .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
+                _logger.LogInformation("GetISPAddressFromBackupAPIs -> IPv4 results:{v4}, IPv6 results:{v6}", ipv4Checks.Count, ipv6Checks.Count);
+                await _logHub.SendLogInfoAsync(serviceName, $"GetISPAddressFromBackupAPIs -> IPv4 results: {ipv4Checks.Count}, IPv6 results: {ipv6Checks.Count}");
 
-                if (uniqueAddresses!.Count == 1)
+                // ── Process IPv4 ────────────────────────────────────────────────
+                if (ipv4Checks.Count > 0)
                 {
-                    _logger.LogInformation("GetISPAddressFromBackupAPIs -> {count}x Same ISPAddress response:{ISPA}", ISPAddressChecks!.Count, StringHelpers.MakeISPAddressLogReady(uniqueAddresses[0]!));
-                    await _logHub.SendLogInfoAsync(serviceName, $"GetISPAddressFromBackupAPIs -> {ISPAddressChecks!.Count}x Same ISPAddress response: {StringHelpers.MakeISPAddressLogReady(uniqueAddresses[0]!)}");
+                    List<string> uniqueV4 = ipv4Checks.Values.Distinct().ToList();
 
-                    // Update new ISP adress
-
-                    _logger.LogInformation("GetISPAddressFromBackupAPIs -> External ISPAddress BEFORE set:{ISPA}", StringHelpers.MakeISPAddressLogReady(_iSPAddressService.GetExternalISPAddress()));
-                    await _logHub.SendLogInfoAsync(serviceName, $"GetISPAddressFromBackupAPIs -> External ISPAddress BEFORE set: {StringHelpers.MakeISPAddressLogReady(_iSPAddressService.GetExternalISPAddress())}");
-
-                    _iSPAddressService.SetExternalISPAddress(uniqueAddresses[0]!);
-
-                    _logger.LogInformation("GetISPAddressFromBackupAPIs -> External ISPAddress AFTER set:{ISPA}", StringHelpers.MakeISPAddressLogReady(_iSPAddressService.GetExternalISPAddress()));
-                    await _logHub.SendLogInfoAsync(serviceName, $"GetISPAddressFromBackupAPIs -> External ISPAddress AFTER set: {StringHelpers.MakeISPAddressLogReady(_iSPAddressService.GetExternalISPAddress())}");
-
-                    // Copy the old ISP adress to that variable
-                    _logger.LogInformation("GetISPAddressFromBackupAPIs -> CurrentISPAddress:{ISPA}", StringHelpers.MakeISPAddressLogReady(_iSPAddressService.GetCurrentISPAddress()));
-                    await _logHub.SendLogInfoAsync(serviceName, $"GetISPAddressFromBackupAPIs -> CurrentISPAddress: {StringHelpers.MakeISPAddressLogReady(_iSPAddressService.GetCurrentISPAddress())}");
-
-                    _logger.LogInformation("GetISPAddressFromBackupAPIs -> OldISPAddress BEFORE set:{ISPA}", StringHelpers.MakeISPAddressLogReady(_iSPAddressService.GetOldISPAddress()));
-                    await _logHub.SendLogInfoAsync(serviceName, $"GetISPAddressFromBackupAPIs -> OldISPAddress BEFORE set: {StringHelpers.MakeISPAddressLogReady(_iSPAddressService.GetOldISPAddress())}");
-
-                    _iSPAddressService.SetOldISPAddress(_iSPAddressService.GetCurrentISPAddress());
-
-                    _logger.LogInformation("GetISPAddressFromBackupAPIs -> OldISPAddress AFTER set:{ISPA}", StringHelpers.MakeISPAddressLogReady(_iSPAddressService.GetOldISPAddress()));
-                    await _logHub.SendLogInfoAsync(serviceName, $"GetISPAddressFromBackupAPIs -> OldISPAddress AFTER set: {StringHelpers.MakeISPAddressLogReady(_iSPAddressService.GetOldISPAddress())}");
-
-                    _logger.LogInformation("GetISPAddressFromBackupAPIs -> HeartBeatCheck:{heartbeat} GetServiceRequestCounter: {count1}, GetFailedISPRequestCounter: {count2} if(1 & 0 SendISPAddressChangedEmail)", heartBeatCheck, _counterService.GetServiceRequestCounter(), _counterService.GetFailedISPRequestCounter());
-                    await _logHub.SendLogInfoAsync(serviceName, $"GetISPAddressFromBackupAPIs -> HeartBeatCheck: {heartBeatCheck} GetServiceRequestCounter: {_counterService.GetServiceRequestCounter()}, GetFailedISPRequestCounter: {_counterService.GetFailedISPRequestCounter()} if(1 & 0 SendISPAddressChangedEmail)");
-
-                    if (!heartBeatCheck && _counterService.GetServiceRequestCounter() != 1 && _counterService.GetFailedISPRequestCounter() != 0)
+                    if (uniqueV4.Count == 1)
                     {
-                        _logger.LogInformation("GetISPAddressFromBackupAPIs -> CurrentISPAddress BEFORE ClearCurrentISPAddress:{ISPA}", StringHelpers.MakeISPAddressLogReady(_iSPAddressService.GetCurrentISPAddress()));
-                        await _logHub.SendLogInfoAsync(serviceName, $"GetISPAddressFromBackupAPIs -> CurrentISPAddress BEFORE ClearCurrentISPAddress: {StringHelpers.MakeISPAddressLogReady(_iSPAddressService.GetCurrentISPAddress())}");
-                        _iSPAddressService.ClearCurrentISPAddress();
+                        _logger.LogInformation("GetISPAddressFromBackupAPIs -> {count}x Same IPv4 response:{ISPA}", ipv4Checks.Count, StringHelpers.MakeISPAddressLogReady(uniqueV4[0]));
+                        await _logHub.SendLogInfoAsync(serviceName, $"GetISPAddressFromBackupAPIs -> {ipv4Checks.Count}x Same IPv4 response: {StringHelpers.MakeISPAddressLogReady(uniqueV4[0])}");
 
-                        _logger.LogInformation("GetISPAddressFromBackupAPIs -> CurrentISPAddress AFTER ClearCurrentISPAddress:{ISPA}", StringHelpers.MakeISPAddressLogReady(_iSPAddressService.GetCurrentISPAddress()));
-                        await _logHub.SendLogInfoAsync(serviceName, $"GetISPAddressFromBackupAPIs -> CurrentISPAddress AFTER ClearCurrentISPAddress: {StringHelpers.MakeISPAddressLogReady(_iSPAddressService.GetCurrentISPAddress())}");
-
-                        await _emailService.SendISPAddressChangedEmail(_iSPAddressService.GetExternalISPAddress(), _iSPAddressService.GetOldISPAddress(), _counterService, _applicationSettingsOptions!.ISPAddressCheckFrequencyInMinutes, _emailService.APIEmailDetails);
-
-                        _logger.LogInformation("GetISPAddressFromBackupAPIs -> GetServiceRequestCounter not if(1): {count1}, GetFailedISPRequestCounter not if(0):{count2}", _counterService.GetServiceRequestCounter(), _counterService.GetFailedISPRequestCounter());
-                        await _logHub.SendLogInfoAsync(serviceName, $"GetISPAddressFromBackupAPIs -> GetServiceRequestCounter not if(1): {_counterService.GetServiceRequestCounter()}, GetFailedISPRequestCounter not if(0):{_counterService.GetFailedISPRequestCounter()}");
+                        _iSPAddressService.SetExternalISPAddress(uniqueV4[0]);
+                        _iSPAddressService.SetOldISPAddress(_iSPAddressService.GetCurrentISPAddress());
                     }
-                    else if (!heartBeatCheck)
+                    else
                     {
-                        _logger.LogInformation("GetISPAddressFromBackupAPIs -> First setup");
-                        await _logHub.SendLogInfoAsync(serviceName, "GetISPAddressFromBackupAPIs -> First setup");
-
-                        _logger.LogInformation("GetISPAddressFromBackupAPIs -> CurrentISPAddress BEFORE set:{ISPA}", StringHelpers.MakeISPAddressLogReady(_iSPAddressService.GetCurrentISPAddress()));
-                        await _logHub.SendLogInfoAsync(serviceName, $"GetISPAddressFromBackupAPIs -> CurrentISPAddress BEFORE set: {StringHelpers.MakeISPAddressLogReady(_iSPAddressService.GetCurrentISPAddress())}");
-
-                        _iSPAddressService.SetCurrentISPAddress(_iSPAddressService.GetExternalISPAddress());
-
-                        _logger.LogInformation("GetISPAddressFromBackupAPIs -> CurrentISPAddress AFTER set:{ISP1} expected: {ISP2}", StringHelpers.MakeISPAddressLogReady(_iSPAddressService.GetCurrentISPAddress()), StringHelpers.MakeISPAddressLogReady(_iSPAddressService.GetExternalISPAddress()));
-                        await _logHub.SendLogInfoAsync(serviceName, $"GetISPAddressFromBackupAPIs -> CurrentISPAddress AFTER set: {StringHelpers.MakeISPAddressLogReady(_iSPAddressService.GetCurrentISPAddress())} expected: {StringHelpers.MakeISPAddressLogReady(_iSPAddressService.GetExternalISPAddress())}");
-
-                        _logger.LogInformation("GetISPAddressFromBackupAPIs -> NewISPAddress BEFORE set:{ISPA}", StringHelpers.MakeISPAddressLogReady(_iSPAddressService.GetNewISPAddress()));
-                        await _logHub.SendLogInfoAsync(serviceName, $"GetISPAddressFromBackupAPIs -> NewISPAddress BEFORE set: {StringHelpers.MakeISPAddressLogReady(_iSPAddressService.GetNewISPAddress())}");
-
-                        _iSPAddressService.SetNewISPAddress(_iSPAddressService.GetExternalISPAddress());
-
-                        _logger.LogInformation("GetISPAddressFromBackupAPIs -> NewISPAddress AFTER set:{ISP1} expected: {ISP2}", StringHelpers.MakeISPAddressLogReady(_iSPAddressService.GetNewISPAddress()), StringHelpers.MakeISPAddressLogReady(_iSPAddressService.GetExternalISPAddress()));
-                        await _logHub.SendLogInfoAsync(serviceName, $"GetISPAddressFromBackupAPIs -> NewISPAddress AFTER set: {StringHelpers.MakeISPAddressLogReady(_iSPAddressService.GetNewISPAddress())} expected: {StringHelpers.MakeISPAddressLogReady(_iSPAddressService.GetExternalISPAddress())}");
+                        _logger.LogInformation("GetISPAddressFromBackupAPIs -> Conflicting IPv4 addresses returned");
+                        await _logHub.SendLogInfoAsync(serviceName, "GetISPAddressFromBackupAPIs -> Conflicting IPv4 addresses returned");
+                        await _emailService.SendDifferendISPAddressValuesEmail(ipv4Checks, _iSPAddressService.GetOldISPAddress(), _counterService, _applicationSettingsOptions!.ISPAddressCheckFrequencyInMinutes);
                     }
                 }
-                else
-                {
-                    _logger.LogInformation("GetISPAddressFromBackupAPIs -> Different ISPAddresses returned");
-                    await _logHub.SendLogInfoAsync(serviceName, "GetISPAddressFromBackupAPIs -> Different ISPAddresses returned");
 
-                    foreach (KeyValuePair<string, string> item in ISPAddressChecks!)
+                // ── Process IPv6 ────────────────────────────────────────────────
+                if (ipv6Checks.Count > 0)
+                {
+                    List<string> uniqueV6 = ipv6Checks.Values.Distinct().ToList();
+
+                    if (uniqueV6.Count == 1)
                     {
-                        _logger.LogInformation("GetISPAddressFromBackupAPIs -> Different ISPAddresses returned -> URL: {Url} -> {ISP}", item.Key, StringHelpers.MakeISPAddressLogReady(item.Value));
-                        await _logHub.SendLogInfoAsync(serviceName, $"GetISPAddressFromBackupAPIs -> Different ISPAddresses returned -> URL: {item.Key} -> {StringHelpers.MakeISPAddressLogReady(item.Value)}");
+                        _logger.LogInformation("GetISPAddressFromBackupAPIs -> {count}x Same IPv6 response:{ISPA}", ipv6Checks.Count, StringHelpers.MakeISPAddressLogReady(uniqueV6[0]));
+                        await _logHub.SendLogInfoAsync(serviceName, $"GetISPAddressFromBackupAPIs -> {ipv6Checks.Count}x Same IPv6 response: {StringHelpers.MakeISPAddressLogReady(uniqueV6[0])}");
+
+                        _iSPAddressService.SetExternalIPv6Address(uniqueV6[0]);
+                        _iSPAddressService.SetOldIPv6Address(_iSPAddressService.GetCurrentIPv6Address());
                     }
-                    await _emailService.SendDifferendISPAddressValuesEmail(ISPAddressChecks!, _iSPAddressService.GetOldISPAddress(), _counterService, _applicationSettingsOptions!.ISPAddressCheckFrequencyInMinutes);
+                    else
+                    {
+                        _logger.LogInformation("GetISPAddressFromBackupAPIs -> Conflicting IPv6 addresses returned");
+                        await _logHub.SendLogInfoAsync(serviceName, "GetISPAddressFromBackupAPIs -> Conflicting IPv6 addresses returned");
+                        await _emailService.SendDifferendISPAddressValuesEmail(ipv6Checks, _iSPAddressService.GetOldIPv6Address(), _counterService, _applicationSettingsOptions!.ISPAddressCheckFrequencyInMinutes);
+                    }
+                }
+
+                // ── Detect changes ───────────────────────────────────────────────
+                bool v4Changed = !string.IsNullOrEmpty(_iSPAddressService.GetExternalISPAddress())
+                    && !string.Equals(_iSPAddressService.GetExternalISPAddress(), _iSPAddressService.GetCurrentISPAddress(), StringComparison.CurrentCultureIgnoreCase);
+
+                bool v6Changed = !string.IsNullOrEmpty(_iSPAddressService.GetExternalIPv6Address())
+                    && !string.Equals(_iSPAddressService.GetExternalIPv6Address(), _iSPAddressService.GetCurrentIPv6Address(), StringComparison.CurrentCultureIgnoreCase);
+
+                _logger.LogInformation("GetISPAddressFromBackupAPIs -> v4Changed:{v4}, v6Changed:{v6}", v4Changed, v6Changed);
+                await _logHub.SendLogInfoAsync(serviceName, $"GetISPAddressFromBackupAPIs -> v4Changed:{v4Changed}, v6Changed:{v6Changed}");
+
+                _logger.LogInformation("GetISPAddressFromBackupAPIs -> HeartBeatCheck:{heartbeat} GetServiceRequestCounter:{count1}, GetFailedISPRequestCounter:{count2}", heartBeatCheck, _counterService.GetServiceRequestCounter(), _counterService.GetFailedISPRequestCounter());
+                await _logHub.SendLogInfoAsync(serviceName, $"GetISPAddressFromBackupAPIs -> HeartBeatCheck:{heartBeatCheck} GetServiceRequestCounter:{_counterService.GetServiceRequestCounter()}, GetFailedISPRequestCounter:{_counterService.GetFailedISPRequestCounter()}");
+
+                if (!heartBeatCheck && _counterService.GetServiceRequestCounter() != 1 && _counterService.GetFailedISPRequestCounter() != 0)
+                {
+                    if (v4Changed || v6Changed)
+                    {
+                        _iSPAddressService.ClearCurrentISPAddress();
+
+                        await _emailService.SendISPAddressChangedEmail(
+                            _iSPAddressService.GetExternalISPAddress(), _iSPAddressService.GetOldISPAddress(),
+                            _iSPAddressService.GetExternalIPv6Address(), _iSPAddressService.GetOldIPv6Address(),
+                            _counterService, _applicationSettingsOptions!.ISPAddressCheckFrequencyInMinutes, _emailService.APIEmailDetails);
+                    }
+                }
+                else if (!heartBeatCheck)
+                {
+                    _logger.LogInformation("GetISPAddressFromBackupAPIs -> First setup");
+                    await _logHub.SendLogInfoAsync(serviceName, "GetISPAddressFromBackupAPIs -> First setup");
+
+                    if (!string.IsNullOrEmpty(_iSPAddressService.GetExternalISPAddress()))
+                    {
+                        _iSPAddressService.SetCurrentISPAddress(_iSPAddressService.GetExternalISPAddress());
+                        _iSPAddressService.SetNewISPAddress(_iSPAddressService.GetExternalISPAddress());
+                    }
+
+                    if (!string.IsNullOrEmpty(_iSPAddressService.GetExternalIPv6Address()))
+                    {
+                        _iSPAddressService.SetCurrentIPv6Address(_iSPAddressService.GetExternalIPv6Address());
+                        _iSPAddressService.SetNewIPv6Address(_iSPAddressService.GetExternalIPv6Address());
+                    }
                 }
             }
             else if (ISPAddressChecks.Count == 0)

@@ -40,15 +40,14 @@ namespace ISPAddressChecker.Controllers
             HttpContext context = HttpContext;
             string? outputString = string.Empty;
 
-            outputString = HttpContext?.Connection?.RemoteIpAddress?.ToString();
-
-            // check if it's an IPv6 address and convert to IPv4 format if necessary
-            if (!string.IsNullOrWhiteSpace(outputString))
+            var remoteIp = HttpContext?.Connection?.RemoteIpAddress;
+            if (remoteIp != null)
             {
-                if (outputString.Contains(":"))
-                {
-                    outputString = HttpContext?.Connection?.RemoteIpAddress?.MapToIPv4().ToString();
-                }
+                // If it's an IPv4-mapped IPv6 address (e.g. ::ffff:1.2.3.4), unwrap to plain IPv4.
+                // Pure IPv6 addresses are returned as-is — MapToIPv4() would throw on those.
+                outputString = remoteIp.IsIPv4MappedToIPv6
+                    ? remoteIp.MapToIPv4().ToString()
+                    : remoteIp.ToString();
             }
 
             // check for the X-Forwarded-For header to get the client IP address behind the proxy
