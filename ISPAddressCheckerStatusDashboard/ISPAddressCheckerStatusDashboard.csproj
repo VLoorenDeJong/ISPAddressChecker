@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UserSecretsId>677b2c5d-6448-4890-ad33-6fc663211bc2</UserSecretsId>
 	</PropertyGroup>
@@ -20,7 +21,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.14" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="NSwag.AspNetCore" Version="13.20.0" />
+		<PackageReference Include="NSwag.AspNetCore" Version="14.7.1" />
 	</ItemGroup>
 
 	<ItemGroup>
