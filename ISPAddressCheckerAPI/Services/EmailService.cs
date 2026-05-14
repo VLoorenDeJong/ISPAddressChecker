@@ -101,7 +101,7 @@ namespace ISPAddressChecker.Services
                 catch (MailKit.Net.Smtp.SmtpCommandException ex)
                 {
                     Type exceptionType = ex.GetType();
-                    _logger.LogError("SendEmail -> Email account password might be wrong. Exception type: {exceptionType}  Message:{message}", exceptionType, ex.Message);
+                    _logger.LogError(ex, "SendEmail -> Email account password might be wrong. Exception type: {exceptionType}  Message:{message}", exceptionType, ex.Message);
                     await _loghub.SendLogErrorAsync(serviceName, $"SendEmail -> Email account password might be wrong. Exception type: {exceptionType}  Message:{ex.Message}");
 
                     report.Success = false;
@@ -110,7 +110,7 @@ namespace ISPAddressChecker.Services
                 catch (Exception ex)
                 {
                     Type exceptionType = ex.GetType();
-                    _logger.LogError("SendEmail -> Request Id: {id}, Something went wrong with sending the email. Exception type: {exceptionType} Message:{message}", sendEmailDetails.Id, exceptionType, ex.Message);
+                    _logger.LogError(ex, "SendEmail -> Request Id: {id}, Something went wrong with sending the email. Exception type: {exceptionType} Message:{message}", sendEmailDetails.Id, exceptionType, ex.Message);
                     await _loghub.SendLogErrorAsync(serviceName, $"RequestId: {sendEmailDetails.Id}, SendEmail -> Something went wrong with sending the email. Exception type: {exceptionType} Message:{ex.Message}");
 
                     report.Success = false;

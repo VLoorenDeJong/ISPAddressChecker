@@ -118,7 +118,7 @@ namespace ISPAddressCheckerAPI.Services
                     {
                         _counterService.AddFailedISPRequestCounter();
 
-                        _logger.LogInformation("GetISPAddressAsync -> HttpStatusCode.ServiceUnavailable, starting external calls");
+                        _logger.LogInformation(ex, "GetISPAddressAsync -> HttpStatusCode.ServiceUnavailable, starting external calls");
                         await _logHub.SendLogInfoAsync(serviceName, "GetISPAddressAsync -> HttpStatusCode.ServiceUnavailable, starting external calls");
 
                         await GetISPAddressFromBackupAPIs(false);
@@ -127,7 +127,7 @@ namespace ISPAddressCheckerAPI.Services
                     {
                         Type exceptionType = ex.GetType();
 
-                        _logger.LogError("GetISPAddressAsync -> API Call HTTP exception. Exceptiontype: {type} Message:{message}", exceptionType, ex.Message);
+                        _logger.LogError(ex, "GetISPAddressAsync -> API Call HTTP exception. Exceptiontype: {type} Message:{message}", exceptionType, ex.Message);
                         await _logHub.SendLogErrorAsync(serviceName, $"GetISPAddressAsync -> API Call HTTP exception. Exceptiontype: {exceptionType}, Message:{ex.Message}");
 
                         await _emailService.SendISPAPIHTTPExceptionEmail(exceptionType.Name, ex.Message);
@@ -145,7 +145,7 @@ namespace ISPAddressCheckerAPI.Services
 
                     _counterService.AddFailedISPRequestCounter();
 
-                    _logger.LogError("GetISPAddressAsync -> API Call general Exception. Exceptiontype: {type} Message:{message}", exceptionType, ex.Message);
+                    _logger.LogError(ex, "GetISPAddressAsync -> API Call general Exception. Exceptiontype: {type} Message:{message}", exceptionType, ex.Message);
                     await _logHub.SendLogErrorAsync(serviceName, $"GetISPAddressAsync -> API Call general Exception. Exceptiontype: {exceptionType}, Message:{ex.Message}");
 
                     await _emailService.SendISPAPIExceptionEmail(exceptionType.Name, ex.Message);
@@ -256,7 +256,7 @@ namespace ISPAddressCheckerAPI.Services
                     {
                         Type exceptionType = ex.GetType();
 
-                        _logger.LogError("GetISPAddressFromBackupAPIs -> API Call HttpRequestException -> URL:{APIUrl}. Exceptiontype: {type} Message:{message}", APIUrl, exceptionType, ex.Message);
+                        _logger.LogError(ex, "GetISPAddressFromBackupAPIs -> API Call HttpRequestException -> URL:{APIUrl}. Exceptiontype: {type} Message:{message}", APIUrl, exceptionType, ex.Message);
                         await _logHub.SendLogErrorAsync(serviceName, $"GetISPAddressFromBackupAPIs -> API Call HttpRequestException -> URL:{APIUrl}. Exceptiontype: {exceptionType}, Message:{ex.Message}");
 
                         await _emailService.SendExternalAPIHTTPExceptionEmail(APIUrl!, exceptionType.Name, ex.Message);
@@ -267,7 +267,7 @@ namespace ISPAddressCheckerAPI.Services
 
                         Type exceptionType = ex.GetType();
 
-                        _logger.LogError("GetISPAddressFromBackupAPIs -> API Call Exception -> URL:{APIUrl}. Exceptiontype: {type} Message:{message}", APIUrl, exceptionType, ex.Message);
+                        _logger.LogError(ex, "GetISPAddressFromBackupAPIs -> API Call Exception -> URL:{APIUrl}. Exceptiontype: {type} Message:{message}", APIUrl, exceptionType, ex.Message);
                         await _logHub.SendLogErrorAsync(serviceName, $"GetISPAddressFromBackupAPIs -> API Call Exception -> URL:{APIUrl}. Exceptiontype: {exceptionType}, Message:{ex.Message}");
 
                         await _emailService.SendExternalAPIExceptionEmail(APIUrl!, exceptionType.Name, ex.Message);

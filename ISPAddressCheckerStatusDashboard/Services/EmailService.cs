@@ -145,12 +145,12 @@ namespace ISPAddressCheckerDashboard.Services
                     catch (System.Net.Mail.SmtpException ex)
                     {
                         Type exceptionType = ex.GetType();
-                        _logger.LogError("SendEmail -> Email account password might be wrong. Exception type: {exceptionType}  Message:{message}", exceptionType, ex.Message);
+                        _logger.LogError(ex, "SendEmail -> Email account password might be wrong. Exception type: {exceptionType}  Message:{message}", exceptionType, ex.Message);
                     }
                     catch (Exception ex)
                     {
                         Type exceptionType = ex.GetType();
-                        _logger.LogError("SendEmail -> Something went wrong with sending the email. Exception type: {exceptionType} Message:{message}", exceptionType, ex.Message);
+                        _logger.LogError(ex, "SendEmail -> Something went wrong with sending the email. Exception type: {exceptionType} Message:{message}", exceptionType, ex.Message);
                     }
                 }
             }

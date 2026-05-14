@@ -135,8 +135,8 @@ namespace ISPAddressChecker.Controllers
 
             if (emailRequest is not null)
             {
-                _logger.LogInformation("ISPAddressCheckSendEmail -> RequestId: {id}, EmailAddressValidated:{valid}, emailAddress:{emailAddress}", emailRequest.Id, emailRequest!.EmailValidated, Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress));
-                await _loghub.SendLogInfoAsync(serviceName, $"RequestId: {emailRequest.Id}, ISPAddressCheckSendEmail -> EmailAddressValidated:{emailRequest!.EmailValidated}, emailAddress:{Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress)}");
+                _logger.LogInformation("ISPAddressCheckSendEmail -> RequestId: {id}, EmailAddressValidated:{valid}, emailAddress:{emailAddress}", emailRequest.Id, emailRequest!.EmailValidated, Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress, _logger));
+                await _loghub.SendLogInfoAsync(serviceName, $"RequestId: {emailRequest.Id}, ISPAddressCheckSendEmail -> EmailAddressValidated:{emailRequest!.EmailValidated}, emailAddress:{Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress, _logger)}");
 
                 _logger.LogInformation("ISPAddressCheckSendEmail -> RequestId: {id} Validating E-mail address", emailRequest.Id);
                 await _loghub.SendLogInfoAsync(serviceName, $"RequestId: {emailRequest.Id}, ISPAddressCheckSendEmail -> Validating E-mail address");
@@ -161,8 +161,8 @@ namespace ISPAddressChecker.Controllers
                             if (report.Success)
                             {
                                 _statusCounterService.AddISPHeartbeatEmailRequested();
-                                _logger.LogInformation("ISPAddressCheckSendEmail -> RequestId: {id}, SendEmailTypeEnum: {enum} -> E-mail address:{email}, success: {success}", emailRequest.Id, report.SendEmailTypeEnum, Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress), report.Success);
-                                await _loghub.SendLogInfoAsync(serviceName, $"RequestId: {emailRequest.Id}, ISPAddressCheckSendEmail -> SendEmailTypeEnum: {report.SendEmailTypeEnum.ToString()} -> E-mail address:{Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress)}, success: {report.Success}");
+                                _logger.LogInformation("ISPAddressCheckSendEmail -> RequestId: {id}, SendEmailTypeEnum: {enum} -> E-mail address:{email}, success: {success}", emailRequest.Id, report.SendEmailTypeEnum, Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress, _logger), report.Success);
+                                await _loghub.SendLogInfoAsync(serviceName, $"RequestId: {emailRequest.Id}, ISPAddressCheckSendEmail -> SendEmailTypeEnum: {report.SendEmailTypeEnum.ToString()} -> E-mail address:{Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress, _logger)}, success: {report.Success}");
 
                                 return Ok(report);
                             }
@@ -174,8 +174,8 @@ namespace ISPAddressChecker.Controllers
                             if (report.Success)
                             {
                                 _statusCounterService.AddISPISPAddressChangedEmailRequested();
-                                _logger.LogInformation("ISPAddressCheckSendEmail -> RequestId: {id}, SendEmailTypeEnum: {enum} -> E-mail address:{email}, success: {success}", emailRequest.Id, report.SendEmailTypeEnum, Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress), report.Success);
-                                await _loghub.SendLogInfoAsync(serviceName, $" RequestId: {emailRequest.Id}, ISPAddressCheckSendEmail ->SendEmailTypeEnum: {report.SendEmailTypeEnum.ToString()} -> E-mail address:{Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress)}, success: {report.Success}");
+                                _logger.LogInformation("ISPAddressCheckSendEmail -> RequestId: {id}, SendEmailTypeEnum: {enum} -> E-mail address:{email}, success: {success}", emailRequest.Id, report.SendEmailTypeEnum, Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress, _logger), report.Success);
+                                await _loghub.SendLogInfoAsync(serviceName, $" RequestId: {emailRequest.Id}, ISPAddressCheckSendEmail ->SendEmailTypeEnum: {report.SendEmailTypeEnum.ToString()} -> E-mail address:{Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress, _logger)}, success: {report.Success}");
 
                                 return Ok(report);
                             }
@@ -193,15 +193,15 @@ namespace ISPAddressChecker.Controllers
 
                 if (!report.Success)
                 {
-                    _logger.LogError("ISPAddressCheckSendEmail -> Failed -> RequestId: {id}, EmailType:{type} -> E-mail address:{email}, message: {message}", emailRequest.Id, emailRequest.EmailType, Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress), report.Message);
-                    await _loghub.SendLogErrorAsync(serviceName, $"RequestId: {emailRequest.Id}, ISPAddressCheckSendEmail -> Failed ->  EmailType:{emailRequest.EmailType}, E-mail address:{Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress)}, message: {report.Message}");
+                    _logger.LogError("ISPAddressCheckSendEmail -> Failed -> RequestId: {id}, EmailType:{type} -> E-mail address:{email}, message: {message}", emailRequest.Id, emailRequest.EmailType, Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress, _logger), report.Message);
+                    await _loghub.SendLogErrorAsync(serviceName, $"RequestId: {emailRequest.Id}, ISPAddressCheckSendEmail -> Failed ->  EmailType:{emailRequest.EmailType}, E-mail address:{Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress, _logger)}, message: {report.Message}");
 
                     return BadRequest(report);
                 }
             }
 
-            _logger.LogInformation("ISPAddressCheckSendEmail -> Failed -> RequestId: {id}, EmailType:{type} -> E-mail address:{email}, message: {message}", emailRequest!.Id, emailRequest?.EmailType, Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest!.EmailAddress), report.Message);
-            await _loghub.SendLogWarningAsync(serviceName, $"RequestId: {emailRequest.Id}, ISPAddressCheckSendEmail -> Failed ->  EmailType: {emailRequest?.EmailType}, E-mail address:{Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest!.EmailAddress)}, message: {report.Message}");
+            _logger.LogInformation("ISPAddressCheckSendEmail -> Failed -> RequestId: {id}, EmailType:{type} -> E-mail address:{email}, message: {message}", emailRequest!.Id, emailRequest?.EmailType, Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest!.EmailAddress, _logger), report.Message);
+            await _loghub.SendLogWarningAsync(serviceName, $"RequestId: {emailRequest.Id}, ISPAddressCheckSendEmail -> Failed ->  EmailType: {emailRequest?.EmailType}, E-mail address:{Helpers.StringHelpers.MakeEmailAddressLogReady(emailRequest!.EmailAddress, _logger)}, message: {report.Message}");
 
             return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Failed to send email", report });
         }

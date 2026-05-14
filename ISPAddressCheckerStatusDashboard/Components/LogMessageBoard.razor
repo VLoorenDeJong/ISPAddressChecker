@@ -147,7 +147,7 @@
                         Service = "LogHub",
                         Time = DateTime.UtcNow
                     });
-                logger.LogInformation($"Error establishing hub connection: {ex.Message}");
+                logger.LogInformation(ex, $"Error establishing hub connection: {ex.Message}");
             }
         }
         else
@@ -217,7 +217,7 @@
         }
         catch (Exception ex)
         {
-            logger.LogInformation($"Error establishing hub connection: {ex.Message}");
+            logger.LogInformation(ex, $"Error establishing hub connection: {ex.Message}");
             logEntries.Add(new LogEntryModel
                 {
                     LogType = LogType.Error,

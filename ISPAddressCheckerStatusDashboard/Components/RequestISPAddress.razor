@@ -103,7 +103,7 @@
         }
         catch (Exception ex)
         {
-            logger.LogError("GetVisitorIspAddress ->  Exception: {ex}", ex.Message);
+            logger.LogError(ex, "GetVisitorIspAddress ->  Exception: {ex}", ex.Message);
 
             ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
             newLogEntry.LogType = LogType.Error;

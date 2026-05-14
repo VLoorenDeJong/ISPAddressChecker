@@ -55,7 +55,7 @@ namespace ISPAddressCheckerDashboard.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError("GetApiUptimeAsync -> Error fetching start date time, message: {message}", ex.Message);
+                _logger.LogError(ex, "GetApiUptimeAsync -> Error fetching start date time, message: {message}", ex.Message);
             }
 
             _logger.LogInformation("GetApiUptimeAsync -> start date time: {time}", output);
@@ -73,7 +73,7 @@ namespace ISPAddressCheckerDashboard.Services
             }
             catch (Exception ex)
             {
-                _logger.LogInformation("StartStatusUpdateTimer -> ISPAddressCheckIntervalInMinutesAsync -> Exception message: {mess}", ex.Message);
+                _logger.LogInformation(ex, "StartStatusUpdateTimer -> ISPAddressCheckIntervalInMinutesAsync -> Exception message: {mess}", ex.Message);
             }
 
             _logger.LogInformation("StartStatusUpdateTimer -> start");

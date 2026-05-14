@@ -64,7 +64,7 @@ namespace ISPAddressCheckerTests
             string expected = "ex***@example.com";
 
             // Act
-            string actual = StringHelpers.MakeEmailAddressLogReady(emailAddress);
+            string actual = StringHelpers.MakeEmailAddressLogReady(emailAddress, null);
 
             // Assert
             Assert.Equal(expected, actual);

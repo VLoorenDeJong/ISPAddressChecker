@@ -26,7 +26,7 @@ namespace ISPAddressCheckerDashboard.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError("GetAPIStatusAsync -> exception:{ex}", ex.Message);
+                _logger.LogError(ex, "GetAPIStatusAsync -> exception:{ex}", ex.Message);
             }
 
             return status;

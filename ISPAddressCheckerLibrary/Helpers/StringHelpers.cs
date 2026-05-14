@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Microsoft.Extensions.Logging;
 
 namespace ISPAddressChecker.Helpers
 {   
@@ -40,7 +41,7 @@ namespace ISPAddressChecker.Helpers
             return output;
         }
 
-        public static string MakeEmailAddressLogReady(string emailAddress)
+        public static string MakeEmailAddressLogReady(string emailAddress, ILogger? logger)
         {
 
             if (!string.IsNullOrWhiteSpace(emailAddress))
@@ -54,7 +55,7 @@ namespace ISPAddressChecker.Helpers
                 }
                 catch (Exception ex)
                 {
-
+                    if(logger is not null) logger.LogError(ex, "Error in MakeEmailAddressLogReady for email: {emailAddress}", emailAddress);
                 }
             }
 

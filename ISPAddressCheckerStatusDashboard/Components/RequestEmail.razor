@@ -189,7 +189,7 @@
             }
             catch(Exception ex)
             {
-                logger.LogWarning("Something went wornf requesting a Email. Details: {message}", ex.Message);
+                logger.LogWarning(ex, "Something went wornf requesting a Email. Details: {message}", ex.Message);
             }
 
             if (report.Success)
@@ -212,6 +212,8 @@
                     Message = ex.Message
                 };
             await ShowMessage();
+
+            logger.LogError(ex, "Error requesting a Email. Details: {message}", ex.Message);
         }
     }
 

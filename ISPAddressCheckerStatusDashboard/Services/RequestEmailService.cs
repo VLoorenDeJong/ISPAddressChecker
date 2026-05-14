@@ -29,13 +29,13 @@ namespace ISPAddressCheckerDashboard.Services
             {
                 try
                 {
-                    _logger.LogInformation("RequestEmail -> E-mail type: {type}, Id: {id}, Email-Address: {address}, Valid: {valid}", emailRequest.EmailType.ToString(), emailRequest.Id, StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress), emailRequest.EmailValidated);
+                    _logger.LogInformation("RequestEmail -> E-mail type: {type}, Id: {id}, Email-Address: {address}, Valid: {valid}", emailRequest.EmailType.ToString(), emailRequest.Id, StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress, _logger), emailRequest.EmailValidated);
                     report = await _apiClient!.ISPAddressCheckSendEmailAsync(emailRequest);
 
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("RequestEmail -> Failed -> Message: {message}, Id: {id}, type: {type}", ex.Message, emailRequest.Id, emailRequest.EmailType.ToString());
+                    _logger.LogError(ex, "RequestEmail -> Failed -> Message: {message}, Id: {id}, type: {type}", ex.Message, emailRequest.Id, emailRequest.EmailType.ToString());
                 }
             }
             return report;

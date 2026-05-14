@@ -25,13 +25,13 @@ namespace ISPAddressCheckerDashboard.Services
             }
             catch (System.Net.Sockets.SocketException ex)
             {
-                _logger.LogError("GetCHeckISPAddressEndpointURLAsync -> ISP address check URL Request Error:{message}", ex.Message);
+                _logger.LogError(ex, "GetCHeckISPAddressEndpointURLAsync -> ISP address check URL Request Error:{message}", ex.Message);
                 _logger.LogError("GetCHeckISPAddressEndpointURLAsync -> ISP address check URL Request: Is the API running?");
                 url = $"Error: GetCHeckISPAddressEndpointURLAsync -> ISP address check URL Request Error:{ ex.Message}, is the API runn ";
             }
             catch (Exception ex)
             {
-                _logger.LogError("GetCHeckISPAddressEndpointURLAsync -> ISP address check URL Request Error:{message}", ex.Message);
+                _logger.LogError(ex, "GetCHeckISPAddressEndpointURLAsync -> ISP address check URL Request Error:{message}", ex.Message);
                 url = $"Error: GetCHeckISPAddressEndpointURLAsync -> ISP address check URL Request Error:{ ex.Message} ";
             }
 
@@ -49,7 +49,7 @@ namespace ISPAddressCheckerDashboard.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError("GetLogHubURLAsync -> ISP address LogHubURL Request Error:{message}", ex.Message);
+                _logger.LogError(ex, "GetLogHubURLAsync -> ISP address LogHubURL Request Error:{message}", ex.Message);
             }
 
             return url;
@@ -66,7 +66,7 @@ namespace ISPAddressCheckerDashboard.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError("GetClockhubURLAsync -> LogHub URL Request Error:{message}", ex.Message);
+                _logger.LogError(ex, "GetClockhubURLAsync -> LogHub URL Request Error:{message}", ex.Message);
             }
 
             return url;
