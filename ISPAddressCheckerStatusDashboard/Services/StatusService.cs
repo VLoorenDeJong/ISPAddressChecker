@@ -21,6 +21,7 @@ namespace ISPAddressCheckerDashboard.Services
             try
             {
                 CurrentStatus = await _iSPStatusService.GetAPIStatusAsync();
+                OnChange?.Invoke();
             }
             catch (Exception ex)
             {

@@ -1,4 +1,5 @@
-﻿using ISPAddressChecker.Helpers;
+﻿#nullable disable
+using ISPAddressChecker.Helpers;
 
 namespace ISPAddressCheckerTests
 {

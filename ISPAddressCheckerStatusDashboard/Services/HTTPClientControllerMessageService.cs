@@ -5,9 +5,9 @@ namespace ISPAddressCheckerStatusDashboard.Services
 {
     public class HTTPClientControllerMessageService : IHTTPClientControllerMessageService
     {
-        public string SelectedColour { get; private set; }
+        public string SelectedColour { get; private set; } = string.Empty;
 
-        public event Action OnChange;
+        public event Action OnChange = delegate { };
         private void NotifyStateChanged() => OnChange?.Invoke();
 
 

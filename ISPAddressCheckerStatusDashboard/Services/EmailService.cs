@@ -132,7 +132,7 @@ namespace ISPAddressCheckerDashboard.Services
                     message.Body = emailBody;
                     message.IsBodyHtml = true;
 
-                    message.To.Add(new MailAddress(_emailSettingsOptions!.EmailToAddress));
+                    message.To.Add(new MailAddress(_emailSettingsOptions!.EmailToAddress!));
 
                     try
                     {

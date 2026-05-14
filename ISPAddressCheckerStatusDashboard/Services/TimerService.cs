@@ -25,8 +25,6 @@ namespace ISPAddressCheckerDashboard.Services
 
         private double minutesInterval = 61;
 
-        bool timersStarted = false;
-
         public TimerService(IOpenAPIClient aPIClient, ILogger<TimerService> logger, IStatusService statusService, ICounterService counterservice, IOptions<DashboardApplicationSettingsOptions> appsettings)
         {
             _apiClient = aPIClient;
@@ -39,7 +37,6 @@ namespace ISPAddressCheckerDashboard.Services
 
         public async Task StartTimers()
         {
-            timersStarted = true;
             APIStartDateTime = await GetApiUptimeAsync();
             await StartStatusUpdateTimer();
             StartEmailCounterResetTimer();

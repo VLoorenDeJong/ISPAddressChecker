@@ -183,7 +183,7 @@
                 ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
                 newLogEntry.LogType = LogType.Information;
                 newLogEntry.Service = $"Dashboard -> RequestEmail";
-                newLogEntry.Message = $"RequestId: {emailRequest.Id}, SendEmailRequest -> E-mail type: {emailRequest.EmailType.ToString()},  Email-Address: {StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress)}, Valid: {emailRequest.EmailValidated}";
+                newLogEntry.Message = $"RequestId: {emailRequest.Id}, SendEmailRequest -> E-mail type: {emailRequest.EmailType.ToString()},  Email-Address: {StringHelpers.MakeEmailAddressLogReady(emailRequest.EmailAddress, logger)}, Valid: {emailRequest.EmailValidated}";
                 await LogEntryCreated.InvokeAsync(newLogEntry);
 
             }

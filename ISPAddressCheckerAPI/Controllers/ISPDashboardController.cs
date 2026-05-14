@@ -169,7 +169,7 @@ namespace ISPAddressChecker.Controllers
                             break;
                         case SendEmailTypeEnum.ISPAddressChanged:
 
-                            report = await _emailService.SendISPAddressChangedEmail(_iSPAddressService.GetExternalISPAddress(), _iSPAddressService.GetOldISPAddress(), _ISPAddressCounterService, _applicationSettingsOptions.ISPAddressCheckFrequencyInMinutes, emailRequest);
+                            report = await _emailService.SendISPAddressChangedEmail(_iSPAddressService.GetExternalISPAddress(), _iSPAddressService.GetOldISPAddress(), _iSPAddressService.GetExternalIPv6Address(), _iSPAddressService.GetOldIPv6Address(), _ISPAddressCounterService, _applicationSettingsOptions.ISPAddressCheckFrequencyInMinutes, emailRequest);
 
                             if (report.Success)
                             {

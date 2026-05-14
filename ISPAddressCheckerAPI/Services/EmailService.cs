@@ -67,7 +67,7 @@ namespace ISPAddressChecker.Services
             if (_emailSettings is not null && sendEmailDetails is not null)
             {
                 var mimeMessage = new MimeMessage();
-                mimeMessage.From.Add(new MailboxAddress(string.Empty, _emailSettings.EmailFromAddress));
+                mimeMessage.From.Add(new MailboxAddress(string.Empty, _emailSettings.EmailFromAddress!));
                 mimeMessage.Priority = MessagePriority.Urgent;
 
                 if (string.IsNullOrWhiteSpace(sendEmailDetails.EmailAddress)) sendEmailDetails.EmailAddress = _emailSettings!.EmailToAddress!;
@@ -84,10 +84,10 @@ namespace ISPAddressChecker.Services
                         ? SecureSocketOptions.SslOnConnect
                         : _emailSettings.EnableSsl ? SecureSocketOptions.StartTls : SecureSocketOptions.None;
 
-                    await client.ConnectAsync(_emailSettings.MailServer, _emailSettings.SMTPPort, socketOptions);
+                    await client.ConnectAsync(_emailSettings.MailServer!, _emailSettings.SMTPPort, socketOptions);
 
                     if (!_emailSettings.UseDefaultCredentials)
-                        await client.AuthenticateAsync(_emailSettings.UserName, _emailSettings.Password);
+                        await client.AuthenticateAsync(_emailSettings.UserName!, _emailSettings.Password!);
 
                     await client.SendAsync(mimeMessage);
                     await client.DisconnectAsync(true);
