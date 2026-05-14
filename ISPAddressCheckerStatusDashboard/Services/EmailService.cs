@@ -1,8 +1,9 @@
 ﻿using ISPAddressChecker.Options;
 using ISPAddressChecker.Interfaces;
 using Microsoft.Extensions.Options;
-using System.Net;
-using System.Net.Mail;
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using MimeKit;
 
 namespace ISPAddressCheckerDashboard.Services
 {
@@ -12,7 +13,6 @@ namespace ISPAddressCheckerDashboard.Services
         private readonly DashboardApplicationSettingsOptions _applicationSettingsOptions;
         private readonly EmailSettingsOptions _emailSettingsOptions;
 
-        private MailMessage message = new MailMessage();
         private IRequestISPAddressService _ispService;
 
         public EmailService(
@@ -27,13 +27,6 @@ namespace ISPAddressCheckerDashboard.Services
             _applicationSettingsOptions = applicationSettingsOptions?.Value!;
             _emailSettingsOptions = emailSettingsOptions!.Value;
 
-            CreateBasicMailMessage();
-        }
-        private void CreateBasicMailMessage()
-        {
-            // Set the sender, recipient, subject, and body of the message
-            message.From = new MailAddress(_emailSettingsOptions.EmailFromAddress!);
-            message.Priority = MailPriority.High;
         }
         private string CreateEmail(string emailMessage)
         {
@@ -87,7 +80,7 @@ namespace ISPAddressCheckerDashboard.Services
 
             string emailBody = CreateEmail(message);
 
-            SendEmail("ISPAddressCheckerOptions - Configuration success!", emailBody);
+            await SendEmail("ISPAddressCheckerOptions - Configuration success!", emailBody);
         }
         public async Task SendConfigFailMail()
         {
@@ -112,46 +105,46 @@ namespace ISPAddressCheckerDashboard.Services
 
             string emailBody = CreateEmail(message);
 
-            SendEmail("ISPAddressCheckerOptions - Configuration Error!", emailBody);
+            await SendEmail("ISPAddressCheckerOptions - Configuration Error!", emailBody);
 
         }
-        private void SendEmail(string subject, string emailBody)
+        private async Task SendEmail(string subject, string emailBody)
         {
             if (_emailSettingsOptions is not null)
             {
-                // Create a new SmtpClient object within a using block
-                using (SmtpClient client = new SmtpClient())
+                var mimeMessage = new MimeMessage();
+                mimeMessage.From.Add(new MailboxAddress(string.Empty, _emailSettingsOptions.EmailFromAddress!));
+                mimeMessage.To.Add(new MailboxAddress(string.Empty, _emailSettingsOptions.EmailToAddress!));
+                mimeMessage.Priority = MessagePriority.Urgent;
+                mimeMessage.Subject = subject;
+                mimeMessage.Body = new BodyBuilder { HtmlBody = emailBody }.ToMessageBody();
+
+                try
                 {
-                    client.Host = _emailSettingsOptions?.MailServer!; ;
-                    client.Port = _emailSettingsOptions!.SMTPPort;
-                    client.UseDefaultCredentials = _emailSettingsOptions.UseDefaultCredentials;
-                    client.Credentials = new NetworkCredential(_emailSettingsOptions?.UserName, _emailSettingsOptions?.Password);
-                    client.EnableSsl = _emailSettingsOptions!.EnableSsl;
+                    using var client = new SmtpClient();
 
-                    message.Subject = subject;
-                    message.Body = emailBody;
-                    message.IsBodyHtml = true;
+                    var socketOptions = _emailSettingsOptions.SMTPPort == 465
+                        ? SecureSocketOptions.SslOnConnect
+                        : _emailSettingsOptions.EnableSsl ? SecureSocketOptions.StartTls : SecureSocketOptions.None;
 
-                    message.To.Add(new MailAddress(_emailSettingsOptions!.EmailToAddress!));
+                    await client.ConnectAsync(_emailSettingsOptions.MailServer!, _emailSettingsOptions.SMTPPort, socketOptions);
 
-                    try
-                    {
-                        // Send the email message
-                        client.Send(message);
+                    if (!_emailSettingsOptions.UseDefaultCredentials)
+                        await client.AuthenticateAsync(_emailSettingsOptions.UserName!, _emailSettingsOptions.Password!);
 
+                    await client.SendAsync(mimeMessage);
+                    await client.DisconnectAsync(true);
 
-                        _logger.LogInformation("SendEmail -> Sending: {subj}", subject);
-                    }
-                    catch (System.Net.Mail.SmtpException ex)
-                    {
-                        Type exceptionType = ex.GetType();
-                        _logger.LogError(ex, "SendEmail -> Email account password might be wrong. Exception type: {exceptionType}  Message:{message}", exceptionType, ex.Message);
-                    }
-                    catch (Exception ex)
-                    {
-                        Type exceptionType = ex.GetType();
-                        _logger.LogError(ex, "SendEmail -> Something went wrong with sending the email. Exception type: {exceptionType} Message:{message}", exceptionType, ex.Message);
-                    }
+                    _logger.LogInformation("SendEmail -> Sending: {subj}", subject);
+                }
+                catch (AuthenticationException ex)
+                {
+                    _logger.LogError(ex, "SendEmail -> Authentication failed. Check username/password. Message: {message}", ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    Type exceptionType = ex.GetType();
+                    _logger.LogError(ex, "SendEmail -> Something went wrong with sending the email. Exception type: {exceptionType} Message:{message}", exceptionType, ex.Message);
                 }
             }
         }
