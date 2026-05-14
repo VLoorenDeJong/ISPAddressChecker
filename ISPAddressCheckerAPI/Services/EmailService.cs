@@ -224,8 +224,10 @@ namespace ISPAddressChecker.Services
 
                                   + $"{heartbeatMessage}"                                  
 
-                                  + $"<p>DNSRecordHostProviderName: <strong>{_emailSettings?.DNSRecordHostProviderName}</strong></p>"
-                                  + $"<p>DNSRecordHostProviderURL : <strong>{_emailSettings?.DNSRecordHostProviderURL}</strong></p>"
+                                  + (_emailSettings?.DNSHostProviders is not null
+                                      ? string.Concat(_emailSettings.DNSHostProviders.Select(p =>
+                                          $"<p>DNS Provider: <strong>{p.Name}</strong> - <a href='{p.URL}'>{p.URL}</a></p>"))
+                                      : string.Empty)
                                   + $"<p>EmailFromAddress : <strong>{_emailSettings?.EmailFromAddress}</strong></p>"
                                   + $"<p>EmailToAddress : <strong>{_emailSettings?.EmailToAddress}</strong></p>"
                                   + $"<p>EmailSubject : <strong>{_emailSettings?.EmailSubject}</strong></p>"
@@ -363,10 +365,13 @@ namespace ISPAddressChecker.Services
 
         public async Task<ActionReportModel> SendISPAddressChangedEmail(string externalISPAddress, string oldISPAddress, IISPAddressCounterService counterService, double interval, SendEmailModel sendEmailDetails)
         {
-            // hostingProviderText is the link to the hostprovider, id specified is shows the name
-            string hostingProviderText = string.Equals(_emailSettings?.DNSRecordHostProviderName, StandardAppsettingsValues.DNSRecordHostProviderName, StringComparison.CurrentCultureIgnoreCase) ? _emailSettings?.DNSRecordHostProviderURL! : _emailSettings?.DNSRecordHostProviderName!;
-
-            string hostingProviderLink = $"<p>Go to <a href = '{_emailSettings?.DNSRecordHostProviderURL}' target=\"_blank\"> <strong>{hostingProviderText}</strong> </a> to update the DNS record.</p>";
+            string hostingProviderLink = _emailSettings?.DNSHostProviders is not null
+                ? string.Concat(_emailSettings.DNSHostProviders.Select(p =>
+                    {
+                        string linkText = string.Equals(p.Name, StandardAppsettingsValues.DNSRecordHostProviderName, StringComparison.CurrentCultureIgnoreCase) ? p.URL! : p.Name!;
+                        return $"<p>Go to <a href='{p.URL}' target=\"_blank\"> <strong>{linkText}</strong> </a> to update the DNS record.</p>";
+                    }))
+                : string.Empty;
             string externalEmailLink = $"<p>Go to <a href = '{_appSettings?.APIEndpointURL}'target=\"_blank\"> <strong>Your provider link goes here</strong> </a> to update the DNS record.</p>";
 
             string emailLink = sendEmailDetails.EmailType != SendEmailTypeEnum.Internal ? externalEmailLink : hostingProviderLink;

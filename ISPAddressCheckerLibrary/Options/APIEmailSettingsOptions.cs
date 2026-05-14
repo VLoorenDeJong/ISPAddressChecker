@@ -1,9 +1,14 @@
 ﻿namespace ISPAddressChecker.Options
 {
+    public class DNSHostProvider
+    {
+        public string? Name { get; set; }
+        public string? URL { get; set; }
+    }
+
     public class APIEmailSettingsOptions : EmailSettingsOptions
     {
-        public string? DNSRecordHostProviderName { get; set; }
-        public string? DNSRecordHostProviderURL { get; set; }
+        public List<DNSHostProvider>? DNSHostProviders { get; set; }
 
         public string? EmailSubject { get; set; }
 

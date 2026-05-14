@@ -115,13 +115,15 @@ namespace ISPAddressCheckerAPI.Services
             }
 
 
-            if (string.Equals(emailSettingsOptions?.DNSRecordHostProviderURL, StandardAppsettingsValues.DNSRecordHostProviderURL, StringComparison.CurrentCultureIgnoreCase))
+            if (emailSettingsOptions?.DNSHostProviders is null
+                || !emailSettingsOptions.DNSHostProviders.Any()
+                || emailSettingsOptions.DNSHostProviders.All(p => string.Equals(p.URL, StandardAppsettingsValues.DNSRecordHostProviderURL, StringComparison.CurrentCultureIgnoreCase)))
             {
                 report.ChecksPassed = false;
 
                 string errorMessage = $"<p><h5><strong>appsettings:</strong></h5></p>"
-                                    + $"<p>The <strong> DNSRecordProviderURL </strong> in appsettings is not changed</p>"
-                                    + "<p>This link will be in your email when your ISP address is changed.</p>";
+                                    + $"<p>The <strong>DNSHostProviders</strong> in appsettings is not configured</p>"
+                                    + "<p>These links will be in your email when your ISP address is changed.</p>";
 
                 ReportConfigError(errorMessage, logger);
                 report.ErrorMessage = report.ErrorMessage + errorMessage;
