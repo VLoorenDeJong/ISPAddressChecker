@@ -7,7 +7,7 @@
 @inject IStatusService statusService;
 @inject ICounterService counterService;
 @inject ILogger<RequestISPAddress> logger;
-@inject HttpClient Http;
+@inject IJSRuntime JSRuntime;
 @inject NavigationManager navManager;
 
 
@@ -78,27 +78,25 @@
         {
             string baseURI = navManager.BaseUri;
             string apiEndpointURL = $"{baseURI}{BlazorEndpointURLS.GetVisitorISPURL}";
+            logger.LogInformation("RequestISPAddress -> GetVisitorIspAddress -> calling URL: {URL}", apiEndpointURL);
 
-            var result = await Http.GetAsync(apiEndpointURL);
+            visitorIspAddress = await JSRuntime.InvokeAsync<string>("fetchVisitorIp", apiEndpointURL) ?? string.Empty;
+            logger.LogInformation("RequestISPAddress -> GetVisitorIspAddress -> JS fetch returned empty: {IsEmpty}", string.IsNullOrEmpty(visitorIspAddress));
 
-            if (result is not null && result.StatusCode == System.Net.HttpStatusCode.OK)
+            ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
+            if (!string.IsNullOrEmpty(visitorIspAddress))
             {
-                visitorIspAddress = await result.Content.ReadAsStringAsync();
-
-                ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
                 newLogEntry.LogType = LogType.Information;
                 newLogEntry.Service = $"GetVisitorIspAddress";
                 newLogEntry.Message = $"ISP address returned {StringHelpers.MakeISPAddressLogReady(visitorIspAddress)}";
-                await LogEntryCreated.InvokeAsync(newLogEntry);
             }
             else
             {
-                ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
                 newLogEntry.LogType = LogType.Error;
                 newLogEntry.Service = $"Dashboard -> GetVisitorIspAddress";
                 newLogEntry.Message = $"No ISP address returned";
-                await LogEntryCreated.InvokeAsync(newLogEntry);
             }
+            await LogEntryCreated.InvokeAsync(newLogEntry);
 
         }
         catch (Exception ex)

@@ -13,39 +13,45 @@ namespace ISPAddressCheckerStatusDashboard.Controllers
     {
         private readonly IHTTPClientControllerMessageService _messageService;
         private readonly DashboardApplicationSettingsOptions _settings;
+        private readonly ILogger<ISPInfoController> _logger;
 
-        public ISPInfoController(IHTTPClientControllerMessageService messageService, IOptions<DashboardApplicationSettingsOptions> settings)
+        public ISPInfoController(IHTTPClientControllerMessageService messageService, IOptions<DashboardApplicationSettingsOptions> settings, ILogger<ISPInfoController> logger)
         {
             _messageService = messageService;
             _settings = settings.Value;
+            _logger = logger;
         }
 
         [HttpGet("GetVisitorISP")]
         public ActionResult<string> GetVisitorISP()
         {
+            _logger.LogInformation("ISPInfoController -> GetVisitorISP -> endpoint hit");
+
+            bool hasForwardedHeader = HttpContext.Request.Headers.ContainsKey("X-Forwarded-For");
+            _logger.LogInformation("ISPInfoController -> GetVisitorISP -> X-Forwarded-For present: {HasHeader}", hasForwardedHeader);
+            _logger.LogInformation("ISPInfoController -> GetVisitorISP -> RemoteIpAddress is null: {IsNull}", HttpContext.Connection.RemoteIpAddress is null);
+            _logger.LogInformation("ISPInfoController -> GetVisitorISP -> IPVersionPreference: {Pref}", _settings.IPVersionPreference);
+
             var ipAddress = GetVisitorISPAddress(HttpContext);
 
-            //_logger.LogInformation("ISPAddressCheckerAPI.SignalRHubs -> {method} -> called", LogHubMethods.SendLogToClients);
-
-            ISPAddressChecker.Models.LogEntryModel newLogEntry = new();
-            newLogEntry.LogType = LogType.Information;
-            newLogEntry.Service = $"Dashboard -> RequestEmail";
-            newLogEntry.Message = $"RequestId: something";
+            _logger.LogInformation("ISPInfoController -> GetVisitorISP -> IP resolved: {Resolved}", !string.IsNullOrEmpty(ipAddress));
 
             _messageService.SendLogMessageToDashboard("Green");
 
             if (string.IsNullOrEmpty(ipAddress))
             {
+                _logger.LogWarning("ISPInfoController -> GetVisitorISP -> returning BadRequest, no IP resolved");
                 return BadRequest("Unable to determine IP address.");
             }
 
+            _logger.LogInformation("ISPInfoController -> GetVisitorISP -> returning OK");
             return Ok(ipAddress);
         }
 
         private string GetVisitorISPAddress(HttpContext context)
         {
             string? ipAddress = context.Request.Headers.ContainsKey("X-Forwarded-For")
-                ? context.Request.Headers["X-Forwarded-For"].ToString()
+                ? context.Request.Headers["X-Forwarded-For"].ToString().Split(',')[0].Trim()
                 : context.Connection.RemoteIpAddress?.ToString();
 
             if (!string.IsNullOrWhiteSpace(ipAddress))

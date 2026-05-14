@@ -17,6 +17,26 @@
         <a class="dismiss">🗙</a>
     </div>
 
+    <script>
+        window.fetchVisitorIp = async (url) => {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    console.error('fetchVisitorIp: non-ok status', response.status);
+                    return '';
+                }
+                const text = await response.text();
+                try {
+                    return JSON.parse(text);
+                } catch {
+                    return text;
+                }
+            } catch (e) {
+                console.error('fetchVisitorIp: fetch error', e);
+                return '';
+            }
+        };
+    </script>
     <script src="_framework/blazor.web.js"></script>
 </body>
 </html>
