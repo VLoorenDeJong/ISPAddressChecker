@@ -13,5 +13,6 @@
         public string? IMAPServer { get; set; }
         public int IMAPPort { get; set; } = 993;
         public bool IMAPUseSsl { get; set; } = true;
+        public bool StoreSendMail { get; set; } = false;
     }
 }

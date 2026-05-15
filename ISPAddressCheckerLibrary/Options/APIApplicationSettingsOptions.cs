@@ -10,7 +10,7 @@
         public bool DashboardEnabled { get; set; }
 
         public double AppsettingsVersion { get; set; }
-        public double ExpectedAppsettingsVersion  = 1.2;
+        public double ExpectedAppsettingsVersion  = 1.3;
 
        
     }

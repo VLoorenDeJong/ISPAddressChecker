@@ -473,6 +473,8 @@ namespace ISPAddressChecker.Services
 
         private async Task SaveToSentFolderAsync(string subject, string emailBody, string toAddress)
         {
+            if (!_emailSettings.StoreSendMail) return;
+
             if (string.IsNullOrWhiteSpace(_emailSettings.IMAPServer))
             {
                 return;
