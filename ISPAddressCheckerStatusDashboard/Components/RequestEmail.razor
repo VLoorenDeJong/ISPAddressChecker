@@ -22,8 +22,8 @@
             @ItemHeader
         </div>
 
-        <EditForm Model="@emailRequest" OnSubmit="@OnSendEmailButtonClicked" FormName="@formName">
-            <InputText class="input-text" @bind-Value="emailRequest.EmailAddress" />
+        <EditForm Model="@emailRequest" OnSubmit="@OnSendEmailButtonClicked" FormName="@formName" >
+            <InputText class="input-text" type="email" autocapitalize="off" @bind-Value="emailRequest.EmailAddress" />
 
             @switch (EmailType)
             {
@@ -31,13 +31,13 @@
                     if (counterService.GetHeartbeatEmailRequestCounter() != 0)
                     {
                         <div class="email-adress-submit">
-                            <button type="submit">@($"Send ({counterService.GetHeartbeatEmailRequestCounter()}x)")</button>
+                            <button type="submit">@($"Send ({counterService.GetHeartbeatEmailRequestCounter()}x remaining)")</button>
                         </div>
                     }
                     else
                     {
                         <div class="email-adress-submit">
-                            <button disabled>@($"Send ({counterService.GetHeartbeatEmailRequestCounter()}x)")</button>
+                            <button disabled>@($"Daily limit reached")</button>
                         </div>
                     }
                     break;
@@ -46,7 +46,7 @@
                     if (counterService.GetISPAddressChangedRequestCounter() != 0)
                     {
                         <div class="email-adress-submit">
-                            <button type="submit">@($"Send ({counterService.GetISPAddressChangedRequestCounter()}x)")</button>
+                            <button type="submit">@($"Send ({counterService.GetISPAddressChangedRequestCounter()}x remaining)")</button>
                         </div>
 
                     }
@@ -54,7 +54,7 @@
                     {
 
                         <div class="email-adress-submit">
-                            <button disabled>@($"Send ({counterService.GetISPAddressChangedRequestCounter()}x)")</button>
+                            <button disabled>@($"Daily limit reached")</button>
                         </div>
                     }
                     break;
